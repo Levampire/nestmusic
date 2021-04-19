@@ -1,20 +1,44 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
 
 const routes = [
   {
+    //re
     path: '/',
-    name: 'Home',
-    component: Home
+    redirect:'/Home'
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../components/LyricsPage.vue')
-  }
+    //根路径
+    path: '/Home',
+    component: () => import('views/Home'),
+    children:[
+      {
+        //音乐主界面 首页
+        path: 'home',
+        component: () => import('main/home_page'),
+      },
+      {
+        //音乐主界面 乐库
+        path: 'search',
+        component: () => import('main/search_page'),
+      },
+      {
+        //音乐主界面 云盘
+        path: 'cloudDisk',
+        component: () => import('main/cloudDisk_page'),
+      },
+      {
+        //音乐主界面 我的喜欢
+        path: 'favorite',
+        component: () => import('main/favorite_page'),
+      },
+      {
+        //音乐主界面 搜索
+        path: 'favorite',
+        component: () => import('main/favorite_page'),
+      }
+    ]
+  },
+
 ]
 
 const router = createRouter({

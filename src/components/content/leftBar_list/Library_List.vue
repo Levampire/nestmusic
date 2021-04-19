@@ -16,6 +16,6 @@ export default {
 
 <style scoped>
 .back{
-  height: 15vh;
+  height: 120px;
 }
 </style>

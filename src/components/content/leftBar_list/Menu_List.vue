@@ -4,11 +4,13 @@
   <div class="sidebar_title">
     Menu
   </div>
-  <div class="sideBar_btn " :class="[btn_now =='btn_home'?active:before]" @click="sideBar_btn('btn_home')" >首页</div>
-  <div class="sideBar_btn" :class="[btn_now =='btn_search'?active:before]" @click="sideBar_btn('btn_search')">乐库</div>
-  <div class="sideBar_btn" :class="[btn_now =='btn_Disk'?active:before]" @click="sideBar_btn('btn_Disk')">云盘</div>
-  <div class="sideBar_btn" :class="[btn_now =='btn_favorite'?active:before]" @click="sideBar_btn('btn_favorite') ">我的喜欢</div>
+
+  <div class="sideBar_btn" :class="[btn_now === 'home'?active:before]" @click="sideBar_btn('home')" >首页</div>
+  <div class="sideBar_btn" :class="[btn_now === 'search'?active:before]" @click="sideBar_btn('search')">乐库</div>
+  <div class="sideBar_btn" :class="[btn_now === 'cloudDisk'?active:before]" @click="sideBar_btn('cloudDisk')">云盘</div>
+  <div class="sideBar_btn" :class="[btn_now === 'favorite'?active:before]" @click="sideBar_btn('favorite') ">我的喜欢</div>
 </div>
+
 </template>
 <script>
 export default {
@@ -21,19 +23,27 @@ export default {
     }
   },
   methods:{
-    //样式转变
-    // toggle_btn(btn){
-    //   // btn.attr("class","sideBar_btn_AfterClick");
-    // },
+    //点击按钮切换Main页面
     sideBar_btn(btn){
       this.btn_now = btn;
+      this.$router.push('/Home/'+ btn );
     }
+  },
+  watch:{
+    '$route.path':function (newValue){
+      this.btn_now = newValue.substring(6);
+    }
+  },
+  mounted() {
+    this.sideBar_btn('home');
   }
 }
 </script>
 
 <style scoped>
 .back{
-  height: 26vh;
+  display: flex;
+  flex-direction: column;
+  height: 220px;
 }
 </style>

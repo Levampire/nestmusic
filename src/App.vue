@@ -1,5 +1,5 @@
 <template>
-  <router-view/>
+  <router-view />
 </template>
 <style>
 @import "assets/css/Btn_css.css";
@@ -14,4 +14,5 @@
 ::-webkit-scrollbar{
   display: none;
 }
+
 </style>

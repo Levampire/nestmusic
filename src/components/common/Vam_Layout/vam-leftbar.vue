@@ -2,7 +2,7 @@
 <div class="leftBar">
   <div class="logo">
     <img class="img" src="@/assets/img/logo.png" alt="">
-    <h3>VamMusic</h3>
+    <p>NestMusic</p>
   </div>
   <Menu></Menu>
   <Library></Library>
@@ -32,17 +32,20 @@ export default {
   width: 30px;
 }
 .logo{
+  font-family: var(--VamFont);
   display: flex;
-  align-items: center;
+  margin-top: 10px;
   justify-content: left;
-  height: 10vh;
+  height: 100px;
   padding-left: 10px;
 }
+p{
+  font-weight: bold;
+  font-size: 18px;
+}
 .leftBar{
-  display: flex;
-  flex-direction: column;
   width: 200px;
-  height:inherit ;
+  height:100vh ;
   background-color: #EAECED;
   padding-left: 10px;
   padding-right: 10px;

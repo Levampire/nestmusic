@@ -14,7 +14,6 @@ export default {
 
 <style scoped>
 .back{
-  background-color: antiquewhite;
-  height: 40vh;
+  height: 120px;
 }
 </style>

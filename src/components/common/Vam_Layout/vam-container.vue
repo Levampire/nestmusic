@@ -1,10 +1,8 @@
 <template>
   <div class="container">
-    <leftBar></leftBar>
-
+      <leftBar></leftBar>
   </div>
 </template>
-
 <script>
 import leftBar from 'components/common/Vam_Layout/vam-leftbar'
 export default {
@@ -22,7 +20,13 @@ name: "VamUi-Layout",
   left: 0;
   display: flex;
   flex-direction: row;
-  width: 100vw;
+  width: 200px;
   height: 100vh;
+}
+.main{
+  position: absolute;
+  left: 0;
+  width: 200px;
+  height: 200px;
 }
 </style>
