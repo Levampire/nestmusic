@@ -4,7 +4,7 @@ const routes = [
   {
     //re
     path: '/',
-    redirect:'/Home'
+    redirect:'/Home/home'
   },
   {
     //根路径

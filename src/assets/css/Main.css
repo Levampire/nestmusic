@@ -2,6 +2,30 @@
     user-select: none;
 }
 
+
+
+
+@import "~assets/css/ColorTheme.css";
+@import "~assets/css/Btn_css.css";
+@import "~assets/css/loginpage.css";
+/*标签*/
+input{
+    max-lines: 1;
+    letter-spacing:0.2pt;
+    margin: 0;
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    font-weight: 500;
+    font-size: 11pt;
+    z-index: 0;
+    caret-color:var(--Main_blue);
+    color: var(--Ligth_Text);
+    background-color: transparent;
+}
+/*类*/
 .main_page{
     padding-top: 60px;
     width: calc(100vw - 500px);
@@ -45,10 +69,7 @@
     margin-left: 6px;
     background-color: #42b983;
 }
-.search_img{
-    background-image: url('~assets/img/搜索.svg');
-    background-size: cover;
-}
+
 /* item_li 行块*/
 .item_li{
     display: flex;
@@ -67,8 +88,84 @@
     background-color: #F8F9F9;
     height: calc(100% - 30px);
     overflow-x: auto;
-
 }
-.login{
+/*login*/
+.cover{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
 
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.loginCard{
+    height: 500px;
+    width: 400px;
+    background-color: white;
+    box-shadow:0 0 15px 5px  rgba(20,20,20,0.1);
+    border-radius: 8px;
+}
+.line_column{
+    width: 4px;
+    background-color: white;
+    height: 100%;
+}
+.line_row{
+    margin-top: 20px;
+    background-color:#B4B4B4;
+    height: 1px;
+    width: 80%;
+}
+
+/*img*/
+
+.input_group{
+    height: 100%;
+    width: 220px ;
+}
+
+
+
+.btn_container{
+    display: flex;
+    width: 90%;
+    height: 40px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+}
+.signup_container{
+    margin-top: 20px;
+    height: 40px;
+}
+
+.checkbox{
+    height: inherit;
+    width: 15px;
+    margin-top: 1px;
+    margin-right: 5px;
+}
+.check{
+    margin-top: 30px;
+    padding-left: 20px;
+    width: 100%;
+    height: 20px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+
+.search_img{
+    background-image: url('~assets/img/搜索.svg');
+    background-size: cover;
 }

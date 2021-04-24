@@ -3,12 +3,14 @@
     --Main_blue:#5773FF;
     --Btn_sideText:#454F63;
     --Ligth_Text:#282830;
-    --btn_back:#25252D;
-    --btn_back_light:#32323D;
+    --btn_back_hover:#CED5FF;
+    --btn_back_light:#ECEFFF;
 
     --title_text:#454F63;
 
     --inform_textcolor:#A7A8B2;
+    --whitesmoke:#F8F8F8;
+    --errorBack:#FEF6F9;
     /*Font_Set*/
     --VamFont:"Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 

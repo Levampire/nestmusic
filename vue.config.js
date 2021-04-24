@@ -10,7 +10,9 @@ module.exports = {
                 'main' : '@/components/content/right_main',
                 'layout' : '@/components/common/Vam_Layout',
                 'widget' : '@/components/common/widget',
-                'items' : '@/components/content/right_main/items'
+                'items' : '@/components/content/right_main/items',
+                'network' : '@/network'
+
             }
         }
     }
