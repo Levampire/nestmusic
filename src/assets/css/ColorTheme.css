@@ -7,11 +7,12 @@
     --btn_back_light:#ECEFFF;
 
     --title_text:#454F63;
+    --info_text:#646A76 ;
 
     --inform_textcolor:#A7A8B2;
     --whitesmoke:#F8F8F8;
     --errorBack:#FEF6F9;
     /*Font_Set*/
-    --VamFont:"Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    --VamFont:"PingFang SC","Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 
 }

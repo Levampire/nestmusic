@@ -6,7 +6,7 @@
   </div>
 
   <div class="sideBar_btn" :class="[btn_now === 'home'?active:before]" @click="sideBar_btn('home')" >首页</div>
-  <div class="sideBar_btn" :class="[btn_now === 'search'?active:before]" @click="sideBar_btn('search')">乐库</div>
+  <div class="sideBar_btn" :class="[btn_now === 'library'?active:before]" @click="sideBar_btn('library')">乐库</div>
   <div class="sideBar_btn" :class="[btn_now === 'cloudDisk'?active:before]" @click="sideBar_btn('cloudDisk')">云盘</div>
   <div class="sideBar_btn" :class="[btn_now === 'favorite'?active:before]" @click="sideBar_btn('favorite') ">我的喜欢</div>
 </div>

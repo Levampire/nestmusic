@@ -1,9 +1,11 @@
 import axios from 'axios';
 
+const BaseUrl = '/dev-api'
 export function request(config){
     const instance = axios.create({
-        baseURL:'http://127.0.0.1:3000',//接口访问基础url
+        baseURL:BaseUrl,//接口访问基础url
         timeout:5000,
+        withCredentials: true
     })
     //请求拦截
     instance.interceptors.request.use(config=>{
