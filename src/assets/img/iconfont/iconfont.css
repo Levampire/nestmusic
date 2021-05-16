@@ -1,0 +1,52 @@
+
+@font-face {
+  font-family: "iconfont"; /* Project id 2545711 */
+  src: url('./iconfont.woff2?t=1620887183692') format('woff2'),
+       url('./iconfont.woff?t=1620887183692') format('woff'),
+       url('./iconfont.ttf?t=1620887183692') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.Player-icon-lastmdpi:before {
+  content: "\e601";
+}
+
+.Player-icon-loopmdpi:before {
+  content: "\e602";
+}
+
+.Player-icon-lowmdpi:before {
+  content: "\e603";
+}
+
+.Player-icon-maxmdpi:before {
+  content: "\e604";
+}
+
+.Player-icon-mutemdpi:before {
+  content: "\e605";
+}
+
+.Player-icon-nextmdpi:before {
+  content: "\e606";
+}
+
+.Player-icon-pausemdpi:before {
+  content: "\e607";
+}
+
+.Player-icon-randommdpi:before {
+  content: "\e608";
+}
+
+.Player-icon-playmdpi:before {
+  content: "\e609";
+}
+

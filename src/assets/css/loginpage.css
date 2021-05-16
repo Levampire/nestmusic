@@ -1,0 +1,33 @@
+.Password_login,.signup_login{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 360px;
+    padding:0 25px 0 25px;
+}
+/*登录输入框*/
+.login_input{
+    height: 40px;
+    width: 100%;
+    border-radius: 10px;
+    outline: none;
+    border:none;
+    font-size: 15px;
+    margin-top: 30px ;
+}
+.login_btn{
+    width: 200px;
+
+}
+/*注册输入框*/
+
+.img_login{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    background-image: url('~assets/img/搜索.svg');
+    background-size: cover;
+}

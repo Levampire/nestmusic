@@ -1,0 +1,72 @@
+{
+  "id": "2545711",
+  "name": "Player",
+  "font_family": "iconfont",
+  "css_prefix_text": "Player-icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "21575252",
+      "name": "lastmdpi",
+      "font_class": "lastmdpi",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "21575253",
+      "name": "loopmdpi",
+      "font_class": "loopmdpi",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "21575254",
+      "name": "lowmdpi",
+      "font_class": "lowmdpi",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "21575255",
+      "name": "maxmdpi",
+      "font_class": "maxmdpi",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "21575256",
+      "name": "mutemdpi",
+      "font_class": "mutemdpi",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "21575257",
+      "name": "nextmdpi",
+      "font_class": "nextmdpi",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "21575258",
+      "name": "pausemdpi",
+      "font_class": "pausemdpi",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "21575259",
+      "name": "randommdpi",
+      "font_class": "randommdpi",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "21575260",
+      "name": "playmdpi",
+      "font_class": "playmdpi",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    }
+  ]
+}
