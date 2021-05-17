@@ -9,19 +9,20 @@
 ::-moz-scrollbar{
     display: none;
 }
+
 body{
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     background-color: var(--whitesmoke);
     scroll-behavior: smooth;
-
 }
 
 @import "~assets/img/iconfont/iconfont.css";
 @import "~assets/css/ColorTheme.css";
 @import "~assets/css/Btn_css.css";
 @import "~assets/css/loginpage.css";
+@import "~assets/font/fontinfo.css";
 /*标签*/
 input{
     max-lines: 1;

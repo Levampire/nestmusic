@@ -266,6 +266,6 @@ export default {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  background-color: #F8F9F9
+  background-image: linear-gradient(to bottom, #F1F4F5, #F4F6F6, #FAFAFA);
 }
 </style>

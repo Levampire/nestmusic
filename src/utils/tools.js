@@ -12,6 +12,14 @@ export  function timeTrans (timenum) {
         return m+''+':'+s
     }
 }
+export  function timeTransBack (timeData) {
+    let time = timeData.split(':')
+    if(time.length===3){
+        return parseInt(time[0])*3600+parseInt(time[1])*60+parseInt(time[2])
+    }else if(time.length===2){
+        return parseInt(time[0])*60+parseInt(time[1])
+    }
+}
 /*
   *分析歌手数据
   *返回数据'歌手1、歌手2、'
