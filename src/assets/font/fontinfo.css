@@ -1,0 +1,5 @@
+/* 定义字体 */
+@font-face{
+    font-family: circularBold;
+    src: url('./lineto-circular-bold.ttf')format('truetype');
+}
