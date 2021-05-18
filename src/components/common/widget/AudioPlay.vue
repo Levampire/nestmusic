@@ -6,6 +6,7 @@
         ref="audio"
         @error="audioError"
         @loadedmetadata="onloadedmetadata($event)"
+        @ended="onended()"
  > </audio>
 </template>
 <script>
@@ -35,9 +36,9 @@ export default {
     updateVolume(index){
       this.updatevolume(index)
     },
-    musicUrl(index){
-      console.log("新UEL");
-      console.log(index);
+    musicUrl(index,OLDVALUE){
+      // console.log("新UEL"+OLDVALUE);
+      // console.log(index);
       this.url = index
     }
 },
@@ -47,7 +48,7 @@ export default {
     },
     audioPlay(){
       this.$refs.audio.play()
-      console.log(this.$refs.audio.src);
+      // console.log(this.$refs.audio.src);
     },
     audioPause(){
       this.$refs.audio.pause()
@@ -67,9 +68,15 @@ export default {
     },
     updatevolume(index){
       index=index<0?0:index>1?1:index
-      this.$refs.audio.volume = index}
+      this.$refs.audio.volume = index
+    },
+    onended(){
+      this.$audio.pause()
+
+    }
   },
   mounted() {
+    this.url = this.musicUrl
     this.$audio.setVolume(1)
   }
 }

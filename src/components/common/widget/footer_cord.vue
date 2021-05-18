@@ -11,14 +11,17 @@
       <i class="iconfont Player-icon-lastmdpi" ></i>
       <i class="iconfont Player-icon-playmdpi"
          @click="play()"
-         v-show="$store.getters['musicplay/getPlayState']===false"></i>
+         v-show="$store.getters['musicplay/getPlayState']===false">
+      </i>
       <i class="iconfont Player-icon-pausemdpi"
            @click="pause()"
-         v-show="$store.getters['musicplay/getPlayState']===true" ></i>
-      <i class="iconfont Player-icon-nextmdpi"
-         @click="this.nextSong"
+         v-show="$store.getters['musicplay/getPlayState']===true" >
+      </i>
 
-      ></i>
+      <i class="iconfont Player-icon-nextmdpi"
+         @click="this.nextSong">
+      </i>
+
       <i class="iconfont Player-icon-loopmdpi"
          :style="{color:[$store.getters['musicplay/getLoopState']===true?'var(--Main_blue)':'var(--title_text)']}"></i>
 
@@ -39,8 +42,8 @@
       <i v-show="volume<0.1"  class="iconfont Player-icon-mutemdpi" ></i>
       <progress-bar class="progress_bar"
                     type="volume"
-                    :progress="(volume/1)*100"
-      ></progress-bar>
+                    :progress="(volume/1)*100">
+      </progress-bar>
     </div>
   </div>
   <AudioPlay></AudioPlay>
@@ -62,15 +65,9 @@ name: "footer_cord",
    }
   },
   methods:{
-  timeTrans(num){
-    return  timeTrans(num)
-  },
-    play(){
-      this.$audio.play()
-    } ,
-    pause(){
-      this.$audio.pause()
-    }
+    timeTrans(num){ return  timeTrans(num)  },
+    play(){ this.$audio.play()  } ,
+    pause(){  this.$audio.pause() }
   },
   computed:{
   ...mapState({
@@ -82,11 +79,16 @@ name: "footer_cord",
   },
   watch:{
     musicInfo:function (newState){
-      console.log(newState.ARTISTS);
+      // console.log('状态');
+      // console.log(newState);
       this.songName=newState.NAME
       this.artist=artistsNameComB(newState.ARTISTS)
       this.coverImg=newState.PICURL
     }
+  },mounted() {
+    this.songName=this.musicInfo.NAME
+    this.artist=artistsNameComB(this.musicInfo.ARTISTS)
+    this.coverImg=this.musicInfo.PICURL
   }
 }
 </script>

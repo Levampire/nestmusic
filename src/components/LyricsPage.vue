@@ -15,14 +15,16 @@
         <div class="round" :style="{backgroundImage:coverImg}"></div>
       </div>
       <div class="lyrics">
-        <div class="lyricsCord" @scroll.stop.prevent ref="lyrCard">
+        <div class="lyricsCard"
+
+             @scroll.stop.prevent ref="lyrCard">
           <div class="title" >歌词</div>
           <div ref="words"
                class="words"
                v-for="(words,index) in lyrics"
                :key="index"
-               :class=" [timeTransBack(words.slice(1,6))<Time?[style='light',scroll(index)]:style='dark']||style">
-                {{words.slice(11)}}
+               :class="[timeTransBack(words.slice(1,indexOfTime-1))<Time?[style='light',scroll(index)]:style='dark']||style">
+                {{words.slice(indexOfTime)}}
           </div>
         </div>
       </div>
@@ -31,13 +33,15 @@
 </template>
 <script>
 import {mapState} from "vuex";
-import {music_lyrics,artist_detail} from "network/music";
-import {analysisLyrics,artistsNameComB} from "utils/tools";
-import {timeTransBack} from "utils/tools";
+import {artist_detail, music_lyrics} from "network/music";
+import {analysisLyrics, artistsNameComB, timeTransBack} from "utils/tools";
+import analyze from 'rgbaster'
+
 export default {
 name: "LyricsPage",
   data(){
    return{
+     indexOfTime:0,
      lyrics:[],
      isPlay:false,
      songName:'',
@@ -48,7 +52,7 @@ name: "LyricsPage",
      MaxTime:0,
      wordsNow:10,
      currentPlaylistID:0,
-
+     CardColor:''
    }
   },
   computed:{
@@ -61,33 +65,31 @@ name: "LyricsPage",
       maxTime:state => state.musicplay.maxTime,
     }),
     shouldScroll:function(){
-      return (this.$refs.lyrCard.clientHeight/this.$refs.lyrCard.scrollHeight)/2
+      return this.$refs.lyrCard.clientHeight/this.lyrics.length
     }
   },
   methods:{
   scroll(index){
     if(index>this.wordsNow){
       //歌词滚动
-      this.$refs.lyrCard.scrollTop = 30*index-this.wordsNow-280
+      this.$refs.lyrCard.scrollTop = 40*index-this.wordsNow-280
       if(index>this.wordsNow){this.wordsNow = index}
+      if(this.wordsNow===10){
+        this.$refs.lyrCard.scrollTop = 0
+      }
     }
   },
   timeTransBack(index){
     return  timeTransBack(index)
   },
-  getArtistInfo(artists){
-    artists.forEach( (value,key)=>{
-          artist_detail(value.id).then(result=>{
-            console.log('图片消息');
-            console.log(result);
-          })
-        }
-    )
-  },
+  // getColor : function (pic){
+  //   return analyze(pic, {ignore: ['rgb（255,255,255）', 'rgb（0,0,0）']}, {scale: .1})
+  //   },
   //加载歌词
     loadLyrics(id){
       music_lyrics(id).then(result=>{
         this.lyrics=analysisLyrics(result.data.lrc.lyric)
+        this.indexOfTime=this.lyrics[0].indexOf(']')+1
       })
     }
   },
@@ -105,24 +107,32 @@ name: "LyricsPage",
       this.currentPlaylistID=currentPlaylistID
     },
     musicInfo:function (newState){
-      console.log(newState.ARTISTS);
+      // console.log(newState.ARTISTS);
       this.songName=newState.NAME
       this.artist = artistsNameComB(newState.ARTISTS)
-      this.getArtistInfo(newState.ARTISTS)
+      // this.getArtistInfo(newState.ARTISTS)
       this.coverImg='url("' + newState.PICURL + '")'
+      // this.getColor(this.musicInfo.PICURL,).then(res=>{
+      //   this.CardColor =  res[0].color})
     },
     currentTime:function (currentTime){
       this.Time = currentTime
       // console.log(currentTime/this.maxTime);
-      if( (currentTime/this.maxTime) > this.shouldScroll){
-        // console.log('yg滚动')
-        // this.$refs.lyrCard.scrollTop += 30
-      }
     },
     maxTime:function (maxTime){
       this.MaxTime = maxTime
     }
   },
+  mounted() {
+  //初始化数据
+    this.songName=this.musicInfo.NAME
+    this.artist = artistsNameComB(this.musicInfo.ARTISTS)
+    this.coverImg='url("' + this.musicInfo.PICURL + '")'
+    this.loadLyrics(this.musicID)
+    // this.getColor(this.musicInfo.PICURL).then(res=>{
+    //  this.CardColor =  res[0].color})
+
+  }
 }
 // background-image: linear-gradient(to bottom, #F1F4F5, #F4F6F6, #FAFAFA);
 </script>
@@ -201,10 +211,9 @@ name: "LyricsPage",
     z-index: 11;
     margin-top: 10px ;
   }
-  .lyricsCord{
+  .lyricsCard{
     padding: 0 15px 0 15px;
     border-radius:14px ;
-    background-color:#5773FF ;
     margin-top: 20px;
     text-align: left;
     z-index: 11;

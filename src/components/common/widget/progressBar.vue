@@ -64,8 +64,11 @@ export default {
       this.index = (this.index<99)?this.pro+this.offset:this.index
     },
     mouseUp(){
-      this.mousein=false
-      this.updateProgress(this.index)
+      if(this.mousein===true){
+        this.mousein=false
+        this.updateProgress(this.index)
+      }
+
     },
     updateProgress(index){
       if(this.type==='audio'){

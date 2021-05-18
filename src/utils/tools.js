@@ -1,3 +1,8 @@
+/*
+  *时间秒转显示
+  *输入时间秒数
+  *返回时间 00：00：00
+ */
 export  function timeTrans (timenum) {
     let h =timenum/3600>=1? Math.floor(timenum/3600):0;
     h = h<10?"0"+h:h
@@ -36,7 +41,6 @@ export  function artistsNameComB (artists) {
         }
     )
     return name
-
 }
 /*
   *分析歌词数据
