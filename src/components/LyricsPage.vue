@@ -23,8 +23,8 @@
                class="words"
                v-for="(words,index) in lyrics"
                :key="index"
-               :class="[timeTransBack(words.slice(1,indexOfTime-1))<Time?[style='light',scroll(index)]:style='dark']||style">
-                {{words.slice(indexOfTime)}}
+               :class="[timeTransBack(words.slice(1,words.indexOf(']')))<Time?[style='light',scroll(index)]:style='dark']||style">
+                {{words.slice(words.indexOf(']')+1)}}
           </div>
         </div>
       </div>
@@ -41,7 +41,6 @@ export default {
 name: "LyricsPage",
   data(){
    return{
-     indexOfTime:0,
      lyrics:[],
      isPlay:false,
      songName:'',
@@ -88,8 +87,13 @@ name: "LyricsPage",
   //加载歌词
     loadLyrics(id){
       music_lyrics(id).then(result=>{
-        this.lyrics=analysisLyrics(result.data.lrc.lyric)
-        this.indexOfTime=this.lyrics[0].indexOf(']')+1
+        if(result.data.lrc!==undefined){
+          this.lyrics=analysisLyrics(result.data.lrc.lyric)
+        }else{
+          this.lyrics= ['没有歌词']
+        }
+
+        console.log(result);
       })
     }
   },
