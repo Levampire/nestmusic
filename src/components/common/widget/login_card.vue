@@ -95,7 +95,6 @@
 //登录请求
 import {getERCode_key, getERCode_create, getERCode_check} from 'network/login';
 import {phone_login, email_login, login_status} from "network/login";
-import {get_userinfo} from "network/user_info";
 
 export default {
 
@@ -158,6 +157,19 @@ export default {
         if (this.tel_email === true) {
           //eamil登录
           //email_login()
+          email_login(this.username, this.userpassword).then(result => {
+            console.log(result)
+            if (result.data.code === 200) {
+              console.log('邮箱登录成功');
+              this.close_login('login')
+            } else {
+              console.log('密码错误');
+            }
+            //获取用户信息
+            // get_userinfo(result.data.account.id).then(result=>{ console.log(result); }).catch(error=>{ console.log('用户数据获取失败'+error);})
+          }).catch(error => {
+            console.log('登录请求失败' + error);
+          })
           console.log('邮箱登录')
         } else {
           //cellphone登录
