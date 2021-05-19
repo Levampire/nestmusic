@@ -195,7 +195,7 @@ export default {
 
     //获取新歌 全部 0 华语 7 欧美 96 日本 8 韩国 16
     new_songs(0).then(result=>{
-      console.log(result);
+      // console.log(result);
       playlist.new_songs.list = result.data.data;
     }).catch(error=>{ console.log('新歌速递数据获取失败'+error);})
 
@@ -208,7 +208,7 @@ export default {
     }).catch(error=>{ console.log('日推歌单数据获取失败'+error);})
     personalized_djprogram().then(result => {
       console.log('电台')
-      console.log(result)
+      // console.log(result)
       playlist.user_fm = result.data.result
     }).catch(error=>{ console.log('推荐电台歌单数据获取失败'+error);})
     return{
