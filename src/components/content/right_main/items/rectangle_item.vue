@@ -20,6 +20,7 @@
 </template>
 <script>
 import {mapState} from "vuex";
+import {timeDateTrans} from "utils/tools";
 
 export default {
   name: "rectangle_item",
@@ -120,11 +121,12 @@ export default {
         break;
       }
       case "newSong":{
+        console.log(this.item);
         this.title = this.item.name;
         this.coverImg = this.item.album.picUrl;
         this.author = this.item.artists[0].name;
-        let publishTime = new Date(this.item.album.publishTime);
-        this.tag = publishTime.getFullYear().toString() +'.'+ publishTime.getMonth().toString()+'.'+publishTime.getDay().toString() ;
+        this.tag = timeDateTrans(this.item.album.publishTime)
+
         break;
       }
       case "newAlbums":{

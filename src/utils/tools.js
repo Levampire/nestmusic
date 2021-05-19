@@ -17,6 +17,11 @@ export  function timeTrans (timenum) {
         return m+''+':'+s
     }
 }
+/*
+  *显示时间转秒
+  *输入时间 00：00：00
+  *返回时间 秒： 12131213
+ */
 export  function timeTransBack (timeData) {
     let time = timeData.split(':')
     if(time.length===3){
@@ -50,3 +55,15 @@ export  function artistsNameComB (artists) {
 export  function analysisLyrics (lyricsData) {
     return lyricsData.split('\n')
 }
+/*
+  *时间戳转换
+  *输入数据 时间戳 Number
+  *返回数据  例：2021.2.2
+ */
+export  function timeDateTrans (time) {
+    let date = new Date(parseInt(time.toString().substr(0,time.length)));
+    return date.getFullYear().toString() + '.' +
+        (date.getMonth() + 1).toString() + '.' +
+        date.getDate().toString()
+}
+
