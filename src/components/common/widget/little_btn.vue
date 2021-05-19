@@ -6,7 +6,7 @@
 
 <script>
 export default {
-name: "signin_btn"
+name: "little_btn"
 }
 </script>
 
