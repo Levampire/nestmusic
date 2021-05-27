@@ -1,7 +1,7 @@
 
 // initial state
 const state = () => ({
-    isLogin:[window.localStorage.getItem('userid')?(window.localStorage.getItem('userid') !== ''):false],
+    isLogin:window.localStorage.getItem('userid')?(window.localStorage.getItem('userid') !== ''):false,
     userinfo:{}
 })
 // mutations

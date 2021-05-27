@@ -42,7 +42,6 @@ input{
 }
 /*类*/
 .main_page{
-    padding-top: 60px;
     width: calc(100vw - 500px);
     height:calc(100vh - 140px) ;
     background-color: #F8F9F9;
@@ -55,8 +54,6 @@ input{
     z-index: 998;
 }
 .navBar{
-    position: absolute;
-    top: 0;
     width: calc(100vw - 200px);
     height: 40px;
     padding: 10px 0 10px 0;

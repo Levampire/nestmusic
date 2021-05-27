@@ -12,7 +12,8 @@ module.exports = {
                 'widget' : '@/components/common/widget',
                 'items' : '@/components/content/right_main/items',
                 'network' : '@/network',
-                'utils':'@/utils'
+                'utils':'@/utils',
+                'directive':'@/directive'
             }
         }
     },

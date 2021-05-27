@@ -1,5 +1,5 @@
 <template>
-  <img :src="coverImg" alt="" class="coverImg">
+  <img :src="coverImg+'?param=70y70'" alt="" class="coverImg">
   <div class="info">
     <div class="songname">{{ songName }}</div>
     <div class="singer">{{ artist }}</div>
@@ -137,7 +137,6 @@ i{
   width: 20px;
   background-size: cover;
   font-size: 13pt;
-  color: var(--title_text);
   transition: .2s;
 }
 .Player-icon-playmdpi{

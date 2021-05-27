@@ -1,5 +1,5 @@
 <template>
-  <div style="position: relative">
+  <div style="position: relative;z-index: 1">
     <div class="switch">
       <div class="mode">歌词</div>
       <div class="mode">评论</div>

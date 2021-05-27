@@ -16,49 +16,48 @@ const routes = [
         path: 'home',
         component: () => import('main/home_page'),
         meta:{index:1}
-      },
-      {
+      },  {
         //音乐主界面 乐库
         path: 'library',
         component: () => import('main/library_page'),
         meta:{index:2}
-      },
-      {
+      }, {
         //音乐主界面 云盘
         path: 'cloudDisk',
         component: () => import('main/cloudDisk_page'),
         meta:{index:3}
-      },
-      {
+      },  {
         //音乐主界面 我的喜欢
         path: 'favorite',
         component: () => import('main/favorite_page'),
         meta:{index:4}
-      },
-      {
+      }, {
         //音乐主界面 最近播放
         path: 'recently',
         component: () => import('main/recently_page'),
         meta:{index:5}
-      },
-      {
+      }, {
         //音乐主界面 歌单广场
         path: 'playlist',
         component: () => import('main/playlist_page'),
         meta:{index:6}
-      },
-      {
+      },{
         //音乐主界面 搜索
         path: 'search/:inputvalue',
         component: () => import('main/search_page'),
         props:true,
         meta:{index:7}
+      },{
+        //列表详情页---------------Overwrite
+        path: 'detail/:id',
+        name:'detail',
+        component: () => import('main/detail_page'),
+        meta:{index:0}
       }
     ]
   },
 
 ]
-
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes

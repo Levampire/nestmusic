@@ -31,6 +31,7 @@
       <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
         <square v-for="item in playlist.user_recommend"
                 :info="item"
+
                 com_type="user_playlist"
         ></square>
       </div>

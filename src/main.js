@@ -6,6 +6,7 @@ import Vainput from 'widget/Va-input'
 import Vainputbutton from 'widget/Va-input-button'
 import store from "./store/store";
 import audio from "./utils/audio";
+import Lazyload from './directive/Lazyload.js'
 
 
 
@@ -15,6 +16,7 @@ const app = createApp(App);
 app.component('Va-input',Vainput);
 app.component('Va-input-button',Vainputbutton);
 app.config.globalProperties.$audio = audio
+app.directive('Lazyload',Lazyload)
 app.use(reactive)
 app.use(router);
 app.use(store);

@@ -13,7 +13,8 @@
 
     <div class="main_page">
 <!--登录-->
-      <div class="navBar">
+      <div  class="navBar"
+            v-if="this.$route.name!=='detail'">
         <search class="search"
                 v-model="input_search"
                 @keydown.enter="search(input_search)"
@@ -32,13 +33,18 @@
         </div>
       </div>
 <!--main_page-->
-        <router-view v-slot="{ Component }">
+        <router-view  v-if="this.$route.meta.index!==0" v-slot="{ Component }">
           <transition :name="transitionName"  >
             <keep-alive>
-            <component :is="Component" />
+            <component  :is="Component" />
             </keep-alive>
           </transition>
         </router-view >
+      <router-view  v-if="this.$route.meta.index===0" v-slot="{ Component }">
+        <transition :name="transitionName"  >
+            <component  :is="Component" />
+        </transition>
+      </router-view >
     </div>
 <!--朋友信息-->
     <div class="userFriends">

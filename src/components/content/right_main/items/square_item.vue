@@ -1,99 +1,109 @@
 <template>
-  <div class="item_self" @mouseenter="MouseisOn()" @mouseleave="MouseLeave() ">
-    <div v-if="com_type === 'song' ">
-      <img :src="info.img1v1Url"
+  <div class="item_self"
+       @mousedown=" startPos = $event.target.getBoundingClientRect()"
+       @mouseenter="MouseisOn()"
+       @mouseleave="MouseLeave() "
+       @mouseup="toDetailPage($event)"
+       @click.stop >
+    <div >
+      <img :src="coverImg+'?param=180y180'"
+           loading="lazy"
            :class="[com_type==='artist'?'artimg':'songimg']"
            oncontextmenu="return false;"
            ondragstart="return false;"
            alt="">
-      <label class="title">{{ info.name }}</label>
-      <label class="info"></label>
+      <div v-if="info.creator" class="tag">{{ tag }}</div>
+      <label class="title">{{ title }}</label>
+      <label class="info">{{ detail }}</label>
     </div>
 
+<!--    <div v-if="com_type === 'artist' ">-->
+<!--      <img :src="info.img1v1Url"-->
+<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
+<!--           oncontextmenu="return false;"-->
+<!--           ondragstart="return false;"-->
+<!--           alt="">-->
+<!--      <label class="title">{{ info.name }}</label>-->
+<!--      <label class="info"></label>-->
+<!--    </div>-->
 
 
-    <div v-if="com_type === 'artist' ">
-      <img :src="info.img1v1Url"
-           :class="[com_type==='artist'?'artimg':'songimg']"
-           oncontextmenu="return false;"
-           ondragstart="return false;"
-           alt="">
-      <label class="title">{{ info.name }}</label>
-      <label class="info">艺人</label>
-    </div>
+<!--    <div v-if="com_type === 'user' ">-->
+<!--      <img :src="info.avatarUrl"-->
+<!--           :class="[(com_type==='artist'||com_type==='user')?'artimg':'songimg']"-->
+<!--           oncontextmenu="return false;"-->
+<!--           ondragstart="return false;"-->
+<!--           alt="">-->
+<!--      <label class="title">{{ info.nickname }}</label>-->
+<!--      <label class="info">用户</label>-->
+<!--    </div>-->
 
 
-    <div v-if="com_type === 'user' ">
-      <img :src="info.avatarUrl"
-           :class="[(com_type==='artist'||com_type==='user')?'artimg':'songimg']"
-           oncontextmenu="return false;"
-           ondragstart="return false;"
-           alt="">
-      <label class="title">{{ info.nickname }}</label>
-      <label class="info">用户</label>
-    </div>
+<!--    <div v-if="com_type === 'playlist' ">-->
+<!--      <img :src="info.coverImgUrl"-->
+<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
+<!--           oncontextmenu="return false;"-->
+<!--           ondragstart="return false;"-->
+<!--           alt="">-->
+<!--      <div class="title">{{ info.name }}</div>-->
+<!--      <div class="info">{{ info.creator.nickname }}</div>-->
+<!--    </div>-->
 
 
-    <div v-if="com_type === 'playlist' ">
-      <img :src="info.coverImgUrl"
-           :class="[com_type==='artist'?'artimg':'songimg']"
-           oncontextmenu="return false;"
-           ondragstart="return false;"
-           alt="">
-      <div class="title">{{ info.name }}</div>
-      <div class="info">{{ info.creator.nickname }}</div>
-    </div>
+<!--      <div v-if="com_type === 'user_playlist'">-->
+<!--      <img :src="info.picUrl"-->
+<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
+<!--           oncontextmenu="return false;"-->
+<!--           ondragstart="return false;"-->
+<!--           alt="">-->
+<!--        <div v-if="info.creator" class="tag">{{ info.creator.nickname }}</div>-->
+<!--      <div class="title">{{ info.name }}</div>-->
+<!--      <div class="info">{{ info.copywriter }}</div>-->
 
 
-      <div v-if="com_type === 'user_playlist'">
-      <img :src="info.picUrl"
-           :class="[com_type==='artist'?'artimg':'songimg']"
-           oncontextmenu="return false;"
-           ondragstart="return false;"
-           alt="">
-        <div v-if="info.creator" class="tag">{{ info.creator.nickname }}</div>
-      <div class="title">{{ info.name }}</div>
-      <div class="info">{{ info.copywriter }}</div>
+<!--    </div>-->
 
 
-    </div>
+<!--    <div v-if="com_type === 'album' ">-->
+<!--      <img :src="info.picUrl"-->
+<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
+<!--           oncontextmenu="return false;"-->
+<!--           ondragstart="return false;"-->
+<!--           alt="">-->
+<!--      <div class="tag">{{ info.type }}</div>-->
+<!--      <div class="title">{{ info.name }}</div>-->
+<!--      <div class="info">{{ info.artist.name }}</div>-->
 
+<!--    </div>-->
+<!--    <div v-if="com_type === 'radio'">-->
+<!--      <img :src="info.picUrl"-->
+<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
+<!--           oncontextmenu="return false;"-->
+<!--           ondragstart="return false;"-->
+<!--           alt="">-->
+<!--      <div class="tag">{{ info.category }}</div>-->
+<!--      <div class="title">{{ info.name }}</div>-->
+<!--      <div class="info">{{ info.dj.nickname }}</div>-->
 
-    <div v-if="com_type === 'album' ">
-      <img :src="info.picUrl"
-           :class="[com_type==='artist'?'artimg':'songimg']"
-           oncontextmenu="return false;"
-           ondragstart="return false;"
-           alt="">
-      <div class="tag">{{ info.type }}</div>
-      <div class="title">{{ info.name }}</div>
-      <div class="info">{{ info.artist.name }}</div>
+<!--    </div>-->
+<!--    <div v-if="com_type === 'userRecord'">-->
+<!--      <img :src="info.picUrl"-->
+<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
+<!--           oncontextmenu="return false;"-->
+<!--           ondragstart="return false;"-->
+<!--           alt="">-->
+<!--      <div class="tag">{{ info.category }}</div>-->
+<!--      <div class="title">{{ info.name }}</div>-->
+<!--      <div class="info">{{ info.dj.nickname }}</div>-->
+<!--    </div>-->
 
-    </div>
-    <div v-if="com_type === 'radio'">
-      <img :src="info.picUrl"
-           :class="[com_type==='artist'?'artimg':'songimg']"
-           oncontextmenu="return false;"
-           ondragstart="return false;"
-           alt="">
-      <div class="tag">{{ info.category }}</div>
-      <div class="title">{{ info.name }}</div>
-      <div class="info">{{ info.dj.nickname }}</div>
-
-    </div>
-    <div v-if="com_type === 'userRecord'">
-      <img :src="info.picUrl"
-           :class="[com_type==='artist'?'artimg':'songimg']"
-           oncontextmenu="return false;"
-           ondragstart="return false;"
-           alt="">
-      <div class="tag">{{ info.category }}</div>
-      <div class="title">{{ info.name }}</div>
-      <div class="info">{{ info.dj.nickname }}</div>
-    </div>
+<!-- //播放按钮-->
     <transition v-if="com_type!=='artist'&&com_type!=='user'" name="play_in">
       <div v-show="isOn"
+           @mouseover="isOnPlayBtn = true"
+           @mouseleave="isOnPlayBtn = false"
            @click="clickPlay()"
+           @click.stop.prevent
            class="play_btn"
            :class="[!isPlay?'play':'pause']">
       </div>
@@ -106,7 +116,6 @@ import {mapState} from "vuex";
 
 export default {
   name: "square_item",
-
   props: {
     info: {
       type: Object,
@@ -127,10 +136,19 @@ export default {
 },
   data() {
     return {
+      //触发
+      startPos:{},
+      endPos:{},
       isPlay:false,
       isOn: false,
+      isOnPlayBtn:false,
       currentMusicID:0,
       currentPlaylistID:0,
+      //数据
+      title:'nie',
+      coverImg:'eee',
+      tag:'ee',
+      detail:'',
     }
   },
   watch:{
@@ -147,6 +165,18 @@ export default {
     }
   },
   methods: {
+    toDetailPage(e){
+      //防止滑动触发click
+      this.endPos = e.target.getBoundingClientRect()
+      if(Math.abs(this.endPos.x-this.startPos.x) < 7 && this.isOnPlayBtn === false){
+        this.$router.push({
+          name: 'detail',
+          params: {
+            id:this.info.id
+          }
+        })
+      }
+    },
     MouseisOn() {this.isOn = true;},
     MouseLeave() { this.isOn = false;},
     clickPlay(){
@@ -173,6 +203,69 @@ export default {
       }else {
         this.isPlay=false
         this.$audio.pause()
+      }
+    }
+  },
+  mounted() {
+    switch (this.com_type) {
+      case "song":{
+        this.title = this.info.name ;
+        this.coverImg = this.info.img1v1Url;
+        this.detail = '单曲';
+        break;
+      }
+      //艺人
+      case "artist":{
+        this.title = this.info.name;
+        this.coverImg = this.info.img1v1Url;
+        this.detail = '艺人';
+        break;
+      }
+      //用户
+      case "user":{
+        this.title = this.info.nickname;
+        this.coverImg = this.info.avatarUrl;
+        this.detail = "用户";
+        break;
+      }
+      //歌单
+      case "playlist":{
+        this.title = this.info.name;
+        this.coverImg = this.info.coverImgUrl;
+        this.detail = this.info.creator.nickname;
+        break;
+      }
+      //用户每日推荐
+      case "user_playlist":{
+        this.title = this.info.name;
+        this.coverImg = this.info.picUrl;
+        this.detail = this.info.copywriter
+        this.tag = this.info.creator? this.info.creator.nickname:''
+        break;
+      }
+      //专辑
+      case "album":{
+        this.title = this.info.name;
+        this.coverImg = this.info.picUrl;
+        this.detail = this.info.artist.name
+        this.tag = this.info.type
+        break;
+      }
+        //电台
+      case "radio":{
+        this.title = this.info.name;
+        this.coverImg = this.info.picUrl;
+        this.detail = this.info.dj.nickname
+        this.tag = this.info.category
+        break;
+      }
+        //用户播放记录
+      case "userRecord":{
+        this.title = this.info.name;
+        this.coverImg = this.info.picUrl;
+        this.detail = this.info.dj.nickname
+        this.tag = this.info.category
+        break;
       }
     }
   }

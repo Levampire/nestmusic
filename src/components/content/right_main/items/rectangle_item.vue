@@ -1,8 +1,9 @@
 <template >
   <div class="item_self" @mouseenter="MouseisOn()" @mouseleave="MouseLeave()" @click.stop>
     <span class="playlist_tag">{{tag}}</span>
-    <img :src="coverImg"
+    <img :src="coverImg+'?param=70y70'"
          alt=""
+         loading="lazy"
          oncontextmenu="return false;"
          ondragstart="return false;" >
     <label class="title">
@@ -121,7 +122,7 @@ export default {
         break;
       }
       case "newSong":{
-        console.log(this.item);
+        // console.log(this.item);
         this.title = this.item.name;
         this.coverImg = this.item.album.picUrl;
         this.author = this.item.artists[0].name;

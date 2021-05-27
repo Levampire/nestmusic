@@ -49,6 +49,6 @@ p{
   background-color: #EAECED;
   padding-left: 10px;
   padding-right: 10px;
-  z-index:-1;
+  z-index:0;
 }
 </style>

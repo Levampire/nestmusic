@@ -1,7 +1,8 @@
 <template>
  <div class="item_self">
    <img class="coverImg"
-       :src="coverImg"
+        loading="lazy"
+       :src="coverImg+'?param=40y40'"
         oncontextmenu="return false;"
         ondragstart="return false;"
         alt=""/>

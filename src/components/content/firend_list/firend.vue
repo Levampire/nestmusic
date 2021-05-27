@@ -15,7 +15,7 @@
      </div>
      <div v-if="userfolloweds_list.length>0">
        <div class="item" v-for="item in userfolloweds_list">
-         <img :src="item.avatarUrl" alt="" class="avatar">
+         <img :src="item.avatarUrl+'?param=40y40'" alt="" class="avatar">
          <img :src="item.avatarDetail.identityIconUrl" alt="" class="identity">
          <div class="name">{{item.nickname}}</div>
        </div>
@@ -30,7 +30,7 @@
      <div v-if="userevent_list.length>0">
        <div class="item" v-for="item in userfolloweds_list">
          <img :src="item.avatarUrl" alt="" class="avatar">
-         <img :src="item.avatarDetail.identityIconUrl" alt="" class="identity">
+         <img :src="item.avatarDetail.identityIconUrl+'?param=15y15'" alt="" class="identity">
          <div class="name">{{item.nickname}}</div>
        </div>
      </div>
