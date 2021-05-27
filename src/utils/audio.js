@@ -15,5 +15,4 @@ export default {
         setVolume,
         setPlaylist,
         setUrl
-
 }
