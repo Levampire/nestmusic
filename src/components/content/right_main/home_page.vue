@@ -257,12 +257,10 @@ export default {
     else if (hour < 19) {this.hello = '晚上好！' }
     else if (hour < 24) {this.hello = '晚安！'}
     window.addEventListener('mouseup',this.MouseLeave);
-    console.log(this.$store.getters['user/getloginState'][0]);
   },
 }
 </script>
 <style scoped>
-
 .page{
   width: 100%;
   height: 100%;

@@ -13,6 +13,6 @@
     --whitesmoke:#F8F8F8;
     --errorBack:#FEF6F9;
     /*Font_Set*/
-    --VamFont:"PingFang SC","Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    --VamFont:circularnormal,circularBold,Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 
 }

@@ -41,7 +41,7 @@ export function getERCode_check(key){
     })
 }
 //登出/logout
-export function logout(key){
+export function logout(){
     return request({
         url:'/logout'
     })

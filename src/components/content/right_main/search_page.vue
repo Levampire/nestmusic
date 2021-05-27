@@ -11,15 +11,16 @@
       <div class="li_group2">
         <div class="type_title"> 歌曲 </div>
         <div class="into_detail"> 查看全部 </div>
-        <div class="can">
+        <div class="can" style="overflow-y: auto;height: 240px" >
           <musiclittle_item v-for="song in search_result.single.songs"
                             :info="song"
                             :key="song"
+                            type="songs"
            > </musiclittle_item>
         </div>
       </div>
     </li>
-    <li class="item_li"  >
+    <li class="item_li" v-if="search_result.artists.artists!=={}" >
       <div class="type_title"> 音乐人 </div>
       <div class="into_detail"> 查看全部 </div>
       <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
@@ -54,36 +55,39 @@
                 com_type="playlist"
         ></square>
       </div>
-    </li><li class="item_li"  >
-      <div class="type_title"> 电台 </div>
-      <div class="into_detail"> 查看全部 </div>
-      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
-        <!--最近播放-->
-        <square v-for="radio in search_result.radio.djRadios"
-                :info="radio"
-                :key="radio"
-                com_type="radio"
-        ></square>
-      </div>
-    </li><li class="item_li"  >
-      <div class="type_title"> MV </div>
-      <div class="into_detail"> 查看全部 </div>
-      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
-        <!--最近播放-->
-        <square ></square>
-      </div>
-    </li><li class="item_li"  >
-      <div class="type_title"> 用户 </div>
-      <div class="into_detail"> 查看全部 </div>
-      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
-        <!--最近播放-->
-        <square v-for="user in search_result.user.userprofiles"
-                :info="user"
-                :key="user"
-                com_type="user"
-        ></square>
-      </div>
     </li>
+<!--    <li class="item_li"  >-->
+<!--      <div class="type_title"> 电台 </div>-->
+<!--      <div class="into_detail"> 查看全部 </div>-->
+<!--      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >-->
+<!--        &lt;!&ndash;最近播放&ndash;&gt;-->
+<!--        <square v-for="radio in search_result.radio.djRadios"-->
+<!--                :info="radio"-->
+<!--                :key="radio"-->
+<!--                com_type="radio"-->
+<!--        ></square>-->
+<!--      </div>-->
+<!--    </li>-->
+<!--    <li class="item_li"  >-->
+<!--      <div class="type_title"> MV </div>-->
+<!--      <div class="into_detail"> 查看全部 </div>-->
+<!--      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >-->
+<!--        &lt;!&ndash;最近播放&ndash;&gt;-->
+<!--        <square ></square>-->
+<!--      </div>-->
+<!--    </li>-->
+<!--    <li class="item_li"  >-->
+<!--      <div class="type_title"> 用户 </div>-->
+<!--      <div class="into_detail"> 查看全部 </div>-->
+<!--      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >-->
+<!--        &lt;!&ndash;最近播放&ndash;&gt;-->
+<!--        <square v-for="user in search_result.user.userprofiles"-->
+<!--                :info="user"-->
+<!--                :key="user"-->
+<!--                com_type="user"-->
+<!--        ></square>-->
+<!--      </div>-->
+<!--    </li>-->
   </div>
 </template>
 <script>
@@ -91,7 +95,6 @@ import square_item from 'items/square_item'
 import Squarebig_item from "items/squarebig_item";
 import Musiclittle_item from "items/musiclittle_item";
 import {searchmusic} from "network/music";
-import {throttle} from 'utils/throttle'
 export default {
   name: "search_page",
   components:{
@@ -108,9 +111,9 @@ export default {
         albums: {},
         artists: {},
         playlist:{},
-        user:{},
-        radio: {},
-        mv:{}
+        // user:{},
+        // radio: {},
+        // mv:{}
       },
       firstone:{}
     }
@@ -123,6 +126,10 @@ export default {
      type:String
     }
   },
+  created() {
+    let that = this
+    that.$nextTick(this.getSearchResult(this.inputvalue))
+  },
   methods:{
     getMouseX(e) {
       this.init_posX = e.x;
@@ -131,31 +138,38 @@ export default {
     },
     getMouseMoveX(e) {
       let temp = this.init_posX - e.x;
-      if (this.isOn.valueOf() === true) {
+      if (this.isOn === true) {
         e.currentTarget.scrollLeft = this.init_scrollLeft + temp;
       }
     },
     MouseLeave(){
       this.isOn = false;
     },
-    getInputValue:function(newvalue){
+    getSearchResult:function(newvalue){
+      console.log(newvalue)
+      // searchmusic(newvalue,1018,10,0).then(result=>{
+      //   console.log(result);
+      //     }).catch(error=>{})
       const types = {
+        'single':1,
         'albums': 10,
         'artists': 100,
         'playlist': 1000,
-        'user': 1002,
-        'radio': 1009,
-        'mv': 1004
+        // 'user': 1002,
+        // 'radio': 1009,
+        // 'mv': 1004
       }
+      // 搜索请求keyword,type,limit,offset
       searchmusic(newvalue,1,5,0).then(result=>{
         this.search_result.single = result.data.result
         this.firstone = this.search_result.single.songs.shift()
       }).catch(error=>{})
-      Object.keys(types).forEach(async (key)=>{
-        //搜索请求keyword,type,limit,offset
-        searchmusic(newvalue,types[key],10,0).then(result => {
-          this.search_result[key]=result.data.result
-        }).catch(error=>{ console.log(key+'搜索请求失败'+error) })
+      Object.keys(types).forEach( (key)=>{
+          searchmusic(newvalue,types[key],10,0).then(result => {
+            this.search_result[key]=result.data.result
+            console.log(this.search_result);
+
+          }).catch(error=>{ console.log(key+'搜索请求失败'+error) })
       })
       console.log(this.search_result)
     }
@@ -164,9 +178,11 @@ export default {
     window.addEventListener('mouseup',this.MouseLeave);
   },
   watch:{
-    inputvalue:function (newvalue,oldvalue){
+    inputvalue:function (newvalue){
       // throttle( this.getInputValue(newvalue),500)
-      this.getInputValue(newvalue)
+      console.log(newvalue);
+      this.$nextTick(this.getSearchResult(newvalue))
+
     }
   }
 }

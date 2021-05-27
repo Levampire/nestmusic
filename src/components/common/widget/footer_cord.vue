@@ -1,4 +1,7 @@
 <template>
+    <transition name="cardenter" >
+      <playlist-card  v-show="showPlaylist" :style="{position:'fixed',left:playlist_pos.x-150+'px',bottom:'85px',zIndex:'-2'}" ></playlist-card>
+    </transition>
   <img :src="coverImg+'?param=70y70'" alt="" class="coverImg">
   <div class="info">
     <div class="songname">{{ songName }}</div>
@@ -37,37 +40,48 @@
 
   <div class="other">
     <div class="progress_volume">
-      <i v-show="volume>0.8"  class="iconfont Player-icon-maxmdpi" ></i>
-      <i v-show=".1<volume&&volume<0.8"  class="iconfont Player-icon-lowmdpi" ></i>
-      <i v-show="volume<0.1"  class="iconfont Player-icon-mutemdpi" ></i>
-      <progress-bar class="progress_bar"
-                    type="volume"
-                    :progress="(volume/1)*100">
-      </progress-bar>
-    </div>
+    <i v-show="volume>0.8"  class="iconfont Player-icon-maxmdpi" ></i>
+    <i v-show=".1<volume&&volume<0.8"  class="iconfont Player-icon-lowmdpi" ></i>
+    <i v-show="volume<0.1"  class="iconfont Player-icon-mutemdpi" ></i>
+    <progress-bar class="progress_bar"
+                  type="volume"
+                  :progress="(volume/1)*100">
+    </progress-bar>
   </div>
-  <AudioPlay></AudioPlay>
+    <div class="playlist"
+         ref="btn_playlist"
+         @click="showPlaylistCard">  <i class="iconfont Player-icon-randommdpi"></i></div>
+  </div>
+
+  <AudioPlay ></AudioPlay>
 </template>
 
 <script>
 import {mapState} from 'vuex'
 import ProgressBar from "./progressBar";
+import playlistCard from "widget/playlistCard.vue";
 import {timeTrans,artistsNameComB} from 'utils/tools'
 import AudioPlay from "./AudioPlay";
 export default {
 name: "footer_cord",
-  components: {AudioPlay, ProgressBar},
+  components: {AudioPlay, ProgressBar,playlistCard},
   data(){
   return{
+    playlist_pos:{},
     coverImg:'',
     songName:'',
-    artist:''
+    artist:'',
+    showPlaylist:false
    }
   },
   methods:{
     timeTrans(num){ return  timeTrans(num)  },
     play(){ this.$audio.play()  } ,
-    pause(){  this.$audio.pause() }
+    pause(){  this.$audio.pause() },
+    showPlaylistCard(){
+      this.playlist_pos = this.$refs.btn_playlist.getBoundingClientRect()
+      this.showPlaylist=!this.showPlaylist
+    }
   },
   computed:{
   ...mapState({
@@ -94,7 +108,13 @@ name: "footer_cord",
 </script>
 
 <style scoped>
-
+.cardenter-enter-active ,.cardenter-leave-active {
+  transition: all .2s cubic-bezier(0.4,0.5,0.6,0.9);
+}
+.cardenter-enter-from, .cardenter-leave-to
+  /* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateY(500px);
+}
 .coverImg{
   background-color: white;
   height: 70px;
@@ -147,11 +167,15 @@ i:hover{
   transition: .3s;
 }
 .progressbar{
-  height: 50%;
+  height: calc(100% - 10px);
+  padding-top: 10px;
   width: 50%;
-  margin-bottom: 15px;
+  background-color: white;
+  z-index: 1;
 }
 .other{
+  background-color: white;
+  z-index: 1;
   height: 90%;
   width: 24%;
 }
@@ -177,5 +201,12 @@ i:hover{
   flex-direction: row;
   align-items: center;
   width: 150px;
+}
+.playlist{
+  float: right;
+  display: flex;
+  align-items: center;
+  height: 70px;
+  width: 70px;
 }
 </style>

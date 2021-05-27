@@ -73,6 +73,10 @@ export function searchmusic(keyword,type,limit,offset){
             url = '/cloudsearch?keywords='+keyword+'&type=1004'+'&limit='+limit
             break;
         }
+        case 1018:{
+            url = '/cloudsearch?keywords='+keyword+'&type=1018'+'&limit='+limit+'&offset=1'
+            break;
+        }
         default:{
             url = '/cloudsearch?keywords='+keyword+'&type=1'+'&limit='+limit
             break;

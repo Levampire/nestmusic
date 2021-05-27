@@ -3,3 +3,7 @@
     font-family: circularBold;
     src: url('./lineto-circular-bold.ttf')format('truetype');
 }
+@font-face{
+    font-family: circularnormal;
+    src: url('./Circular-Book.woff.ttf')format('truetype');
+}

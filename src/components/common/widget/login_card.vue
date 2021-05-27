@@ -247,9 +247,8 @@ export default {
             //本地储存用户数据
             window.localStorage.setItem('userid', result.data.data.profile.userId)
             console.log(window.localStorage.getItem('userid'));
-
-
           }
+          this.route.go(0)
         }).catch(error => {
           console.log('登录校验失败' + error)
         })

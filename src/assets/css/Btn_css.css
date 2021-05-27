@@ -71,6 +71,8 @@
 }
 /*NavBar*/
 .LoginBar{
+    position: absolute;
+    right: 50px;
     display: flex;
     justify-content: flex-end;
     padding-top: 10px;

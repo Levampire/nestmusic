@@ -3,7 +3,10 @@
     <div class="sidebar_title">
       {{sidebar_title}}
     </div >
-    <div class="item line"> </div>
+    <div v-if="user_playlist.length<=1" class="item">
+      <div class="tip" >您还没有收藏歌单</div>
+    </div>
+    <div v-else class="item line"> </div>
       <div class="item">
        <p v-for="item in user_playlist.slice(1)">{{ item.name.trim() }}</p>
       </div>
@@ -37,6 +40,7 @@ export default {
           // console.log(this.$store)
           // console.log(result.data.playlist)
           this.user_playlist = result.data.playlist
+          console.log(this.user_playlist)
         }).catch(error=>{
           console.log(error)
         })
@@ -48,6 +52,7 @@ export default {
   },
   mounted() {
     setTimeout(this.getrecord,500)
+
   }
 }
 
@@ -82,5 +87,13 @@ export default {
   width: 145px;
   border-bottom: 1px solid var(--info_text);
   margin-bottom: 5px;
+}
+.tip{
+  text-align: center;
+  line-height: 200px;
+  width: 100%;
+  height: 200px;
+  font-size: 10pt;
+  color: rgb(50,50,50);
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
  <audio  preload="auto"
+         onload="onloading()"
          @timeupdate="getCurrentTime($event)"
         :autoplay="false"
         :src="url"
@@ -36,9 +37,9 @@ export default {
     updateVolume(index){
       this.updatevolume(index)
     },
-    musicUrl(index,OLDVALUE){
+    musicUrl(index){
       // console.log("新UEL"+OLDVALUE);
-      // console.log(index);
+       console.log(index);
       this.url = index
     }
 },
@@ -46,9 +47,11 @@ export default {
     handlePlay(state){
       state?this.audioPlay():this.audioPause();
     },
+    onloading(){
+      this.$msgbox.msgbox('加载中','success')
+    },
     audioPlay(){
       this.$refs.audio.play()
-      // console.log(this.$refs.audio.src);
     },
     audioPause(){
       this.$refs.audio.pause()
@@ -60,7 +63,7 @@ export default {
       this.$refs.audio.currentTime = progress/100 * this.$refs.audio.duration
     },
     audioError(){
-      console.log('资源加载出错')
+      this.$msgbox.msgbox('资源加载出错','success')
     },
     onloadedmetadata(e){
       this.$store.commit('musicplay/setMaxTime', parseInt(e.target.duration))

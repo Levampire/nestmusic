@@ -170,7 +170,7 @@ export default {
       this.endPos = e.target.getBoundingClientRect()
       if(Math.abs(this.endPos.x-this.startPos.x) < 7 && this.isOnPlayBtn === false){
         this.$router.push({
-          name: 'detail',
+          name: 'playlistDetail',
           params: {
             id:this.info.id
           }
