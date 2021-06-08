@@ -1,16 +1,17 @@
-# nestmusic
+# NestMusicPlayer
+###仿Spotify UI 音乐在线播放网站 
 
-## Project setup
+## 项目依赖安装
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 开发环境运行、热重载
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 生产环境打包
 ```
 npm run build
 ```
@@ -20,5 +21,7 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 运行主页
+![img.png](img.png)
+![img_1.png](img_1.png)
+
