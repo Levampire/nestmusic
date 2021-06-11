@@ -1,5 +1,5 @@
 # NestMusicPlayer
-###仿Spotify UI 音乐在线播放网站 
+### 仿Spotify UI 音乐在线播放网站 
 
 ## 项目依赖安装
 ```
