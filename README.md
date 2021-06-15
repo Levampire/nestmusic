@@ -1,5 +1,7 @@
 # NestMusicPlayer
 ### 仿Spotify UI 音乐在线播放网站 
+#### 感谢 Binaryify node版网易云api
+https://github.com/Binaryify/NeteaseCloudMusicApi
 
 ## 项目依赖安装
 ```
