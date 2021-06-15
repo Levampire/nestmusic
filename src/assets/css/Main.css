@@ -42,13 +42,15 @@ input{
 }
 /*类*/
 .main_page{
-    width: calc(100vw - 500px);
+    width: calc(100vw - 200px) ;
     height:calc(100vh - 140px) ;
     background-color: #F8F9F9;
 }
 .userFriends{
-    margin-top: 60px;
-    width: 300px;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 280px;
     height:calc(100% - 140px) ;
     background-color: #F8F9F9;
     z-index: 90;

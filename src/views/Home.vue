@@ -17,10 +17,9 @@
            v-if="this.$route.name!=='detail'">
         <search class="search"
                 v-model="input_search"
-                @keydown.enter="search(input_search)"
-        >
+                @keydown.enter="search(input_search)" >
         </search>
-        <div class="LoginBar" v-if="this.$store.getters['user/getloginState']===false">
+        <div class="LoginBar" v-if="islogin === false">
           <little_btn
               @click="click_login=true;enter_type='login'"
           >登录
@@ -30,7 +29,7 @@
           >注册
           </little_btn>
         </div>
-        <div class="LoginBar" v-else>
+        <div class="LoginBar" v-if="islogin === true">
           <userinfo class="userInfo"></userinfo>
         </div>
       </div>
@@ -49,7 +48,7 @@
       </router-view>
     </div>
     <!--朋友信息-->
-    <div class="userFriends">
+    <div class="userFriends" v-if="islogin ===true" >
       <friend></friend>
     </div>
   </div>
@@ -66,8 +65,8 @@ import search_btn from 'widget/search_btn'
 import little_btn from 'widget/little_btn'
 import login_card from "widget/login_card";
 import Footer_cord from "widget/footer_cord";
-import {login_status, logout} from "network/login";
-import {useStore} from 'vuex'
+import {login_status} from "network/login";
+import {useStore,mapState} from 'vuex'
 import userinfo from "widget/user_info";
 
 export default {
@@ -84,6 +83,7 @@ export default {
   },
   data() {
     return {
+      islogin:false,
       enter_type: 'login',
       //点击登录按钮
       click_login: false,
@@ -95,12 +95,15 @@ export default {
       oldPath: []
     }
   },
+  computed:{
+    ...mapState({
+       LoginState: state => state.user.isLogin
+    })
+  },
   created() {
     const store = useStore()
     login_status().then(result => {
       if (result.data.data.account !== null) {
-        console.log('已登录')
-        console.log('vuex登录状态：' + store.getters["user/getloginState"]);
         store.commit('user/setUserinfo', result.data.data.profile)
         store.commit('user/setIslogin', true)
       } else {
@@ -125,8 +128,9 @@ export default {
     }
   },
   mounted() {
+    //初始化登录状态
+    this.islogin = this.LoginState
     //登出
-
     // logout().then(result => {
     //   console.log('已登出')
     //   console.log(result)
@@ -136,6 +140,11 @@ export default {
   },
 
   watch: {
+    //登录状态
+    LoginState:function (newState){
+      this.islogin = newState
+    },
+
     input_search: function (newvalue) {
       this.oldPath.push(this.$route.fullPath)
       if (newvalue === '') {

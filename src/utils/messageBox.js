@@ -15,15 +15,14 @@ const initInstance = () => {
     document.body.appendChild(container)
 }
 
-const msgbox = option => {
+const msgbox = (option,delay) => {
     if (!instance) initInstance()
 
-    option = typeof option === 'string' ? { content: option } : option
+    option = typeof option === 'string' ? { content: option,delay:delay } : option
 
     const defaultOption = {
         content: '',
         delay: 1500,
-        type: 'info'
     }
 
     for (const key in defaultOption)
@@ -31,9 +30,6 @@ const msgbox = option => {
 
     return instance.open()
 }
-
-const types = ['success', 'error', 'warn', 'info']
-types.forEach(type => msgbox[type] = content => msgbox({ content, type }))
 
 
 // // 或者挂载在根实例的全局配置上
