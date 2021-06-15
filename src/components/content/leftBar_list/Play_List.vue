@@ -8,21 +8,23 @@
     </div>
     <div v-else class="item line"> </div>
       <div class="item">
-       <p v-for="item in user_playlist.slice(1)">{{ item.name.trim() }}</p>
+       <p v-for="item in user_playlist">{{ item.name.trim()}}</p>
       </div>
   </div>
 </template>
 
 <script>
 
-import {user_playlist,top_album} from "network/music";
-import {reactive} from "vue";
-import {useStore} from "vuex"
+import {user_playlist} from "network/music";
+import {dj_Todayperfered} from "network/home_page";
+
+import {mapState} from "vuex"
 
 export default {
   name: "Play_List",
   data(){
     return{
+      islogin:Boolean,
       sidebar_title:'',
       //最近播放
       user_playlist:[],
@@ -30,29 +32,48 @@ export default {
       recommend_list:{}
     }
   },
+  computed:{
+    ...mapState({
+      loginState:state => state.user.isLogin
+    })
+  },
+  watch:{
+    loginState:function (newState){
+      this.islogin =  newState
+    }
+  },
   methods:{
     getrecord(){
-      if(this.$store.getters['user/getloginState']){
+      if(this.islogin ===true){
         this.sidebar_title='我的歌单'
         const id =this.$store.getters['user/getuserid']
         //获取最近播放 type=1 时只返回 weekData, type=0 时返回 allData
         user_playlist(id).then(result => {
           // console.log(this.$store)
           // console.log(result.data.playlist)
-          this.user_playlist = result.data.playlist
-          console.log(this.user_playlist)
+          this.user_playlist = result.data.playlist.slice(1)
         }).catch(error=>{
           console.log(error)
         })
       }else{
         //获取推荐歌曲
         this.sidebar_title = '近期热门'
+        //获取热门话题
+        dj_Todayperfered().then(result => {
+          console.log('今日推荐电台')
+          console.log(result)
+          this.user_playlist = result.data.data
+          /*this.user_playlist = result.data.playlist
+          console.log(this.user_playlist)*/
+        }).catch(error=>{
+          console.log(error)
+        })
       }
     }
   },
   mounted() {
+    this.islogin = this.loginState
     setTimeout(this.getrecord,500)
-
   }
 }
 

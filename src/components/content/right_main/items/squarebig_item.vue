@@ -3,6 +3,7 @@
     <img :src="src"
          oncontextmenu="return false;"
          ondragstart="return false;"
+         loading="lazy"
          alt="">
     <div class="squareitem_info">
       <label class="songname">{{song}}</label>

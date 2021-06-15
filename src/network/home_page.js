@@ -24,3 +24,9 @@ export function playlist_highquality(){
         url:'/top/playlist/highquality?before=1503639064232&limit=10',
     })
 }
+//今日优选电台
+export function dj_Todayperfered(){
+    return request({
+        url:'/dj/today/perfered',
+    })
+}

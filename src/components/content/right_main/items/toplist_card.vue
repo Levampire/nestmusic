@@ -7,7 +7,6 @@
                  v-for="(info,index) in list.slice(0,4)"
                  :info="info"
                  :ranking = "index"
-                 :key="index"
     ></musiclittle>
   </div>
 </div>
@@ -36,17 +35,16 @@ name: "toplist_card",
       }
     }
   },
-  watch:{
-  items:function (newvalue){
-    playlist_detail(newvalue.id).then(result=>{
-
+  methods:{
+    updatePlaylist(){
+      this.$audio.setPlaylist(this.list)
+    }
+  },
+  mounted() {
+    playlist_detail(this.items.id).then(result=>{
       this.list = result.data.playlist.tracks
       // console.log(result);
     })
-  }
-  },
-  mounted() {
-
   }
 }
 </script>

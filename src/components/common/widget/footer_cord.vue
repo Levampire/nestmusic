@@ -11,7 +11,8 @@
     <div class="btnGroup">
       <i class="iconfont Player-icon-randommdpi"
          :style="{color:[$store.getters['musicplay/getRandomState']===true?'var(--Main_blue)':'var(--title_text)']}"></i>
-      <i class="iconfont Player-icon-lastmdpi" ></i>
+      <i class="iconfont Player-icon-lastmdpi"
+         @click="lastSong()"></i>
       <i class="iconfont Player-icon-playmdpi"
          @click="play()"
          v-show="$store.getters['musicplay/getPlayState']===false">
@@ -22,7 +23,7 @@
       </i>
 
       <i class="iconfont Player-icon-nextmdpi"
-         @click="this.nextSong">
+         @click="nextSong()">
       </i>
 
       <i class="iconfont Player-icon-loopmdpi"
@@ -45,7 +46,7 @@
     <i v-show="volume<0.1"  class="iconfont Player-icon-mutemdpi" ></i>
     <progress-bar class="progress_bar"
                   type="volume"
-                  :progress="(volume/1)*100">
+                  :progress="volume*100">
     </progress-bar>
   </div>
     <div class="playlist"
@@ -78,6 +79,32 @@ name: "footer_cord",
     timeTrans(num){ return  timeTrans(num)  },
     play(){ this.$audio.play()  } ,
     pause(){  this.$audio.pause() },
+    nextSong:async function(){
+      if(this.musicList.length>2){
+        clearInterval(this.Timer)
+          //当前列表项index
+          const currentIndex = this.musicList.findIndex(item=>item.id===this.currentID)
+          const nextSong =  this.musicList[currentIndex+1]
+          this.$audio.pause()
+          await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
+          this.$audio.play()
+      }else{
+        this.$msgbox.msgbox('没有下一曲了',1000)
+        }
+    },
+    lastSong:async function(){
+      const currentIndex = this.musicList.findIndex(item=>item.id===this.currentID)
+      if(this.musicList&&currentIndex>0){
+        clearInterval(this.Timer)
+          //当前列表项index
+          const nextSong =  this.musicList[currentIndex-1]
+          this.$audio.pause()
+          await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
+          this.$audio.play()
+      }else{
+        this.$msgbox.msgbox('没有上一曲了',1000)
+        }
+    },
     showPlaylistCard(){
       this.playlist_pos = this.$refs.btn_playlist.getBoundingClientRect()
       this.showPlaylist=!this.showPlaylist
@@ -89,6 +116,8 @@ name: "footer_cord",
        musicInfo:state => state.musicplay.musicInfo,
        maxTime:state => state.musicplay.maxTime,
        volume:state => state.musicplay.volume,
+       musicList:state => state.musicplay.musicList,
+        currentID:state => state.musicplay.musicID,
    }),
   },
   watch:{

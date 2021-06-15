@@ -2,7 +2,7 @@
  <div class="item_self"
       @mouseover="isOn=true"
       @mouseleave="isOn=false"
-      @click="isPlay=!isPlay">
+      @click="clickPlay()">
    <transition name="play_in">
      <div v-show="isOn"
           @mouseover="isOnPlayBtn = true"
@@ -97,10 +97,10 @@ export default {
   },
   watch:{
     isPlay:function (state){
-      this.handlePlay(state)
+      console.log('*********State变化'+state)
     },
     playState:function (newstate){
-      // console.log('正在播放状态'+newstate+'当前播放ID'+ this.currentMusicID);
+      console.log('正在播放状态'+newstate+'当前播放ID'+ this.currentMusicID);
       if(this.isPlay!==newstate && this.currentMusicID===this.info.id){
         this.isPlay = newstate
       }
@@ -111,21 +111,34 @@ export default {
     }
   },
   methods:{
+    clickPlay(){
+      this.handlePlay(!this.isPlay)
+    },
     handlePlay(state){
-      state?this.setPlay():this.setPause();
+      state?this.setPlay(state):this.setPause();
     },
     setPause(){
-      this.$audio.pause()
+        this.$audio.pause()
     },
-    setPlay(){
-      this.$audio.pause()
-      if (this.type==='songs'){
-        this.$parent.updatePlaylist()
+    setPlay : async function(state){
+      switch (this.type){
+        case 'songs':{
+          //更新播放列表
+          this.$parent.updatePlaylist()
+          this.$audio.pause()
+          await this.$audio.setUrl(this.info.id,this.info.name,this.info.ar,this.info.al.picUrl)
+          this.$audio.play()
+          break
+        }
+        case 'toplist':{
+          //更新播放列表
+          this.$parent.updatePlaylist()
+          this.$audio.pause()
+          await this.$audio.setUrl(this.info.id,this.info.name,this.info.ar,this.info.al.picUrl)
+          this.$audio.play()
+          break
+        }
       }
-      this.$audio.setUrl(this.info.id,this.info.al.name,this.info.ar,this.info.al.picUrl)
-      setTimeout(() => {
-        this.$audio.play()
-      }, 100)
     }
   }
 }

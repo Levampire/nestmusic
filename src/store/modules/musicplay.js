@@ -8,7 +8,7 @@ const state = () => ({
     musicList:{},
     isPlay:false,
     isRandom:false,
-    isLoop:false,
+    loopMode:'',//single单曲循环,all列表循环
     maxTime:'300',
     currentTime:'0',
     progress:0,
@@ -22,10 +22,13 @@ const mutations = {
         state.musicID = ID
         state.musicInfo = {NAME,ARTISTS,PICURL};
     },
-    setPlay(state){ state.isPlay = true;},
+    setPlay(state){ state.isPlay = true;
+        console.log('**********设置播放')},
     setPause(state){ state.isPlay = false;},
     setMaxTime(state,maxTime){ state.maxTime = maxTime ;},
     setcurrentTime(state,timeNow){ state.currentTime = timeNow; },
+    isRandom(state,isRandom){  state.isRandom = isRandom;  },
+    loopMode(state,loopMode){  state.isLoop = loopMode;  },
     setVolume(state,volume){  state.volume = volume;  },
     setProgress(state,progress){ state.progress = progress; },
     setMusicList(state,[musicList,id]){

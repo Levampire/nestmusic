@@ -1,21 +1,23 @@
 <template>
-  <div style="position: relative"
-       @click="showOptions"
-       ref="btnpos"
+    <div style="position: relative"
+         @click="showOptions"
+         ref="btnpos"
     >
-    <div  v-if="login === true" class="userinfo">
-      <img :src="userinfo.avatarUrl" alt="">
-      <div class="username">
-        {{ userinfo.nickname }}
+      <div  v-if="login === true" class="userinfo">
+        <img :src="profile" alt="">
+        <div class="username">
+          {{ UserName }}
+        </div>
+        <div class="arrow">
+          <div :class="[isOnbtn?'up':'down']" class="iconfont Player-icon-xiasanjiaoxing"></div>
+        </div>
       </div>
-      <div class="arrow"  ></div>
-    </div>
-  </div><transition name="cardenter" >
-  <div v-show="isOnbtn" class="opitons" :style="{position:'fixed',height:height, left:pos.x+50+'px',bottom:'85px',overflow:'hidden'}">
-    <div class="options">个人中心 </div>
-    <div class="options"> 账号设置</div>
-    <div class="options" @click="logOut">登出</div>
-  </div> </transition>
+    </div><transition name="cardenter" >
+    <div v-show="isOnbtn" class="opitons" :style="{position:'fixed',height:height, left:pos.x+50+'px',bottom:'85px',overflow:'hidden'}">
+      <div class="options">个人中心 </div>
+      <div class="options"> 账号设置</div>
+      <div class="options" @click="logOut">登出</div>
+    </div> </transition>
 </template>
 
 <script>
@@ -39,9 +41,21 @@ computed:{
     login:state => state.user.isLogin
   })
 },
+  watch:{
+    userinfo:function (newValue){
+      this.UserName=newValue.nickname
+      this.profile=newValue.avatarUrl
+    }
+  },
   methods:{
     logOut(){
-      logout()
+      logout().then(result => {
+        console.log(result)
+        if(result.data.code === 200){
+          window.localStorage.setItem('userid','');
+          this.$router.go(0)
+        }
+      })
     },
     showOptions(){
       this.isOnbtn=!this.isOnbtn
@@ -97,10 +111,10 @@ img{
   right: 20px;
   width: 20px;
   height: 20px;
-  background-color:cadetblue ;
 }
+
 .opitons{
-  position: fixed;
+  position: absolute;
   top: 55px;
   display: flex;
   flex-direction: column;
@@ -118,5 +132,16 @@ img{
 .cardenter-enter-from, .cardenter-leave-to
   /* .slide-fade-leave-active for below version 2.1.8 */ {
   transition: .2s cubic-bezier(0.4,0.5,0.6,0.9);
+}
+/*iconfont */
+.Player-icon-xiasanjiaoxing{
+  color: #969896;
+}
+.up{
+  transition: .3s;
+}
+.down{
+  transform: rotate(-180deg) translateY(-3px);
+  transition: .3s;
 }
 </style>

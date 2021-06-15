@@ -40,18 +40,9 @@
     <li class="item_li"  >
       <div class="type_title"> 排行榜  </div>
       <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
-        <div class="column">
+        <div class="column" v-for="(playlist,index) in playlist.top_list.list" :key="index" >
           <toplist
-                   :items="playlist.top_list.list[0]"  ></toplist>
-        </div>
-        <div class="column">
-          <toplist :items="playlist.top_list.list[1]"   ></toplist>
-        </div>
-        <div class="column">
-          <toplist :items="playlist.top_list.list[2]"  ></toplist>
-        </div>
-        <div class="column">
-          <toplist :items="playlist.top_list.list[3]"></toplist>
+                   :items="playlist"  ></toplist>
         </div>
       </div>
     </li>
@@ -137,6 +128,7 @@ import channel_item from "items/channel_item";
 import {reactive} from 'vue'
 import {search_hot,homepage_info,new_songs,playlist_highquality} from 'network/home_page';
 import {radio_hot,top_album,top_list,recommend_resource,personalized_djprogram} from "network/music";
+import {useStore} from "vuex";
 export default {
 
   name: "Home_page",
@@ -147,6 +139,9 @@ export default {
     toplist:toplist
   },
   setup(){
+    //登录状态获取
+    const store = useStore()
+
     //歌单标签数据结构
     const playlist = reactive({
       //用户日推歌单
@@ -204,14 +199,17 @@ export default {
     playlist_highquality().then(result=>{
       playlist.highQuality.list = result.data.playlists;
     }).catch(error=>{ console.log('精品歌单数据获取失败'+error);})
-    recommend_resource().then(result => {
-      playlist.user_recommend = result.data.recommend
-    }).catch(error=>{ console.log('日推歌单数据获取失败'+error);})
-    personalized_djprogram().then(result => {
-      console.log('电台')
-      // console.log(result)
-      playlist.user_fm = result.data.result
-    }).catch(error=>{ console.log('推荐电台歌单数据获取失败'+error);})
+    /*日推 需要登录*/
+    if(store.getters['user/getloginState']===true){
+      recommend_resource().then(result => {
+        playlist.user_recommend = result.data.recommend
+      }).catch(error=>{ console.log('日推歌单数据获取失败'+error);})
+      personalized_djprogram().then(result => {
+        console.log('电台')
+        // console.log(result)
+        playlist.user_fm = result.data.result
+      }).catch(error=>{ console.log('推荐电台歌单数据获取失败'+error);})
+    }
     return{
       playlist
     }

@@ -27,7 +27,7 @@
     </div>
     <div class="comm">
     </div>
-    <div class="mainpage" style="overflow-y:auto;height: 520px;padding: 0 5px">
+    <div class="mainpage" style="overflow-y:auto;height: 510px;padding: 0 5px">
       <musiclittle_item v-for="item in listData.list"
                         :info="item"
                         type="songs"
@@ -89,7 +89,6 @@ name: "Detial_page",
       this.isloding = false
     },
     updatePlaylist(){
-      console.log('触发')
       this.$audio.setPlaylist(this.listData.list)
     }
   }

@@ -66,7 +66,7 @@ export default {
       }).catch(error=>{console.log(error)})
     }
   },mounted() {
-    setTimeout(this.getUserFollowinfo,400)
+      setTimeout(this.getUserFollowinfo,500)
   }
 }
 

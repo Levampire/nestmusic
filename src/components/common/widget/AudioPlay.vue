@@ -16,7 +16,8 @@ export default {
   name: "AudioPlay",
   data(){
     return{
-      url:''
+      url:'',
+      Timer:setTimeout,
     }
   },
   computed:{
@@ -24,7 +25,9 @@ export default {
       isPlay:state => state.musicplay.isPlay,
       musicUrl:state => state.musicplay.musicUrl,
       updateProgress:state => state.musicplay.progress,
-      updateVolume:state => state.musicplay.volume
+      updateVolume:state => state.musicplay.volume,
+      musicList:state => state.musicplay.musicList,
+      currentID:state => state.musicplay.musicID
     })
   },
   watch:{
@@ -50,10 +53,12 @@ export default {
     onloading(){
       this.$msgbox.msgbox('加载中','success')
     },
-    audioPlay(){
+    audioPlay (){
+      console.log('***************播放********************')
       this.$refs.audio.play()
     },
     audioPause(){
+      console.log('***************暂停********************')
       this.$refs.audio.pause()
     },
     getCurrentTime(e){
@@ -62,8 +67,22 @@ export default {
     updateTime(progress){
       this.$refs.audio.currentTime = progress/100 * this.$refs.audio.duration
     },
-    audioError(){
-      this.$msgbox.msgbox('资源加载出错','success')
+    audioError:async function (){
+       this.$msgbox.msgbox('资源加载出错',800)
+     if(this.musicList.length>2){
+       clearInterval(this.Timer)
+       this.Timer = setTimeout(async()=>{
+         await this.$msgbox.msgbox('切换到下一曲',1000)
+         //当前列表项index
+         const currentIndex = this.musicList.findIndex(item=>item.id===this.currentID)
+         const nextSong =  this.musicList[currentIndex+1]
+         this.$audio.pause()
+         await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
+         this.$audio.play()
+       },1500)
+     }else{
+       this.$msgbox.msgbox('播放失败,请重试',1000)
+     }
     },
     onloadedmetadata(e){
       this.$store.commit('musicplay/setMaxTime', parseInt(e.target.duration))

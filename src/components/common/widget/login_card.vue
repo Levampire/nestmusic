@@ -242,13 +242,12 @@ export default {
             //成功获取到登录信息
             console.log('已登录')
             console.log(result)
+            this.$router.go(0)
             this.$emit('close_login')
             this.$store.commit('user/setUserinfo', result.data.data.profile)
             //本地储存用户数据
             window.localStorage.setItem('userid', result.data.data.profile.userId)
-            console.log(window.localStorage.getItem('userid'));
           }
-          this.route.go(0)
         }).catch(error => {
           console.log('登录校验失败' + error)
         })

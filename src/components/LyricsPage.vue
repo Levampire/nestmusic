@@ -92,8 +92,6 @@ name: "LyricsPage",
         }else{
           this.lyrics= ['没有歌词']
         }
-
-        console.log(result);
       })
     }
   },

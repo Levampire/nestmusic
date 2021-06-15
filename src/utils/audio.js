@@ -2,7 +2,7 @@
 import store from "../store/store";
 
 const setUrl = (id,NAME,ARTISTS,PICURL) => store.commit('musicplay/setUrl',[id,NAME,ARTISTS,PICURL])
-const play = () => store.commit('musicplay/setPlay')
+const play =  () => {store.commit('musicplay/setPlay')}
 const pause = () => store.commit('musicplay/setPause')
 const updateProgress = (index) => store.commit('musicplay/setProgress',index)
 const setVolume = (index) => store.commit('musicplay/setVolume',index)

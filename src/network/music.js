@@ -146,3 +146,9 @@ export function artist_detail(id){
         url:'/artist/detail?id='+id
     })
 }
+//热门话题
+export function hot_topic(){
+    return request({
+        url:'/hot/topic'
+    })
+}
