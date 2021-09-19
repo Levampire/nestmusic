@@ -1,13 +1,14 @@
 <template>
  <div class="item_self"
+      @mousedown=" startPos = $event.target.getBoundingClientRect()"
       @mouseover="isOn=true"
       @mouseleave="isOn=false"
-      @click="clickPlay()">
-   <transition name="play_in">
+      @mouseup.self="clickPlay($event)"
+     >
+   <transition name="play">
      <div v-show="isOn"
           @mouseover="isOnPlayBtn = true"
           @mouseleave="isOnPlayBtn = false"
-          @click.stop.prevent
           class="play_btn"
           :class="[!isPlay?'play':'pause']">
      </div>
@@ -19,12 +20,12 @@
         ondragstart="return false;"
         alt=""/>
    <div v-if="type==='toplist'" class="ranking">{{ranking+1}}</div>
-   <div class="info" >
-     <div class="songsname">{{ songname }}</div>
-     <div class="singer">{{ singer}}</div>
+   <div class="info" @click="clickPlay($event)">
+     <div class="songsname" >{{ songname }}</div>
+     <div class="singer" @click.stop="toSingerPage()" >{{ singer}}</div>
    </div>
-   <div v-if="type==='songs'" class="info" >
-     <div class="songsname">{{ info.al.name }}</div>
+   <div v-if="type==='songs'" class="info" @click="clickPlay($event)">
+     <div class="songsname albumName" @click.stop="toAlbumPage()">{{ info.al.name }}</div>
    </div>
    <div v-if="type==='songs'" class="collection">
 
@@ -44,6 +45,8 @@ export default {
   name: "musiclittle_item",
   data() {
     return {
+      startPos:{},
+      endPos:{},
       isOn:false,
       isPlay:false,
       currentMusicID:0,
@@ -75,7 +78,6 @@ export default {
   mounted() {
     switch (this.type) {
       case "songs": {
-        console.log(this.info);
         this.songname = this.info.name.trim()
         this.singer = this.info.ar[0].name
         this.coverImg = this.info.al.picUrl
@@ -107,12 +109,17 @@ export default {
     },
     musicID:function (currentMusicID){
       this.currentMusicID=currentMusicID
-      // console.log('当前ID'+this.currentMusicID);
+       console.log('当前ID'+this.currentMusicID);
     }
   },
   methods:{
-    clickPlay(){
-      this.handlePlay(!this.isPlay)
+    clickPlay(e){
+      console.log('play')
+      this.endPos = e.target.getBoundingClientRect()
+      if(Math.abs(this.endPos.x-this.startPos.x) < 7){
+        this.handlePlay(!this.isPlay)
+      }
+
     },
     handlePlay(state){
       state?this.setPlay(state):this.setPause();
@@ -139,6 +146,24 @@ export default {
           break
         }
       }
+    },
+    toSingerPage(){
+      this.$router.push({
+        name: 'artistDetail',
+        params: {
+          type:'singer',
+          id: this.info.ar[0].id
+        }
+      })
+    },
+    toAlbumPage(){
+      this.$router.push({
+        name: 'albumDetail',
+        params: {
+          type:'newAlbum',
+          id: this.info.al.id
+        }
+      })
     }
   }
 }
@@ -162,7 +187,7 @@ export default {
 }
 .item_self:hover{
   box-shadow:0 0 10px rgba(80,80,80,.1);
-  background-color: rgba(255,255,255,0.6);
+  background-color: rgba(255,255,255,0.4);
   transition: 0.3s ;
 }
 .ranking{
@@ -202,13 +227,23 @@ export default {
   white-space: nowrap;
 }
 .singer{
+  width: fit-content;
+  height: 18px;
   font-size: 10pt;
   text-align: left;
   color: rgb(80,80,80);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+  z-index: 980;
+}
+.albumName{
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+  width: fit-content;
+}
+.singer:hover,.albumName:hover{
+  border-bottom: 1px solid;
 }
 .time{
   position:absolute;
@@ -233,27 +268,19 @@ export default {
   background-repeat: no-repeat;
   z-index: 1;
 }
-.play {
-  background-image: url("~assets/img/play.svg");
-  /*animation: play_btn;
-  animation-duration: 0.2s;*/
-}
-.pause{
-  background-image: url("~assets/img/pause.svg");
-}
-.play_in-enter-active {
+.play-enter-active {
   transition: all .3s ease;
 }
 
-.play_in-enter-active {
+.play-enter-active {
   transition: all .3s ease;
 }
 
-.play_in-leave-active {
+.play-leave-active {
   transition: all .4s cubic-bezier(0.4, 0.5, 0.6, 0.9);
 }
 
-.play_in-enter, .play_in-leave-to
+.play-enter, .play-leave-to
   /* .slide-fade-leave-active for below version 2.1.8 */
 {
   transform:  scale(.8);

@@ -6,9 +6,17 @@
            v-for="item in currentPlaylist"
            @click="setPlay(item)"
       >
-        <text>{{ item.name }}</text>
-        <br>
-        <text class="artist">{{ artistsName(item.ar)}}</text>
+        <img class="songImg"
+             loading="lazy"
+             :src="item.al.picUrl+'?param=30y30'"
+             oncontextmenu="return false;"
+             ondragstart="return false;"
+             alt=""/>
+        <div>
+          <text>{{ item.name }}</text>
+          <br>
+          <text class="artist">{{ artistsName(item.ar)}}</text>
+        </div>
       </div>
     </div>
 
@@ -59,7 +67,12 @@ export default {
   z-index: 950;
   font-family: circularBold, "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
-
+.songImg{
+  height: 40px;
+  width: 40px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
 .item {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -68,7 +81,9 @@ export default {
   font-weight: bold;
   text-align: left;
   font-size: 12pt;
-  height: 50px;
+  height: 55px;
+  display: flex;
+
 }
 
 .title {

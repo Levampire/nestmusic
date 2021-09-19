@@ -16,96 +16,15 @@
       <label class="title">{{ title }}</label>
       <label class="info">{{ detail }}</label>
     </div>
-
-<!--    <div v-if="com_type === 'artist' ">-->
-<!--      <img :src="info.img1v1Url"-->
-<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
-<!--           oncontextmenu="return false;"-->
-<!--           ondragstart="return false;"-->
-<!--           alt="">-->
-<!--      <label class="title">{{ info.name }}</label>-->
-<!--      <label class="info"></label>-->
-<!--    </div>-->
-
-
-<!--    <div v-if="com_type === 'user' ">-->
-<!--      <img :src="info.avatarUrl"-->
-<!--           :class="[(com_type==='artist'||com_type==='user')?'artimg':'songimg']"-->
-<!--           oncontextmenu="return false;"-->
-<!--           ondragstart="return false;"-->
-<!--           alt="">-->
-<!--      <label class="title">{{ info.nickname }}</label>-->
-<!--      <label class="info">用户</label>-->
-<!--    </div>-->
-
-
-<!--    <div v-if="com_type === 'playlist' ">-->
-<!--      <img :src="info.coverImgUrl"-->
-<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
-<!--           oncontextmenu="return false;"-->
-<!--           ondragstart="return false;"-->
-<!--           alt="">-->
-<!--      <div class="title">{{ info.name }}</div>-->
-<!--      <div class="info">{{ info.creator.nickname }}</div>-->
-<!--    </div>-->
-
-
-<!--      <div v-if="com_type === 'user_playlist'">-->
-<!--      <img :src="info.picUrl"-->
-<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
-<!--           oncontextmenu="return false;"-->
-<!--           ondragstart="return false;"-->
-<!--           alt="">-->
-<!--        <div v-if="info.creator" class="tag">{{ info.creator.nickname }}</div>-->
-<!--      <div class="title">{{ info.name }}</div>-->
-<!--      <div class="info">{{ info.copywriter }}</div>-->
-
-
-<!--    </div>-->
-
-
-<!--    <div v-if="com_type === 'album' ">-->
-<!--      <img :src="info.picUrl"-->
-<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
-<!--           oncontextmenu="return false;"-->
-<!--           ondragstart="return false;"-->
-<!--           alt="">-->
-<!--      <div class="tag">{{ info.type }}</div>-->
-<!--      <div class="title">{{ info.name }}</div>-->
-<!--      <div class="info">{{ info.artist.name }}</div>-->
-
-<!--    </div>-->
-<!--    <div v-if="com_type === 'radio'">-->
-<!--      <img :src="info.picUrl"-->
-<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
-<!--           oncontextmenu="return false;"-->
-<!--           ondragstart="return false;"-->
-<!--           alt="">-->
-<!--      <div class="tag">{{ info.category }}</div>-->
-<!--      <div class="title">{{ info.name }}</div>-->
-<!--      <div class="info">{{ info.dj.nickname }}</div>-->
-
-<!--    </div>-->
-<!--    <div v-if="com_type === 'userRecord'">-->
-<!--      <img :src="info.picUrl"-->
-<!--           :class="[com_type==='artist'?'artimg':'songimg']"-->
-<!--           oncontextmenu="return false;"-->
-<!--           ondragstart="return false;"-->
-<!--           alt="">-->
-<!--      <div class="tag">{{ info.category }}</div>-->
-<!--      <div class="title">{{ info.name }}</div>-->
-<!--      <div class="info">{{ info.dj.nickname }}</div>-->
-<!--    </div>-->
-
 <!-- //播放按钮-->
-    <transition v-if="com_type!=='artist'&&com_type!=='user'" name="play_in">
+    <transition v-if="com_type!=='artist'&&com_type!=='user'" name="play_cover">
       <div v-show="isOn"
            @mouseover="isOnPlayBtn = true"
            @mouseleave="isOnPlayBtn = false"
            @click="clickPlay()"
            @click.stop.prevent
            class="play_btn"
-           :class="[!isPlay?'play':'pause']">
+           :class="[!isPlay?'play_cover':'pause_cover']">
       </div>
     </transition>
   </div>
@@ -166,23 +85,41 @@ export default {
   },
   methods: {
     toDetailPage(e){
-      //防止滑动触发click
-      this.endPos = e.target.getBoundingClientRect()
-      if(Math.abs(this.endPos.x-this.startPos.x) < 7 && this.isOnPlayBtn === false){
-        this.$router.push({
-          name: 'playlistDetail',
-          params: {
-            id:this.info.id
-          }
-        })
+      const typeName={
+        'user_playlist':{
+          router:'playlistDetail',
+           type :'playlist',
+           id  :this.info.id
+        },
+        'radio':{
+          router:'playlistDetail',
+          type :'Radio',
+          id   :this.info.id
+        },
+        'user_playlist_dj':{
+          router:'playlistDetail',
+          type :'Radio',
+          id   :this.info.id
+        },
       }
+        //防止滑动触发click
+        this.endPos = e.target.getBoundingClientRect()
+        if(Math.abs(this.endPos.x-this.startPos.x) < 7 && this.isOnPlayBtn === false){
+          this.$router.push({
+            name:typeName[this.com_type].router ,
+            params: {
+              type:typeName[this.com_type].type,
+              id:typeName[this.com_type].id
+            }
+          })
+        }
     },
     MouseisOn() {this.isOn = true;},
     MouseLeave() { this.isOn = false;},
     clickPlay(){
       if(!this.isPlay){
         switch (this.com_type){
-          case 'user_playlist': {
+          case 'user_playlist': case 'user_playlist_dj': {
             playlist_detail(this.info.id).then(result => {
               this.$audio.pause()
               this.$audio.setPlaylist(result.data.playlist.tracks,this.info.id)
@@ -236,7 +173,7 @@ export default {
         break;
       }
       //用户每日推荐
-      case "user_playlist":{
+      case "user_playlist" : case'user_playlist_dj':{
         this.title = this.info.name;
         this.coverImg = this.info.picUrl;
         this.detail = this.info.copywriter
@@ -355,27 +292,19 @@ img {
   background-size: cover;
   transform: translateY(-90px);
 }
-.play {
-  background-image: url("~assets/img/play_cover.svg");
-  /*animation: play_btn;
-  animation-duration: 0.2s;*/
-}
-.pause{
-  background-image: url("~assets/img/pause_cover.svg");
-}
-.play_in-enter-active {
+.play_cover-enter-active {
   transition: all .3s ease;
 }
 
-.play_in-enter-active {
+.play_cover-enter-active {
   transition: all .3s ease;
 }
 
-.play_in-leave-active {
+.play_cover-leave-active {
   transition: all .4s cubic-bezier(0.4, 0.5, 0.6, 0.9);
 }
 
-.play_in-enter, .play_in-leave-to
+.play_cover-enter, .play_cover-leave-to
   /* .slide-fade-leave-active for below version 2.1.8 */
 {
   transform: translateY(-75px) scale(.8);

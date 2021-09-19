@@ -7,8 +7,8 @@
       <div class="tip" >您还没有收藏歌单</div>
     </div>
     <div v-else class="item line"> </div>
-      <div class="item">
-       <p v-for="item in user_playlist">{{ item.name.trim()}}</p>
+      <div class="item list">
+       <p v-for="item in user_playlist" @click="toPlaylist(item)">{{ item.name.trim()}}</p>
       </div>
   </div>
 </template>
@@ -69,6 +69,15 @@ export default {
           console.log(error)
         })
       }
+    },
+    toPlaylist(item){
+      this.$router.push({
+        name: 'playlistDetail',
+        params: {
+          type:'playlist',
+          id: item.id
+        }
+      })
     }
   },
   mounted() {
@@ -82,6 +91,10 @@ export default {
 <style scoped>
 .back{
   height: 120px;
+}
+.list{
+  overflow-y: scroll;
+  height: 390px;
 }
 .item p{
   width: 145px ;

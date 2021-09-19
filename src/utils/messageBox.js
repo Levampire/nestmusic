@@ -11,20 +11,16 @@ const initInstance = () => {
     const container = document.createElement('div')
     // 再进行挂载 - 挂载之后返回实例上下文
     instance = app.mount(container)
-
     document.body.appendChild(container)
 }
 
 const msgbox = (option,delay) => {
     if (!instance) initInstance()
-
     option = typeof option === 'string' ? { content: option,delay:delay } : option
-
     const defaultOption = {
         content: '',
         delay: 1500,
     }
-
     for (const key in defaultOption)
         instance[key] = option[key] || defaultOption[key]
 

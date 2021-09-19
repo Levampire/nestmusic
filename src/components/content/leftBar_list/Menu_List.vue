@@ -26,7 +26,22 @@ export default {
     //点击按钮切换Main页面
     sideBar_btn(btn){
       this.btn_now = btn;
-      this.$router.push('/Home/'+ btn );
+      switch (btn){
+        default:{
+          this.$router.push('/Home/'+ btn );
+          break;
+        }
+        case'favorite': {
+          this.$router.push({
+            name:'playlistDetail',
+            params:{
+              id:'0000',
+              type:'myList'
+            }
+          });
+        }
+      }
+
     }
   },
   watch:{

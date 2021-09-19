@@ -113,7 +113,7 @@ name: "LyricsPage",
       this.songName=newState.NAME
       this.artist = artistsNameComB(newState.ARTISTS)
       // this.getArtistInfo(newState.ARTISTS)
-      this.coverImg='url("' + newState.PICURL + '")'
+      this.coverImg='url("' + newState.PICURL +'?param=1920y1080' + '")'
       // this.getColor(this.musicInfo.PICURL,).then(res=>{
       //   this.CardColor =  res[0].color})
     },
@@ -129,7 +129,7 @@ name: "LyricsPage",
   //初始化数据
     this.songName=this.musicInfo.NAME
     this.artist = artistsNameComB(this.musicInfo.ARTISTS)
-    this.coverImg='url("' + this.musicInfo.PICURL + '")'
+    this.coverImg='url("' + this.musicInfo.PICURL +'?param=1920y1080' + '")'
     this.loadLyrics(this.musicID)
     // this.getColor(this.musicInfo.PICURL).then(res=>{
     //  this.CardColor =  res[0].color})

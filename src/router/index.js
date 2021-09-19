@@ -49,19 +49,19 @@ const routes = [
         meta:{index:7}
       },{
         //歌单详情页---------------Overwrite
-        path: 'playlistDetail/:id',
+        path: 'playlistDetail/:id&:type',
         name:'playlistDetail',
         component: () => import('main/detail_page'),
         meta:{index:0}
       },{
       //专辑详情页---------------Overwrite
-        path: 'albumDetail/:id',
+        path: 'albumDetail/:id&:type',
         name:'albumDetail',
         component: () => import('main/detail_page'),
         meta:{index:0}
       },{
       //歌手详情页---------------Overwrite
-        path: 'artistDetail/:id',
+        path: 'artistDetail/:id&:type',
         name:'artistDetail',
         component: () => import('main/detail_page'),
         meta:{index:0}

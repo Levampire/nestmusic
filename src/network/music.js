@@ -1,11 +1,16 @@
 import {request} from 'network/Base_request';
 
-//热门电台
+//推荐电台
 export function radio_hot(){
     return request({
         url:'/dj/recommend'
     })
+}export function dj_program_detail(id){
+    return request({
+        url:'/dj/program/detail?id='+id
+    })
 }
+
 //最近播放: type=1 时只返回 weekData, type=0 时返回 allData
 export function user_record(user_uid,type){
     return request({
@@ -27,6 +32,11 @@ export function user_record(user_uid,type){
 export function top_album(limit){
     return request({
         url:'top/album?limit='+limit+'&area=ALL'+'&type=new'
+    })
+}
+export function album(id){
+    return request({
+        url:'album?id='+id
     })
 }
 //搜索可选参数 : limit : 返回数量 , 默认为 30 offset : 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
@@ -101,6 +111,20 @@ export function playlist_detail(playlist_id){
         //url:'/playlist/detail?id='+playlist_id+'&limit=4'
     })
 }
+//歌单详情
+export function likelist(user_id){
+    return request({
+        url:'/likelist?uid='+user_id
+        //url:'/playlist/detail?id='+playlist_id+'&limit=4'
+    })
+}
+//收藏/取消歌单  t : 类型,1:收藏,2:取消收藏 id : 歌单 id
+export function playlist_subscribe(t,playlist_id){
+    return request({
+        url:'/playlist/subscribe?t='+t+'&id='+playlist_id
+        //url:'/playlist/detail?id='+playlist_id+'&limit=4'
+    })
+}
 //相关歌单
 export function related_playlist(playlist_id){
     return request({
@@ -140,7 +164,7 @@ export function music_lyrics(id){
         url:'lyric?id='+id
     })
 }
-//歌词获取 /artist/detail?id=11972054
+//歌手详情 /artist/detail?id=11972054
 export function artist_detail(id){
     return request({
         url:'/artist/detail?id='+id
@@ -152,3 +176,10 @@ export function hot_topic(){
         url:'/hot/topic'
     })
 }
+//热门话题
+export function dj_detail(id){
+    return request({
+        url:'/dj/detail?id='+id
+    })
+}
+

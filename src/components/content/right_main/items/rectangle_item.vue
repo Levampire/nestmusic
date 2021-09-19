@@ -1,5 +1,11 @@
 <template >
-  <div class="item_self" @mouseenter="MouseisOn()" @mouseleave="MouseLeave()" @click.stop>
+  <div class="item_self"
+       @mousedown=" startPos = $event.target.getBoundingClientRect()"
+       @mouseenter="MouseisOn()"
+       @mouseleave="MouseLeave()"
+       @mouseup="toDetailPage($event)"
+       @click.stop
+       >
     <span class="playlist_tag">{{tag}}</span>
     <img :src="coverImg+'?param=70y70'"
          alt=""
@@ -10,11 +16,13 @@
       <div class="name">{{title}}</div>
       <div class="author">{{author}}</div>
     </label>
-    <transition name="play_in">
+    <transition name="play_cover">
       <div v-show="isOn"
-      @click="clickPlay"
+           @click="clickPlay()"
+           @mouseover="isOnPlayBtn = true"
+           @mouseleave="isOnPlayBtn = false"
            class="play_btn"
-           :class="[!isPlay?'play':'pause']">
+           :class="[!isPlay?'play_cover':'pause_cover']">
       </div>
     </transition>
   </div>
@@ -22,6 +30,7 @@
 <script>
 import {mapState} from "vuex";
 import {timeDateTrans} from "utils/tools";
+import {playlist_detail} from 'network/music'
 
 export default {
   name: "rectangle_item",
@@ -39,26 +48,33 @@ export default {
   },
   data(){
     return{
-      title:'nie',
-      coverImg:'eee',
+      startPos:{},
+      endPos:{},
+      isOnPlayBtn:false,
+      title:'',
+      coverImg:'',
       tag:'ee',
       author:'',
       isOn:false,
       isPlay:false,
       currentMusicID:0,
       currentPlaylistID:0,
+      playListType:['playlist','newAlbum']
     }
   },
   computed:{
     ...mapState({
       playState:state => state.musicplay.isPlay,
       musicID:state => state.musicplay.musicID,
-      PlaylistID:state => state.musicplay.PlaylistID
+      PlaylistID:state => state.musicplay.PlaylistID,
+      MusicID:state => state.musicplay.MusicID
     })
   },
   watch:{
     playState:function (newstate){
-      if(this.isPlay!==newstate && this.currentPlaylistID===this.item.id){
+      // console.log(this.currentMusicID )
+      // console.log("item:"+this.item.id)
+      if(this.isPlay!==newstate &&(this.currentMusicID===this.item.id || this.currentPlaylistID===this.item.id)){
         this.isPlay = newstate
       }
     },
@@ -68,29 +84,62 @@ export default {
     },
     PlaylistID:function (currentPlaylistID){
       this.currentPlaylistID=currentPlaylistID
-    }
+    },
+    MusicID:function (currentMusicID){
+      this.currentMusicID=currentMusicID
+    },
+
   },
   methods:{
+    toDetailPage(e){
+      //防止滑动触发click
+      this.endPos = e.target.getBoundingClientRect()
+      if(Math.abs(this.endPos.x-this.startPos.x) < 7 && this.isOnPlayBtn === false){
+        if(this.playListType.indexOf(this.type)!==-1){
+          const id = {
+            'playlist':this.item.id,
+            'newAlbum':this.item.id
+          }
+          console.log(this.type)
+          this.$router.push({
+            name: 'playlistDetail',
+            params: {
+              type:this.type,
+              id: id[this.type]
+            }
+          })
+        }
+      }
+    },
     MouseisOn(){
       this.isOn = true;
     },
     MouseLeave(){
       this.isOn = false;
     },
-    clickPlay(){
+    PLAY:async function (ID,NAME,ARTISTS,PICURL){
+      this.$audio.pause()
+      await this.$audio.setUrl(ID,NAME,ARTISTS,PICURL)
+      this.isPlay=true
+      this.$audio.play()
+    },
+    clickPlay:function(){
       if(!this.isPlay){
         switch (this.type){
           case 'newSong': {
             //直接点击音乐播放 播放列表添加内容
-            this.$audio.pause()
-            this.$audio.setUrl(this.item.id,this.item.name,this.item.artists,this.item.album.picUrl)
-            this.isPlay=true
-            console.log(this.isPlay);
-            setTimeout(()=>{this.$audio.play()},100)
+            this.PLAY(this.item.id,this.item.name,this.item.artists,this.item.album.picUrl)
             break;
           }
-          case'songs':{
-            console.log('sonsg')
+          case'playlist':{
+            console.log(this.item)
+            playlist_detail(this.item.id).then(result => {
+              this.$audio.setPlaylist(result.data.playlist.tracks,this.item.id)
+              const music = this.$store.getters['musicplay/getMusicList']
+              this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl)
+            }).then(()=>{
+              this.isPlay=true
+            }).catch(error=>{console.log("歌单详情获取失败"+error);});
           }
         }
       }else {
@@ -108,7 +157,7 @@ export default {
         this.author = this.item.resourceType;
         break;
       }
-      case "playlists":{
+      case "playlist":{
         this.title = this.item.name;
         this.coverImg = this.item.coverImgUrl;
         this.tag = this.item.tag;
@@ -130,7 +179,7 @@ export default {
 
         break;
       }
-      case "newAlbums":{
+      case "newAlbum":{
         this.title = this.item.name;
         this.coverImg = this.item.picUrl;
         this.author = this.item.artist.name;
@@ -205,22 +254,14 @@ img{
   background-size: cover;
   transform: translateY(5px);
 }
-.play {
-  background-image: url("~assets/img/play_cover.svg");
-  /*animation: play_btn;
-  animation-duration: 0.2s;*/
-}
-.pause{
-  background-image: url("~assets/img/pause_cover.svg");
-}
 
-.play_in-enter-active {
+.play_cover-enter-active {
   transition: all .8s cubic-bezier(0.4,0.5,0.6,0.9);
 }
-.play_in-leave-active {
+.play_cover-leave-active {
   transition: all .4s cubic-bezier(0.4,0.5,0.6,0.9) ;
 }
-.play_in-enter, .play_in-leave-to
+.play_cover-enter, .play_cover-leave-to
   /* .slide-fade-leave-active for below version 2.1.8 */ {
   transform: translateX(10px) scale(.8);
   opacity: .0;

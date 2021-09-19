@@ -262,7 +262,6 @@ export default {
   },
   mounted() {
     //滑块位置初始化
-
     if (this.methods_type === 'login') {
       this.slipper_style = {
         left: this.$refs.switch1.offsetLeft + 'px',

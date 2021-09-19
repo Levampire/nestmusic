@@ -23,7 +23,8 @@ const mutations = {
         state.musicInfo = {NAME,ARTISTS,PICURL};
     },
     setPlay(state){ state.isPlay = true;
-        console.log('**********设置播放')},
+        // console.log('**********设置播放')
+        },
     setPause(state){ state.isPlay = false;},
     setMaxTime(state,maxTime){ state.maxTime = maxTime ;},
     setcurrentTime(state,timeNow){ state.currentTime = timeNow; },

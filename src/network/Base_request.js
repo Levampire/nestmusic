@@ -21,7 +21,7 @@ export function request(config){
         return result;
     },error => {
         console.log(error.response)
-        if(error.response.data.code===301){
+        if(error.response?.data?.code===301){
             console.log('需要登录')
             msgbox.msgbox('请登录账号后重试','success')
         }

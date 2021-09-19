@@ -10,13 +10,15 @@
       <label class="artist">{{artist}}</label>
     </div>
     <label class="info">单曲</label>
-    <transition name="play_in">
-      <div v-if="isOn" class="play" >
+    <transition name="play_cover">
+      <div v-if="isOn" :class="[!isPlay?'play_cover':'pause_cover']"  @click="clickplay()">
       </div>
     </transition>
   </div>
 </template>
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "squarebig_item",
   data(){
@@ -26,7 +28,8 @@ export default {
       artist:'',
       src:'',
       type:'',
-      id:''
+      id:'',
+      isPlay:false,
     }
   },
   props:{
@@ -37,12 +40,35 @@ export default {
       }
     }
   },
+  computed:{
+    ...mapState({
+    playState:state => state.musicplay.isPlay,
+    musicID:state => state.musicplay.musicID,
+  })
+},
   methods:{
     MouseisOn(){
       this.isOn = true;
     },
     MouseLeave(){
-      this.isOn = false;
+      if(!this.isPlay){
+        this.isOn = false;
+      }
+    },
+    clickplay(){
+      this.handlePlay(!this.isPlay)
+    },
+    handlePlay(state){
+      state?this.setPlay(state):this.setPause();
+    },
+    setPause(){
+      this.$audio.pause()
+    },
+    setPlay : async function(state){
+          //更新播放列表
+          this.$audio.pause()
+          await this.$audio.setUrl(this.firstone.id,this.firstone.name,this.firstone.ar,this.firstone.al.picUrl)
+          this.$audio.play()
     }
   },
   watch:{
@@ -52,6 +78,16 @@ export default {
        this.src=  newvalue.al.picUrl;
       // console.log('热搜')
       // console.log(newvalue)
+    },
+    playState:function (newstate){
+      console.log('正在播放状态'+newstate+'当前播放ID'+ this.currentMusicID);
+      if(this.isPlay!==newstate && this.currentMusicID===this.firstone.id){
+        this.isPlay = newstate
+      }
+    },
+    musicID:function (currentMusicID){
+      this.currentMusicID=currentMusicID
+      // console.log('当前ID'+this.currentMusicID);
     }
   }
 }
@@ -121,16 +157,21 @@ img{
   font-size: 15pt;
   color: var(--title_text) ;
 }
-.play{
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  height: 100px;
-  width: 90px;
-  transition: 2s ;
-  background-image: url("~assets/img/play_cover.svg");  background-size: cover;
-  /*animation: play_btn;
-  animation-duration: 0.2s;*/
+.play_cover{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 100px;
+    width: 90px;
+    transition: 2s ;
+}
+.pause_cover{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 100px;
+    width: 90px;
+    transition: 2s ;
 }
 .squareitem_info{
   position: absolute;
@@ -141,18 +182,22 @@ img{
   left:10px ;
   height: 70px;
 }
-.play_in-enter-active{
-  transition:all .3s ease;
-}
-.play_in-enter-active {
+.play_cover-enter-active {
   transition: all .3s ease;
 }
-.play_in-leave-active {
-  transition: all .4s cubic-bezier(0.4,0.5,0.6,0.9) ;
+
+.play_cover-enter-active {
+  transition: all .3s ease;
 }
-.play_in-enter, .play_in-leave-to
-  /* .slide-fade-leave-active for below version 2.1.8 */ {
-  transform: translateY(20px) scale(.8);
+
+.play_cover-leave-active {
+  transition: all .4s cubic-bezier(0.4, 0.5, 0.6, 0.9);
+}
+
+.play_cover-enter, .play_cover-leave-to
+  /* .slide-fade-leave-active for below version 2.1.8 */
+{
+  transform: translateY(15px) ;
   opacity: .0;
 
 }

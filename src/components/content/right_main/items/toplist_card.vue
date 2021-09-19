@@ -1,5 +1,5 @@
 <template>
-<div class="item_self">
+<div class="item_self" >
 <div class="name">{{ items.name }}</div>
   <div class="item">
     <musiclittle class="songs_item"
@@ -42,7 +42,7 @@ name: "toplist_card",
   },
   mounted() {
     playlist_detail(this.items.id).then(result=>{
-      this.list = result.data.playlist.tracks
+      this.list = result?.data.playlist.tracks
       // console.log(result);
     })
   }

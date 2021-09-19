@@ -3,9 +3,9 @@
    <div class="board ">
      <div  class="title"> 我的关注</div>
      <div class="item " v-for="item in userfollows_list">
-       <img :src="item.avatarUrl" alt="" class="avatar">
-       <img :src="item.avatarDetail.identityIconUrl" alt="" class="identity">
-       <div class="name">{{item.nickname}}</div>
+       <img :src="item?.avatarUrl" alt="" class="avatar">
+       <img :src="item?.avatarDetail?.identityIconUrl" alt="" class="identity">
+       <div class="name">{{item?.nickname}}</div>
      </div>
    </div>
    <div class="board">
@@ -13,11 +13,11 @@
      <div v-if="userfolloweds_list.length===0" class="blankinfo">
        您还没有粉丝
      </div>
-     <div v-if="userfolloweds_list.length>0">
+     <div v-if="userfolloweds_list?.length>0">
        <div class="item" v-for="item in userfolloweds_list">
-         <img :src="item.avatarUrl+'?param=40y40'" alt="" class="avatar">
-         <img :src="item.avatarDetail.identityIconUrl" alt="" class="identity">
-         <div class="name">{{item.nickname}}</div>
+         <img :src="item?.avatarUrl+'?param=40y40'" alt="" class="avatar">
+         <img :src="item?.avatarDetail?.identityIconUrl" alt="" class="identity">
+         <div class="name">{{item?.nickname}}</div>
        </div>
      </div>
 
@@ -29,9 +29,9 @@
      </div>
      <div v-if="userevent_list.length>0">
        <div class="item" v-for="item in userfolloweds_list">
-         <img :src="item.avatarUrl" alt="" class="avatar">
-         <img :src="item.avatarDetail.identityIconUrl+'?param=15y15'" alt="" class="identity">
-         <div class="name">{{item.nickname}}</div>
+         <img :src="item?.avatarUrl" alt="" class="avatar">
+         <img :src="item?.avatarDetail?.identityIconUrl+'?param=15y15'" alt="" class="identity">
+         <div class="name">{{item?.nickname}}</div>
        </div>
      </div>
    </div>
@@ -52,6 +52,7 @@ export default {
   methods: {
     getUserFollowinfo(){
       user_follows(this.$store.getters['user/getuserid']).then(result=>{
+        console.log(result)
         this.userfollows_list = result.data.follow
       }).catch(error=>{console.log(error)})
       user_followeds(this.$store.getters['user/getuserid']).then(result=>{
@@ -101,7 +102,7 @@ export default {
   flex-direction: row;
   align-items: center;
   height: 50px;
-  width: 90%;
+  width: 95%;
   margin: 5px 0 10px 0;
 
 }
@@ -122,6 +123,9 @@ export default {
 }
 .name{
   font-size: 10pt;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 .blankinfo{
   text-align: center;

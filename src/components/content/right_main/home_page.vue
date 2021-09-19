@@ -31,7 +31,6 @@
       <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
         <square v-for="item in playlist.user_recommend"
                 :info="item"
-
                 com_type="user_playlist"
         ></square>
       </div>
@@ -112,7 +111,7 @@
       <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
         <square v-for="item in playlist.user_fm"
                 :info="item"
-                com_type="user_playlist"
+                com_type="user_playlist_dj"
         ></square>
       </div>
     </li>
@@ -149,13 +148,13 @@ export default {
       //推荐电台
       user_fm:{},
       //精品歌单
-      highQuality:{type:"playlists",list:[]},
+      highQuality:{type:"playlist",list:[]},
       //热门电台
       hotRadios:{type:"Radio",list:[]},
       //新歌
       new_songs:{type:"newSong",list:[]},
       //新碟
-      new_albums:{type:"newAlbums",list:[]},
+      new_albums:{type:"newAlbum",list:[]},
       //排行榜
       top_list:{type:"",list:[]},
       //首页数据

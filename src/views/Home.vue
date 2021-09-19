@@ -19,6 +19,7 @@
                 v-model="input_search"
                 @keydown.enter="search(input_search)" >
         </search>
+        <div v-if="isShow" class="mainPageTitle" :class="{opacity:opacity}">{{tittle}}</div>
         <div class="LoginBar" v-if="islogin === false">
           <little_btn
               @click="click_login=true;enter_type='login'"
@@ -34,17 +35,21 @@
         </div>
       </div>
       <!--main_page-->
-      <router-view v-if="this.$route.meta.index!==0" v-slot="{ Component }">
+
+      <router-view v-if="this.$route.meta.index!==0" v-slot="{ Component }" :key="$route.fullPath">
+        <keep-alive include="playlistDetail">
         <transition :name="transitionName">
-          <keep-alive>
             <component :is="Component"/>
-          </keep-alive>
         </transition>
+      </keep-alive>
       </router-view>
-      <router-view v-if="this.$route.meta.index===0" v-slot="{ Component }">
+
+      <router-view v-if="this.$route.meta.index===0" v-slot="{ Component }" :key="$route.fullPath">
+        <keep-alive include="playlistDetail">
         <transition :name="transitionName">
           <component :is="Component"/>
         </transition>
+          </keep-alive>
       </router-view>
     </div>
     <!--朋友信息-->
@@ -92,12 +97,20 @@ export default {
       //搜索输入内容
       input_search: '',
       //路由记录
-      oldPath: []
+      oldPath: [],
+      //标题
+      tittle:'',
+      //主页面滚动变化
+      MainPageScrollChange:{},
+      opacity: 0,
+      isShow:false,
     }
   },
   computed:{
     ...mapState({
-       LoginState: state => state.user.isLogin
+       LoginState: state => state.user.isLogin,
+       Tittle:state => state.other.Tittle,
+       MainPageScrollInfo: state => state.other.MainPageScrollInfo,
     })
   },
   created() {
@@ -125,11 +138,30 @@ export default {
         //搜索页面跳转 props传值
         this.$router.push('/Home/search/' + inputvalue)
       }
+    },
+    showTittle(){
+      const path = ["playlistDetail"]
+      const scroll = this.MainPageScrollChange
+      let scrollOffset = scroll.scrollTop-scroll.tittleTop;
+      if(path.indexOf(this.$route.name)!==-1) {
+        if (scroll.scrollTop<80){this.isShow = false} else {this.isShow=true}
+        if (scrollOffset < 10) {
+          this.opacity=(Math.abs(scrollOffset)/10)
+        }
+        else if(scrollOffset<1){
+          this.opacity = 1;
+        }
+      }
+      else {
+        this.isShow=false
+      }
     }
   },
   mounted() {
     //初始化登录状态
     this.islogin = this.LoginState
+    this.tittle = this.Tittle
+
     //登出
     // logout().then(result => {
     //   console.log('已登出')
@@ -144,7 +176,7 @@ export default {
     LoginState:function (newState){
       this.islogin = newState
     },
-
+    //搜索按钮
     input_search: function (newvalue) {
       this.oldPath.push(this.$route.fullPath)
       if (newvalue === '') {
@@ -153,6 +185,9 @@ export default {
     },
     //路由匹配动画
     '$route'(to, from) {
+      if(this.$route.fullPath.indexOf('Detail')===-1){
+        this.isShow=false
+      }
       if (to.meta.index !== undefined && from.meta.index !== undefined) {
         if (to.meta.index === 7) {
           //点击搜索拉起页面
@@ -165,6 +200,15 @@ export default {
           this.transitionName = 'slide_top'
         }
       }
+    },
+    //Tittle
+    Tittle(newTittle){
+      this.tittle = newTittle;
+    },
+    //页面滚动
+    MainPageScrollInfo(newInfo){
+      this.MainPageScrollChange = newInfo
+      this.showTittle()
     }
   }
 }
@@ -192,12 +236,18 @@ export default {
   height: 1080px;
   flex-direction: row;
 }
-
 .music {
   display: flex;
   flex-direction: row;
   width: 100vw;
   height: 100vh;
 }
-
+.mainPageTitle{
+  color:var(--title_text);
+  font-size: 20px;
+  font-weight: bold;
+  height: 100%;
+  line-height: 40px;
+  text-align: center;
+}
 </style>
