@@ -1,0 +1,18 @@
+.play_cover {
+    background-image: url("~assets/img/play_cover.svg");
+    /*animation: play_btn;
+    animation-duration: 0.2s;*/
+}
+.pause_cover{
+    background-image: url("~assets/img/pause_cover.svg");
+}
+.play {
+    background-image: url("~assets/img/play.svg");
+    /*animation: play_btn;
+    animation-duration: 0.2s;*/
+}
+.pause{
+    background-image: url("~assets/img/pause.svg");
+}
+
+
