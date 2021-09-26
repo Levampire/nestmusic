@@ -3,11 +3,16 @@
     -moz-user-select: none;
     user-select: none;
 }
+/*滚动条整体*/
 ::-webkit-scrollbar{
-    display: none;
+    width: 6px;
+    height: 6px;
+    background: transparent;
 }
-::-moz-scrollbar{
-    display: none;
+/*滚动条里面小方块*/
+::-webkit-scrollbar-thumb{
+    background:#B4B4B4 ;
+    border-radius: 2px;
 }
 
 body{
@@ -24,6 +29,7 @@ body{
 @import "~assets/css/loginpage.css";
 @import "~assets/font/fontinfo.css";
 @import "~assets/css/play.css";
+@import "~assets/css/detailpage.css";
 /*标签*/
 input{
     max-lines: 1;

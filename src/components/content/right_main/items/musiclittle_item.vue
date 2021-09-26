@@ -27,7 +27,7 @@
    <div v-if="type==='songs'" class="info" @click="clickPlay($event)">
      <div class="songsname albumName" @click.stop="toAlbumPage()">{{ info.al.name }}</div>
    </div>
-   <div v-if="type==='songs'" class="collection">
+   <div v-if="type==='songs'" class="collection iconfont Player-icon-enshrine">
 
    </div>
    <div v-if="type==='songs'" class="time">3:20</div>
@@ -95,21 +95,22 @@ export default {
     ...mapState({
       playState:state => state.musicplay.isPlay,
       musicID:state => state.musicplay.musicID,
+      idOfLovedList: state => state.user.idOfLovedSongs
     })
   },
   watch:{
     isPlay:function (state){
-      console.log('*********State变化'+state)
     },
     playState:function (newstate){
-      console.log('正在播放状态'+newstate+'当前播放ID'+ this.currentMusicID);
       if(this.isPlay!==newstate && this.currentMusicID===this.info.id){
         this.isPlay = newstate
       }
     },
     musicID:function (currentMusicID){
       this.currentMusicID=currentMusicID
-       console.log('当前ID'+this.currentMusicID);
+    },
+    idOfLovedList:function (ids){
+      this.idOfLovedList=ids
     }
   },
   methods:{
@@ -256,7 +257,9 @@ export default {
   right: 100px;
   height: 30px;
   width: 30px;
-  background-color: #5FDEAD;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .play_btn{
   position: absolute;

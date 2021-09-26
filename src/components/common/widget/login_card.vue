@@ -237,16 +237,15 @@ export default {
         login_status().then(result => {
           console.log(result);
           if (result.data.data.account === null) {
-            console.log('未登录')
+            this.$msgbox.msgbox('未登录',200)
           } else {
             //成功获取到登录信息
-            console.log('已登录')
-            console.log(result)
+            this.$msgbox.msgbox('登录成功',200)
             this.$router.go(0)
             this.$emit('close_login')
-            this.$store.commit('user/setUserinfo', result.data.data.profile)
             //本地储存用户数据
             window.localStorage.setItem('userid', result.data.data.profile.userId)
+            window.localStorage.setItem('userinfo',JSON.stringify(result.data.data.profile))
           }
         }).catch(error => {
           console.log('登录校验失败' + error)

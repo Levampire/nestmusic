@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2545711 */
-  src: url('./iconfont.woff2?t=1620887183692') format('woff2'),
-  url('./iconfont.woff?t=1620887183692') format('woff'),
-  url('./iconfont.ttf?t=1620887183692') format('truetype');
+  src: url('./iconfont.woff2?t=1632625361117') format('woff2'),
+       url('./iconfont.woff?t=1632625361117') format('woff'),
+       url('./iconfont.ttf?t=1632625361117') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,126 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.Player-icon-navigation:before {
+  content: "\e61a";
+}
+
+.Player-icon-zan:before {
+  content: "\e61b";
+}
+
+.Player-icon-collect:before {
+  content: "\e60e";
+}
+
+.Player-icon-chart:before {
+  content: "\e610";
+}
+
+.Player-icon-enshrine:before {
+  content: "\e611";
+}
+
+.Player-icon-download:before {
+  content: "\e612";
+}
+
+.Player-icon-file:before {
+  content: "\e613";
+}
+
+.Player-icon-folder:before {
+  content: "\e614";
+}
+
+.Player-icon-list:before {
+  content: "\e615";
+}
+
+.Player-icon-idcard:before {
+  content: "\e616";
+}
+
+.Player-icon-location:before {
+  content: "\e617";
+}
+
+.Player-icon-label:before {
+  content: "\e618";
+}
+
+.Player-icon-index:before {
+  content: "\e619";
+}
+
+.Player-icon-shangchuan:before {
+  content: "\e68d";
+}
+
+.Player-icon-bianji:before {
+  content: "\e68e";
+}
+
+.Player-icon-shanchu:before {
+  content: "\e68f";
+}
+
+.Player-icon-shengji:before {
+  content: "\e690";
+}
+
+.Player-icon-wendang:before {
+  content: "\e691";
+}
+
+.Player-icon-biaozhunban:before {
+  content: "\e692";
+}
+
+.Player-icon-message_nol:before {
+  content: "\e62b";
+}
+
+.Player-icon-home_nol:before {
+  content: "\e62c";
+}
+
+.Player-icon-a-changepassword:before {
+  content: "\e62d";
+}
+
+.Player-icon-choose_nol:before {
+  content: "\e62e";
+}
+
+.Player-icon-a-personalinformation:before {
+  content: "\e62f";
+}
+
+.Player-icon-choose_pre:before {
+  content: "\e630";
+}
+
+.Player-icon-search:before {
+  content: "\e631";
+}
+
+.Player-icon-a-untiegps:before {
+  content: "\e632";
+}
+
+.Player-icon-a-helpcenter:before {
+  content: "\e633";
+}
+
+.Player-icon-arrow_left:before {
+  content: "\e634";
+}
+
+.Player-icon-arrow_right:before {
+  content: "\e635";
 }
 
 .Player-icon-xiasanjiaoxing:before {

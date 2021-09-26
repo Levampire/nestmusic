@@ -2,7 +2,7 @@
  <div class="firend">
    <div class="board ">
      <div  class="title"> 我的关注</div>
-     <div class="item " v-for="item in userfollows_list">
+     <div class="item " v-for="item in userfollows_list.slice(0,5)">
        <img :src="item?.avatarUrl" alt="" class="avatar">
        <img :src="item?.avatarDetail?.identityIconUrl" alt="" class="identity">
        <div class="name">{{item?.nickname}}</div>
@@ -14,7 +14,7 @@
        您还没有粉丝
      </div>
      <div v-if="userfolloweds_list?.length>0">
-       <div class="item" v-for="item in userfolloweds_list">
+       <div class="item" v-for="item in userfolloweds_list.slice(0,5)">
          <img :src="item?.avatarUrl+'?param=40y40'" alt="" class="avatar">
          <img :src="item?.avatarDetail?.identityIconUrl" alt="" class="identity">
          <div class="name">{{item?.nickname}}</div>
@@ -28,7 +28,7 @@
        最近无动态
      </div>
      <div v-if="userevent_list.length>0">
-       <div class="item" v-for="item in userfolloweds_list">
+       <div class="item" v-for="item in userfolloweds_list.slice(0,5)">
          <img :src="item?.avatarUrl" alt="" class="avatar">
          <img :src="item?.avatarDetail?.identityIconUrl+'?param=15y15'" alt="" class="identity">
          <div class="name">{{item?.nickname}}</div>
@@ -40,34 +40,55 @@
 
 <script>
 import {user_follows,user_followeds,user_event} from 'network/user_info'
+import {mapState} from "vuex";
 export default {
   name: "firend",
-  data(){
-    return{
-      userfollows_list:[],
-      userfolloweds_list:[],
-      userevent_list:[],
+  data() {
+    return {
+      userfollows_list: [],
+      userfolloweds_list: [],
+      userevent_list: [],
+    }
+  },
+  computed: {
+    ...mapState({
+      loginState: state => state.user.isLogin,
+    })
+  },
+  watch: {
+    loginState: function (newValue) {
+      if(newValue){
+        this.getUserFollowinfo();
+      }
     }
   },
   methods: {
-    getUserFollowinfo(){
-      user_follows(this.$store.getters['user/getuserid']).then(result=>{
-        console.log(result)
+    getUserFollowinfo() {
+      const id = window.localStorage.getItem('userid')
+      user_follows(id).then(result => {
         this.userfollows_list = result.data.follow
-      }).catch(error=>{console.log(error)})
-      user_followeds(this.$store.getters['user/getuserid']).then(result=>{
+      }).catch(error => {
+        this.handleError(error,200)
+      })
+      user_followeds(id).then(result => {
         this.userfolloweds_list = result.data.followeds
-        console.log();
-      }).catch(error=>{console.log(error)})
-      user_event(this.$store.getters['user/getuserid']).then(result=>{
+      }).catch(error => {
+        this.handleError(error,200)
+      })
+      user_event(id).then(result => {
         // console.log('用户动态')
         // console.log(result)
         this.userevent_list = result.data.events
-        console.log();
-      }).catch(error=>{console.log(error)})
+      }).catch(error => {
+        this.handleError(error,200)
+      })
+    },
+    handleError(msg){
+      this.$msgbox.msgbox(msg,200)
     }
-  },mounted() {
-      setTimeout(this.getUserFollowinfo,500)
+  },
+  mounted() {
+    this.getUserFollowinfo();
   }
 }
 
@@ -134,5 +155,8 @@ export default {
   font-size: 10pt;
   width: 100%;
   color: rgb(200,200,200);
+}
+::-webkit-scrollbar{
+  display: unset;
 }
 </style>

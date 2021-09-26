@@ -4,11 +4,18 @@
   <div class="sidebar_title">
     Menu
   </div>
-
-  <div class="sideBar_btn" :class="[btn_now === 'home'?active:before]" @click="sideBar_btn('home')" >首页</div>
-  <div class="sideBar_btn" :class="[btn_now === 'library'?active:before]" @click="sideBar_btn('library')">乐库</div>
-  <div class="sideBar_btn" :class="[btn_now === 'cloudDisk'?active:before]" @click="sideBar_btn('cloudDisk')">云盘</div>
-  <div class="sideBar_btn" :class="[btn_now === 'favorite'?active:before]" @click="sideBar_btn('favorite') ">我的喜欢</div>
+  <div class="sideBar_btn" :class="[btn_now === 'home'?active:before]" @click="sideBar_btn('home')" >
+    <div class="iconfont Player-icon-home_nol"></div>
+    首页</div>
+  <div class="sideBar_btn" :class="[btn_now === 'library'?active:before]" @click="sideBar_btn('library')">
+    <div class="iconfont Player-icon-a-personalinformation"></div>
+    乐库</div>
+  <div class="sideBar_btn" :class="[btn_now === 'cloudDisk'?active:before]" @click="sideBar_btn('cloudDisk')">
+    <div class="iconfont Player-icon-a-untiegps"></div>
+    云盘</div>
+  <div class="sideBar_btn" :class="[btn_now === 'favorite'?active:before]" @click="sideBar_btn('favorite') ">
+    <div class="iconfont Player-icon-collect"></div>
+    我的喜欢</div>
 </div>
 
 </template>
@@ -33,12 +40,12 @@ export default {
         }
         case'favorite': {
           this.$router.push({
-            name:'playlistDetail',
-            params:{
-              id:'0000',
-              type:'myList'
+            name: 'playlistDetail',
+            params: {
+              type:'myList',
+              id: window.localStorage.getItem('myMusicList')
             }
-          });
+          })
         }
       }
 
@@ -60,5 +67,12 @@ export default {
   display: flex;
   flex-direction: column;
   height: 220px;
+}
+.iconfont{
+  margin-right: 8px;
+  font-size: 18px!important;
+}
+.Player-icon-collect{
+  font-size: 14px!important;
 }
 </style>

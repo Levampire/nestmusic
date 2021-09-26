@@ -1,5 +1,5 @@
 // 引入默认图片
-import baseImg from '@/assets/img/footer/coverimg.png';
+import baseImg from '@/assets/img/coverimg.png';
 
 let timer = null;
 // 创建一个监听器

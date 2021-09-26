@@ -7,7 +7,7 @@
             alt=""
             @load="isloding=false"
       >
-      <img class="coverimg coverimgLittle" style="width: 200px;height: 200px"  v-show="isloding===true"  src="~assets/img/footer/coverimg.png" alt="">
+      <div class="coverimg coverimgLittle img"  v-show="isloding===true"   alt=""></div>
       <div class="text" >
         <div class="type">{{ typeName[type] }}</div>
         <div class="tags">
@@ -21,9 +21,9 @@
           <div class="little_span" v-if="listData.shareCount"> {{listData.shareCount}}次分享</div>
         </div>
         <div class="info" @click="showDialog=!showDialog"> {{ listData.description }} </div>
-        <div class="dislike_btn" v-if="subscribed"  @click="removeFromLike()"><i class="iconfont Player-icon-buoumaotubiao16"
+        <div class="dislike_btn" v-if="subscribed&&subscribed!==0"  @click="removeFromLike()"><i class="iconfont Player-icon-buoumaotubiao16"
         ></i>取消收藏</div>
-        <div class="like_btn"  @click="addToLike()" v-else ><i class="iconfont Player-icon-jiahao"
+        <div class="like_btn"  @click="addToLike()" v-if="!subscribed&&subscribed!==0" ><i class="iconfont Player-icon-jiahao"
         ></i>收藏</div>
       </div>
     </div>
@@ -33,7 +33,7 @@
             alt=""
             @load="isloding=false"
       >
-      <img class="coverimg coverimgLittle"  v-show="isloding===true"  src="~assets/img/footer/coverimg.png" alt="">
+      <div class="coverimg coverimgLittle img"  v-show="isloding===true"   alt=""></div>
       <div class="text">
         <div class="type">{{ typeName[type] }}</div>
         <div class="tags">
@@ -67,7 +67,7 @@
              alt=""
              @load="isloding=false"
        >
-       <img class="coverimg coverimgBig"  v-show="isloding===true"  src="~assets/img/footer/coverimg.png" alt="">
+       <div class="coverimg coverimgLittle img"  v-show="isloding===true"   alt=""></div>
        <div class="textDit">
          <div class="tags">
            <div class="tag" v-for="tag in listData.tags">{{tag}}</div>
@@ -79,9 +79,9 @@
            <div class="little_span" v-if="listData.subscribers">{{listData.subscribers}}人收藏</div>
            <div class="little_span" v-if="listData.shareCount"> {{listData.shareCount}}次分享</div>
          </div>
-         <div class="dislike_btn btnDit" v-if="subscribed" ><i class="iconfont Player-icon-buoumaotubiao16"
+         <div class="dislike_btn btnDit" v-if="subscribed&&subscribed!==0" ><i class="iconfont Player-icon-buoumaotubiao16"
                                                                         ></i>取消收藏</div>
-         <div class="like_btn btnDit" v-else ><i class="iconfont Player-icon-jiahao"
+         <div class="like_btn btnDit" v-if="!subscribed&&subscribed!==0" ><i class="iconfont Player-icon-jiahao"
                                                  ></i>收藏</div>
        </div>
        <div class="infoDit"> {{ listData.description }} </div>
@@ -89,7 +89,235 @@
   </cover_dialog>
 </div>
 </template>
+<script>
+import {playlist_detail,artist_detail,playlist_subscribe,likelist,dj_program_detail,album,dj_detail,song_detail} from 'network/music'
+import musiclittle_item from "items/musiclittle_item";
+import store from "../../../store/store";
+import Cover_dialog from "../../common/Vam_Layout/cover_dialog";
+import {mapState} from "vuex";
+
+export default {
+name: "Detial_page",
+  components: {Cover_dialog, musiclittle_item},
+  data(){ return{
+    id:Number,
+    type:'',
+    isloding:true,
+    showDialog:false,
+    subscribed:false,
+    listData:{
+      title:'',
+      author:'',
+      profile:'',
+      pic:'',
+      tags:[],
+      description:'',
+      subscribers:'',
+      subscribed:false,
+      shareCount:'',
+      updateTime:Number,
+      updateFrequency:'',
+      list:[],
+    },
+    listIds:[],//我喜欢的列表数据
+    typeName:{
+      'playlist':'播放清单',
+      'newAlbum':'专辑',
+      'singer':'歌手',
+      'Radio':'电台节目'
+    }
+  }},
+  computed:{
+  ...mapState({
+    userInfo:state => state.user.userinfo,
+  })
+  },
+  watch:{
+   id:function (newId){
+     switch (this.type){
+       case 'Radio': {
+         //获取电台详情
+         dj_program_detail(newId).then(result => {
+           console.log(result )
+         })
+             .catch(error => { console.log("电台详情获取失败" + error);
+         });
+         break;
+       }
+       case'playlist':case 'myList':{
+         //获取歌单详情
+         playlist_detail(newId).then(result => {
+           this.setDataList(
+             result.data.playlist.tracks,
+             result.data.playlist.name,
+             result.data.playlist.creator.nickname,
+             result.data.playlist.creator.avatarUrl,
+             result.data.playlist.tags,
+             result.data.playlist.coverImgUrl,
+             result.data.playlist.description,
+             result.data.playlist.shareCount,
+             result.data.playlist.subscribed,
+             result.data.playlist.subscribedCount,
+             result.data.playlist.updateTime,
+             result.data.playlist.updateFrequency
+           )
+         }).catch(error=>{console.log("歌单详情获取失败"+error);});
+         break;
+       }
+       case 'newAlbum':{
+         //获取歌单详情
+         album(newId).then(result => {
+           this.setDataList(
+               //list,title,author,avatarUrl,tags,picUrl,description,shareCount,subscribed,subscriberCount,updateTime,updateFrequency
+               result.data.songs,
+               result.data.album.name,
+               result.data.album.artist.name,
+               result.data.album.artist.img1v1Url,
+               [result.data.album.subType],
+               result.data.album.picUrl,
+               result.data.album.description,
+               result.data.album.info.shareCount,
+               false,
+               false,
+               result.data.album.publishTime,
+               false
+           )
+         }).catch(error=>{console.log("专辑详情获取失败"+error);});
+         break;
+       }
+       // case 'myList':{
+       //   //获取我喜欢的音乐
+       //   this.setDataList(
+       //       '',
+       //       '已收藏的歌曲',
+       //       this.userInfo.name,
+       //       this.userInfo.avatarUrl,
+       //       ['私人收藏'],
+       //       this.userInfo.coverImgUrl,
+       //       '',
+       //       '0',
+       //       '0',
+       //       '0',
+       //       '0',
+       //       '0'
+       //   )
+       //   likelist(window.localStorage.getItem('userid')).then(result => {
+       //     this.listIds= result.data.ids;
+       //     let idgroup;
+       //     this.listIds.length>20?idgroup=this.listIds.splice(1,20):idgroup=this.listIds.splice(1,this.listIds.length);
+       //     song_detail(idgroup.toString()).then(result => {
+       //       this.listData.list = result.data.songs
+       //       this.listData={
+       //         ...this.listData,
+       //       }
+       //     })
+       //   }).catch(error=>{console.log("歌单详情获取失败"+error);});
+       //   break;
+       // }
+       case 'singer':{
+         //获取歌单详情
+         artist_detail(newId).then(result => {
+           console.log(result)
+           this.setDataList(
+               //list,title,author,avatarUrl,tags,picUrl,description,shareCount,subscribed,subscriberCount,updateTime,updateFrequency
+               result.data.songs,
+               result.data.album.name,
+               result.data.album.artist.name,
+               result.data.album.artist.img1v1Url,
+               result.data.artist.identifyTag,
+               result.data.album.picUrl,
+               result.data.album.description,
+               result.data.album.info.shareCount,
+               false,
+               false,
+               result.data.album.publishTime,
+               false
+           )
+         }).catch(error=>{console.log("专辑详情获取失败"+error);});
+         break;
+       }
+     }
+   }
+  },
+  methods:{
+    updatePlaylist(){
+      this.$audio.setPlaylist(this.listData.list)
+    },
+    handleScroll(){
+      const rect = {
+        scrollTop : this.$refs.mainPage.scrollTop,
+        tittleTop : this.$refs.pageTitle.offsetTop-60, //相对于mainPage定位标题顶部
+        tittleBottom:this.$refs.pageTitle.offsetTop+this.$refs.pageTitle.clientHeight,
+        clientHeight: this.$refs.mainPage.clientHeight,
+        scrollHeight: this.$refs.mainPage.scrollHeight,
+      }
+      store.commit('other/setMainPageScrollInfo',rect);
+      store.commit('other/setTittle',this.listData.title);
+      if(this.type==='myList'){
+        let bottomOfWindow = Math.floor(rect.scrollHeight - rect.scrollTop)  === rect.clientHeight;
+        // console.log(rect.scrollHeight-rect.scrollTop+'::'+rect.clientHeight)
+        if(bottomOfWindow){
+          let idgroup;
+          if(this.listIds.length!==0){
+            this.listIds.length>20?idgroup=this.listIds.splice(1,20):idgroup=this.listIds.splice(1,this.listIds.length);
+            song_detail(idgroup.toString()).then(result => {
+              const songs = result.data.songs
+              this.listData.list.push(...songs)
+              // console.log(this.listData.list)
+            })
+            .then(this.listData = {
+              ...this.listData
+            })
+          }
+        }
+      }
+    },
+    setDataList(...[list,title,author,avatarUrl,tags,picUrl,description,shareCount,subscribed,subscriberCount,updateTime,updateFrequency]){
+      this.listData.title=title
+      this.listData.author=author
+      this.listData.profile=avatarUrl
+      this.listData.tags=tags
+      this.listData.pic=picUrl
+      this.listData.description=description
+      this.listData.list=list
+      this.subscribed=subscribed
+      this.listData.subscribers=subscriberCount
+      this.listData.shareCount=shareCount
+      this.listData.updateTime=updateTime
+      this.listData.updateFrequency=updateFrequency
+      console.log(this.listData)
+    },
+    addToLike(){
+      console.log('add')
+      playlist_subscribe(1,this.id).then(res=>{
+        if(res.code===200){
+          this.subscribed=true;
+        }
+      }).catch(()=>{
+        this.$msgbox('添加收藏失败',200)
+      })
+    },
+    removeFromLike(){
+      playlist_subscribe(2,this.id).then(res=>{
+        if(res.code===200){
+          this.subscribed=false;
+        }
+      }).catch(()=>{
+        this.$msgbox('取消收藏失败',200)
+      })
+    }
+  },
+  mounted() {
+    this.id = this.$route.params.id;
+    this.type= this.$route.params.type;
+    this.$refs.mainPage.addEventListener('scroll',this.handleScroll)
+  }
+}
+</script>
 <style scoped>
+.img{
+  background-image: url("~assets/img/coverimg.png");
+}
 .detailPage{
 
   height: 100%;
@@ -105,13 +333,8 @@
   border-radius: 8px;
   transition: .5s;
   flex-shrink: 0;
+}
 
-}
-.coverimgLittle{
-  width: 200px;
-  height: 200px;
-  margin-left: 20px;
-}
 .coverimgBig{
   position: relative;
   width: 300px;
@@ -256,201 +479,4 @@
   overflow-y: auto;
 }
 </style>
-<script>
-import {playlist_detail,artist_detail,playlist_subscribe,likelist,dj_program_detail,album,dj_detail} from 'network/music'
-import musiclittle_item from "items/musiclittle_item";
-import store from "../../../store/store";
-import Cover_dialog from "../../common/Vam_Layout/cover_dialog";
-import {mapState} from "vuex";
-
-export default {
-name: "Detial_page",
-  components: {Cover_dialog, musiclittle_item},
-  data(){ return{
-    id:Number,
-    type:'',
-    isloding:true,
-    showDialog:false,
-    src:require("assets/img/footer/coverimg.png"),
-    subscribed:false,
-    listData:{
-      title:'',
-      author:'',
-      profile:'',
-      pic:'',
-      tags:[],
-      description:'',
-      subscribers:'',
-      subscribed:false,
-      shareCount:'',
-      updateTime:Number,
-      updateFrequency:'',
-      list:[],
-    },
-    typeName:{
-      'playlist':'播放清单',
-      'newAlbum':'专辑',
-      'singer':'歌手',
-      'Radio':'电台节目'
-    }
-  }},
-  computed:{
-  ...mapState({
-    userInfo:state => state.user.userinfo,
-  })
-  },
-  watch:{
-   id:function (newId){
-     switch (this.type){
-       case 'Radio': {
-         //获取电台详情
-         dj_program_detail(newId).then(result => {
-           console.log(result )
-         })
-             .catch(error => { console.log("电台详情获取失败" + error);
-         });
-         break;
-       }
-       case'playlist':{
-         //获取歌单详情
-         playlist_detail(newId).then(result => {
-           this.setDataList(
-             result.data.playlist.tracks,
-             result.data.playlist.name,
-             result.data.playlist.creator.nickname,
-             result.data.playlist.creator.avatarUrl,
-             result.data.playlist.tags,
-             result.data.playlist.coverImgUrl,
-             result.data.playlist.description,
-             result.data.playlist.shareCount,
-             result.data.playlist.subscribed,
-             result.data.playlist.subscribedCount,
-             result.data.playlist.updateTime,
-             result.data.playlist.updateFrequency
-           )
-         }).catch(error=>{console.log("歌单详情获取失败"+error);});
-         break;
-       }
-       case 'newAlbum':{
-         //获取歌单详情
-         album(newId).then(result => {
-           this.setDataList(
-               //list,title,author,avatarUrl,tags,picUrl,description,shareCount,subscribed,subscriberCount,updateTime,updateFrequency
-               result.data.songs,
-               result.data.album.name,
-               result.data.album.artist.name,
-               result.data.album.artist.img1v1Url,
-               [result.data.album.subType],
-               result.data.album.picUrl,
-               result.data.album.description,
-               result.data.album.info.shareCount,
-               false,
-               false,
-               result.data.album.publishTime,
-               false
-           )
-         }).catch(error=>{console.log("专辑详情获取失败"+error);});
-         break;
-       }
-       case 'myList':{
-         //获取歌单详情
-         likelist(window.localStorage.getItem('userid')).then(result => {
-           this.setDataList(
-               result.data.playlist.tracks,
-               result.data.playlist.name,
-               result.data.playlist.creator.nickname,
-               result.data.playlist.creator.avatarUrl,
-               result.data.playlist.tags,
-               result.data.playlist.coverImgUrl,
-               result.data.playlist.description,
-               result.data.playlist.shareCount,
-               result.data.playlist.subscribed,
-               result.data.playlist.subscribedCount,
-               result.data.playlist.updateTime,
-               result.data.playlist.updateFrequency
-           )
-         }).catch(error=>{console.log("歌单详情获取失败"+error);});
-         break;
-       }
-       case 'singer':{
-         //获取歌单详情
-         artist_detail(newId).then(result => {
-           console.log(result)
-           this.setDataList(
-               //list,title,author,avatarUrl,tags,picUrl,description,shareCount,subscribed,subscriberCount,updateTime,updateFrequency
-               result.data.songs,
-               result.data.album.name,
-               result.data.album.artist.name,
-               result.data.album.artist.img1v1Url,
-               result.data.artist.identifyTag,
-               result.data.album.picUrl,
-               result.data.album.description,
-               result.data.album.info.shareCount,
-               false,
-               false,
-               result.data.album.publishTime,
-               false
-           )
-         }).catch(error=>{console.log("专辑详情获取失败"+error);});
-         break;
-       }
-     }
-   }
-  },
-  methods:{
-    updatePlaylist(){
-      this.$audio.setPlaylist(this.listData.list)
-    },
-    handleScroll(){
-      const rect = {
-        scrollTop : this.$refs.mainPage.scrollTop,
-        tittleTop : this.$refs.pageTitle.offsetTop-60, //相对于mainPage定位标题顶部
-        tittleBottom:this.$refs.pageTitle.offsetTop+this.$refs.pageTitle.clientHeight
-      }
-      store.commit('other/setMainPageScrollInfo',rect);
-      store.commit('other/setTittle',this.listData.title);
-    },
-    setDataList(...[list,title,author,avatarUrl,tags,picUrl,description,shareCount,subscribed,subscriberCount,updateTime,updateFrequency]){
-      this.listData.title=title
-      this.listData.author=author
-      this.listData.profile=avatarUrl
-      this.listData.tags=tags
-      this.listData.pic=picUrl
-      this.listData.description=description
-      this.listData.list=list
-      this.subscribed=subscribed
-      this.listData.subscribers=subscriberCount
-      this.listData.shareCount=shareCount
-      this.listData.updateTime=updateTime
-      this.listData.updateFrequency=updateFrequency
-      console.log(this.listData)
-    },
-    addToLike(){
-      console.log('add')
-      playlist_subscribe(1,this.id).then(res=>{
-        if(res.code===200){
-          this.subscribed=true;
-        }
-      }).catch(()=>{
-        this.$msgbox('添加收藏失败',200)
-      })
-    },
-    removeFromLike(){
-      playlist_subscribe(2,this.id).then(res=>{
-        if(res.code===200){
-          this.subscribed=false;
-        }
-      }).catch(()=>{
-        this.$msgbox('取消收藏失败',200)
-      })
-    }
-  },
-  mounted() {
-    this.id = this.$route.params.id;
-    this.type= this.$route.params.type;
-    this.$refs.mainPage.addEventListener('scroll',this.handleScroll)
-  }
-}
-</script>
-
 

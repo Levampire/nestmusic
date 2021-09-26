@@ -2,7 +2,8 @@
 // initial state
 const state = () => ({
     isLogin:window.localStorage.getItem('userid')?(window.localStorage.getItem('userid') !== ''):false,
-    userinfo:{}
+    userinfo:window.localStorage.getItem('userinfo')?window.localStorage.getItem('userinfo') :'',
+    idOfLovedSongs:window.localStorage.getItem('idOfLovedOnes')?window.localStorage.getItem('idOfLovedOnes') :[],
 })
 // mutations
 const mutations = {
@@ -19,10 +20,10 @@ const getters = {
         return state.isLogin
     },
     getuserinfo:(state)=>{
-        return state.userinfo
+        return JSON.stringify(state.userinfo)
     },
     getuserid:(state)=>{
-        return state.userinfo.userId
+        return JSON.stringify(state.userinfo).userId
     }
 }
 // actions

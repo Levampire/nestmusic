@@ -5,7 +5,7 @@ const BaseUrl = '/dev-api'
 export function request(config){
     const instance = axios.create({
         baseURL:BaseUrl,//接口访问基础url
-        timeout:5000,
+        timeout:600000,
         withCredentials: true
     })
     //请求拦截

@@ -3,7 +3,7 @@
     <div class="sidebar_title">
       {{sidebar_title}}
     </div >
-    <div v-if="user_playlist.length<=1" class="item">
+    <div v-if="user_playlist.length<=0" class="item">
       <div class="tip" >您还没有收藏歌单</div>
     </div>
     <div v-else class="item line"> </div>
@@ -15,7 +15,7 @@
 
 <script>
 
-import {user_playlist} from "network/music";
+import {user_playlist,playlist_detail} from "network/music";
 import {dj_Todayperfered} from "network/home_page";
 
 import {mapState} from "vuex"
@@ -24,7 +24,7 @@ export default {
   name: "Play_List",
   data(){
     return{
-      islogin:Boolean,
+      islogin:false,
       sidebar_title:'',
       //最近播放
       user_playlist:[],
@@ -44,15 +44,24 @@ export default {
   },
   methods:{
     getrecord(){
-      if(this.islogin ===true){
+      if(this.islogin){
         this.sidebar_title='我的歌单'
-        const id =this.$store.getters['user/getuserid']
+        const id =window.localStorage.getItem('userid')
         //获取最近播放 type=1 时只返回 weekData, type=0 时返回 allData
         user_playlist(id).then(result => {
           // console.log(this.$store)
-          // console.log(result.data.playlist)
+          // console.log(result)
+          window.localStorage.setItem('myMusicList',result.data.playlist[0].id)
           this.user_playlist = result.data.playlist.slice(1)
-        }).catch(error=>{
+        }).then(
+            playlist_detail(window.localStorage.getItem('myMusicList')).then(result => {
+              const idOfLovedOnes = result.data.playlist.tracks.map(items =>{
+                return items.id})
+               window.localStorage.setItem('idOfLovedOnes',idOfLovedOnes)
+            }).catch(
+
+            )
+        ).catch(error=>{
           console.log(error)
         })
       }else{
@@ -81,8 +90,8 @@ export default {
     }
   },
   mounted() {
-    this.islogin = this.loginState
-    setTimeout(this.getrecord,500)
+    this.islogin = this.loginState;
+    this.getrecord()
   }
 }
 
@@ -129,5 +138,8 @@ export default {
   height: 200px;
   font-size: 10pt;
   color: rgb(50,50,50);
+}
+::-webkit-scrollbar{
+  display: unset;
 }
 </style>

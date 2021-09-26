@@ -3,8 +3,12 @@
     <div class="sidebar_title">
       Library
     </div>
-    <div class="sideBar_btn" :class="[btn_now === 'recently'?active:before]" @click="sideBar_btn('recently')" >最近播放</div>
-    <div class="sideBar_btn" :class="[btn_now === 'playlist'?active:before]" @click="sideBar_btn('playlist')">歌单广场</div>
+    <div class="sideBar_btn" :class="[btn_now === 'recently'?active:before]" @click="sideBar_btn('recently')" >
+      <div class="iconfont Player-icon-a-changepassword"></div>
+      最近播放</div>
+    <div class="sideBar_btn" :class="[btn_now === 'playlist'?active:before]" @click="sideBar_btn('playlist')">
+      <div class="iconfont Player-icon-wendang"></div>
+      歌单广场</div>
   </div>
 </template>
 
@@ -36,5 +40,12 @@ export default {
 <style scoped>
 .back{
   height: 120px;
+}
+.iconfont{
+  margin-right: 8px;
+  font-size: 18px!important;
+}
+.Player-icon-wendang{
+  font-size: 14px!important;
 }
 </style>

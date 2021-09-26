@@ -114,20 +114,20 @@ export default {
     })
   },
   created() {
-    const store = useStore()
-    login_status().then(result => {
-      if (result.data.data.account !== null) {
-        store.commit('user/setUserinfo', result.data.data.profile)
-        store.commit('user/setIslogin', true)
-      } else {
-        // console.log('vuex登录状态：'+this.$store.getters["user/getloginState"]);
-        window.localStorage.setItem('userid', '')
-      }
-    }).catch(error => {
-      console.log('登录状态检查错误' + error)
-    })
+    // login_status().then(result => {
+    //   console.log(result)
+    //   if (result.data.data.account !== null) {
+    //     window.localStorage.setItem('userid',result.data.profile.userId)
+    //     window.localStorage.setItem('userinfo',JSON.stringify(result.data.profile))
+    //   } else {
+    //     // console.log('vuex登录状态：'+this.$store.getters["user/getloginState"]);
+    //     window.localStorage.setItem('userid', '')
+    //     window.localStorage.setItem('userinfo', '')
+    //   }
+    // }).catch(error => {
+    //   console.log('登录状态检查错误' + error)
+    // })
   },
-
   methods: {
     //关闭登录卡片
     close_login() {
@@ -161,7 +161,6 @@ export default {
     //初始化登录状态
     this.islogin = this.LoginState
     this.tittle = this.Tittle
-
     //登出
     // logout().then(result => {
     //   console.log('已登出')
@@ -169,6 +168,7 @@ export default {
     //    }).catch(error=>{
     //   console.log('登出失败'+error)
     //  })
+    // console.log(window.localStorage.getItem('userinfo'))
   },
 
   watch: {
@@ -249,5 +249,8 @@ export default {
   height: 100%;
   line-height: 40px;
   text-align: center;
+}
+::-webkit-scrollbar{
+  display: none;
 }
 </style>

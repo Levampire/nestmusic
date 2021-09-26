@@ -22,6 +22,7 @@
       <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
         <channel v-for="channel in channel"
                  :channel="channel"
+                 @click="quickEGTTO(channel)"
         ></channel>
       </div>
     </li>
@@ -162,7 +163,6 @@ export default {
       //最近播放
       recently:{}
     })
-
     // console.log(this.$store)
     //热门电台
     radio_hot().then(result=>{
@@ -175,7 +175,8 @@ export default {
     //排行榜信息
     top_list().then(result=>{
       // console.log(result);
-       playlist.top_list.list = result.data.list
+       playlist.top_list.list = result.data.list.slice(0,5)
+      // console.log(playlist.top_list.list)
     }).catch(error=>{ console.log('排行榜数据获取失败'+error);})
      //首页数据
     // homepage_info().then(result=>{
@@ -204,7 +205,7 @@ export default {
         playlist.user_recommend = result.data.recommend
       }).catch(error=>{ console.log('日推歌单数据获取失败'+error);})
       personalized_djprogram().then(result => {
-        console.log('电台')
+        // console.log('电台')
         // console.log(result)
         playlist.user_fm = result.data.result
       }).catch(error=>{ console.log('推荐电台歌单数据获取失败'+error);})
@@ -242,6 +243,18 @@ export default {
     },
     MouseLeave(){
       this.isOn = false;
+    },
+    quickEGTTO(type){
+      if(type[1]==='myFavorite'){
+        this.$router.push({
+          name: 'playlistDetail',
+          params: {
+            type:'myList',
+            id: window.localStorage.getItem('myMusicList')
+          }
+        })
+      }
+
     }
   },
   mounted() {

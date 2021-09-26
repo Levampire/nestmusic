@@ -19,7 +19,8 @@
     padding-left: 20px;
     text-align: left;
     cursor: default;
-
+    display: flex;
+    align-items: center;
 }
 .sideBar_btn:hover{
     color: var(--Main_blue);

@@ -5,9 +5,15 @@ export function radio_hot(){
     return request({
         url:'/dj/recommend'
     })
-}export function dj_program_detail(id){
+}
+export function dj_program_detail(id){
     return request({
         url:'/dj/program/detail?id='+id
+    })
+}
+export function dj_program(id){
+    return request({
+        url:'/dj/program?rid='+id
     })
 }
 
@@ -31,7 +37,7 @@ export function user_record(user_uid,type){
 // month : 月,默认本月
 export function top_album(limit){
     return request({
-        url:'top/album?limit='+limit+'&area=ALL'+'&type=new'
+        url:'top/album?offset=0&limit='+limit+'&area=ALL'+'&type=new&year=2019&month=6'
     })
 }
 export function album(id){
@@ -180,6 +186,11 @@ export function hot_topic(){
 export function dj_detail(id){
     return request({
         url:'/dj/detail?id='+id
+    })
+}
+export function song_detail(ids){
+    return request({
+        url:'/song/detail?ids='+ids
     })
 }
 

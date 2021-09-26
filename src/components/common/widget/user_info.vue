@@ -43,14 +43,14 @@ computed:{
 },
   watch:{
     userinfo:function (newValue){
-      this.UserName=newValue.nickname
-      this.profile=newValue.avatarUrl
+      console.log(newValue)
+      this.UserName=JSON.parse(newValue).nickname
+      this.profile=JSON.parse(newValue).avatarUrl
     }
   },
   methods:{
     logOut(){
       logout().then(result => {
-        console.log(result)
         if(result.data.code === 200){
           window.localStorage.setItem('userid','');
           this.$router.go(0)
@@ -69,6 +69,10 @@ computed:{
         },1)
       }
     }
+  },
+  mounted() {
+    this.UserName=JSON.parse(this.userinfo).nickname
+    this.profile=JSON.parse(this.userinfo).avatarUrl
   }
 }
 </script>
