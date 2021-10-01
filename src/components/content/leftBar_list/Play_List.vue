@@ -57,7 +57,7 @@ export default {
             playlist_detail(window.localStorage.getItem('myMusicList')).then(result => {
               const idOfLovedOnes = result.data.playlist.tracks.map(items =>{
                 return items.id})
-               window.localStorage.setItem('idOfLovedOnes',idOfLovedOnes)
+              this.$store.commit('user/setIdOfLovedSongs',idOfLovedOnes)
             }).catch(
 
             )

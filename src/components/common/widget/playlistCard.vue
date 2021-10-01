@@ -37,7 +37,7 @@ export default {
   },
   watch: {
     currentPlaylist: function (value) {
-      console.log(value);
+      // console.log(value);
     }
   },
   methods: {
@@ -45,7 +45,6 @@ export default {
       return artistsNameComB(array)
     },
     setPlay(item) {
-      console.log(item);
       this.$audio.pause()
       this.$audio.setUrl(item.id,item.al.name,item.ar,item.al.picUrl)
       setTimeout(() => {
@@ -65,7 +64,7 @@ export default {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(80, 80, 80, 0.4);
   z-index: 950;
-  font-family: circularBold, "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: var(--VamFont);
 }
 .songImg{
   height: 40px;
@@ -96,7 +95,7 @@ export default {
 .artist{
   font-size: 10pt;
   font-weight: normal;
-  font-family: circularnormal;
+  font-family: var(--VamFont);
   color: rgba(80,80,80);
 }
 </style>

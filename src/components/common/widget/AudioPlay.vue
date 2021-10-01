@@ -18,6 +18,8 @@ export default {
     return{
       url:'',
       Timer:setTimeout,
+      audioCtxTimer:setTimeout,
+      analyser:'',
     }
   },
   computed:{
@@ -54,12 +56,14 @@ export default {
       this.$msgbox.msgbox('加载中','success')
     },
     audioPlay (){
-      console.log('***************播放********************')
+     // console.log('***************播放********************')
       this.$refs.audio.play()
+     // this.vueXDataSync(this.analyser)
     },
     audioPause(){
-      console.log('***************暂停********************')
+     // console.log('***************暂停********************')
       this.$refs.audio.pause()
+    //  clearInterval(this.audioCtxTimer)
     },
     getCurrentTime(e){
         this.$store.commit('musicplay/setcurrentTime', parseInt(e.target.currentTime))
@@ -94,12 +98,42 @@ export default {
     },
     onended(){
       this.$audio.pause()
+    },
+    /*音乐可视化*/
+    audioCtxInit(){
 
+      const audioElement = this.$refs.audio
+      let audioCtx = new AudioContext()
+      let analyser = audioCtx.createAnalyser()
+      //得到音源
+      let source = audioCtx.createMediaElementSource(audioElement)
+      //音源和分析器绑定
+      source.connect(analyser)
+      analyser.connect(audioCtx.destination)
+      // 设置傅里叶变化的参数,用来设置分析范围
+      analyser.fftSize = 128
+
+      this.analyser = analyser
+
+    },
+    vueXDataSync(analyser){
+      //根据范围得到不同音频的数量的长度
+      let bufferLength = analyser.frequencyBinCount
+      this.audioCtxTimer = setInterval( ()=>{
+        //生成8位为一个item,长度为bufferLength的array
+        let dataArray = new Uint8Array(bufferLength)
+        //  将频率导入到该array
+        analyser.getByteFrequencyData(dataArray)
+        //this.$store.commit('other/setAudioCtxData',dataArray)
+        console.log(dataArray)
+      }, 500)
     }
   },
   mounted() {
     this.url = this.musicUrl
     this.$audio.setVolume(1)
+    //this.audioCtxInit()
+
   }
 }
 </script>

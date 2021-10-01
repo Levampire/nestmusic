@@ -217,7 +217,7 @@ export default {
   position: relative;
   /*不被挤压*/
   flex-shrink: 0;
-  padding:10px 5px 10px 5px;
+  padding:10px 0 10px 10px;
   margin-left: 20px;
   background-color: rgba(255, 255, 255, 0.6);
   height: 260px;
@@ -273,14 +273,14 @@ img {
 }
 
 .info {
-  display: inline-block;
   width: 160px;
   color: var(--title_text);
   text-align: left;
   font-size: 8pt;
-  max-lines: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden
 }
 .play_btn{
   position: absolute;

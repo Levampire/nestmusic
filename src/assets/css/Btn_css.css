@@ -9,6 +9,7 @@
 }
 .sideBar_btn{
     font-family: var(--VamFont);
+    -webkit-font-smoothing: antialiased;
     font-weight: bold;
     font-size: 14px;
     border-radius: 8px;
@@ -25,7 +26,6 @@
 .sideBar_btn:hover{
     color: var(--Main_blue);
     transition: 0.2s cubic-bezier(0.1,0.4,0.6,0.8);
-
 }
 .sideBar_btn_beforeClick{
     color:var(--Btn_sideText);

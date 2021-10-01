@@ -21,6 +21,8 @@ body{
     overflow-x: hidden;
     background-color: var(--whitesmoke);
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+
 }
 
 @import "~assets/img/iconfont/iconfont.css";

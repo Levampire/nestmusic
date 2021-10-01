@@ -7,3 +7,15 @@
     font-family: circularnormal;
     src: url('./Circular-Book.woff.ttf')format('truetype');
 }
+@font-face{
+    font-family: LeagueGothic;
+    src: url('./LeagueGothic-Regular.otf')format('opentype');
+}
+@font-face{
+    font-family: PingFang SC;
+    src: url('./PingFang SC.ttf')format('truetype');
+}
+@font-face{
+    font-family: PingFang SC Semibold;
+    src: url('./PingFang SC Semibold.ttf')format('truetype');
+}

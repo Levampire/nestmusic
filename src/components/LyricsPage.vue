@@ -1,9 +1,5 @@
 <template>
   <div style="position: relative;z-index: 1">
-    <div class="switch">
-      <div class="mode">歌词</div>
-      <div class="mode">评论</div>
-    </div>
     <div class="Lyricspage" :style="{backgroundImage:coverImg}">
     </div>
     <div class="cover_mode" >
@@ -12,11 +8,16 @@
           <div class="songname">{{songName}}</div>
           <div class="artists">{{artist}}</div>
         </div>
-        <div class="round" :style="{backgroundImage:coverImg}"></div>
+        <canvas class="round" width="1200" height="1000" ref="canvasDisk" >不支持canvas</canvas>
+        <canvas class="AudioContext" width="1200" height="1000" ref="canvasAudioContext" >不支持canvas</canvas>
+        <comments
+            :Visible = 'commentsVisible'
+            :id="currentMusicID"
+        >
+        </comments>
       </div>
       <div class="lyrics">
         <div class="lyricsCard"
-
              @scroll.stop.prevent ref="lyrCard">
           <div class="title" >歌词</div>
           <div ref="words"
@@ -35,10 +36,13 @@
 import {mapState} from "vuex";
 import {artist_detail, music_lyrics} from "network/music";
 import {analysisLyrics, artistsNameComB, timeTransBack} from "utils/tools";
-import analyze from 'rgbaster'
+import comments from "./common/widget/comments";
 
 export default {
 name: "LyricsPage",
+  components:{
+  comments
+  },
   data(){
    return{
      lyrics:[],
@@ -51,7 +55,8 @@ name: "LyricsPage",
      MaxTime:0,
      wordsNow:10,
      currentPlaylistID:0,
-     CardColor:''
+     CardColor:'',
+     commentsVisible:true,
    }
   },
   computed:{
@@ -62,6 +67,7 @@ name: "LyricsPage",
       musicInfo:state => state.musicplay.musicInfo,
       currentTime:state => state.musicplay.currentTime,
       maxTime:state => state.musicplay.maxTime,
+      setAudioCtxData:state => state.other.AudioCtxData
     }),
     shouldScroll:function(){
       return this.$refs.lyrCard.clientHeight/this.lyrics.length
@@ -93,13 +99,64 @@ name: "LyricsPage",
           this.lyrics= ['没有歌词']
         }
       })
-    }
+    },
+    showSpinDisk(){
+    const canvas = this.$refs.canvasDisk;
+    const ctx = canvas.getContext('2d');
+    ctx.globalCompositeOperation='source-over'
+      // let angle=0
+      ctx.beginPath(); /*起始*/
+      //ctx.translate(500,500)
+      let srcs = [
+        require('assets/img/albumBack.png'),
+        require('assets/img/vinly.svg'),
+        this.musicInfo.PICURL+'?param=400y400',
+        require('assets/img/albumCover.svg'),
+      ];
+      let promiseAll = [], img = [
+        'backImage','album','image','coverImage'
+      ], imgTotal = srcs.length;
+      for(let i = 0 ; i < imgTotal ; i++){
+        promiseAll[i] = new Promise((resolve, reject)=>{
+          img[i] = new Image()
+          img[i].src = srcs[i];
+          img[i].onload = function(){
+            //第i张加载完成
+            resolve(img[i])
+          }
+        })
+      }
+      Promise.all(promiseAll).then((img)=>{
+        //全部加载完成
+        drawAct(img)
+      })
+      const drawAct =  function (img){
+        ctx.clearRect(0,0,1000,1000)
+        ctx.drawImage(img[2],575,327,200,200)
+        ctx.drawImage(img[1],400,150,550,550)
+        ctx.drawImage(img[0],0,150,600,560)
+        ctx.drawImage(img[2],60,160,530,540)
+        ctx.drawImage(img[3],0,105,660,670)
+        }
+      //ctx.save()
+        // setInterval(function (){
+        //   angle=angle+0.08
+        //   ctx.clearRect(-200,-200,canvas.width,canvas.height)
+        //   ctx.save()
+        //   ctx.rotate(angle*Math.PI/180)
+        //   drawAct()
+        //   ctx.restore()
+        // },500/60)
+        // ctx.restore()
+    },
+
   },
   watch:{
     playState:function (newstate){
       if(this.isPlay!==newstate && this.currentPlaylistID===this.currentMusicID){
         this.isPlay = newstate
       }
+        this.showSpinDisk()
     },
     musicID:function (currentMusicID){
       this.currentMusicID=currentMusicID
@@ -123,6 +180,9 @@ name: "LyricsPage",
     },
     maxTime:function (maxTime){
       this.MaxTime = maxTime
+    },
+    setAudioCtxData:function (newData){
+      console.log(newData)
     }
   },
   mounted() {
@@ -131,6 +191,7 @@ name: "LyricsPage",
     this.artist = artistsNameComB(this.musicInfo.ARTISTS)
     this.coverImg='url("' + this.musicInfo.PICURL +'?param=1920y1080' + '")'
     this.loadLyrics(this.musicID)
+    this.showSpinDisk()
     // this.getColor(this.musicInfo.PICURL).then(res=>{
     //  this.CardColor =  res[0].color})
 
@@ -150,10 +211,9 @@ name: "LyricsPage",
   }
 
   .switch{
+    height: 50px;
+    width: 100%;
     color: white;
-    position: absolute;
-    top: 40px;
-    left: 445px;
     display: flex;
     justify-content: space-evenly;
     width: 160px;
@@ -175,12 +235,17 @@ name: "LyricsPage",
     height: 100%;
   }
   .round {
-    margin-top: 150px;
-    width: 200px;
-    height: 200px;
-    border-radius: 100px;
+    margin-top: 30px;
+    width: 600px;
+    height: 500px;
     background-size: cover;
-    box-shadow: 0 0 5px rgba(20,20,20,.1);
+  }
+  .AudioContext{
+    position: absolute;
+    width: 100vw;
+    height: 35vh;
+    bottom: 0;
+    left: 0;
   }
   .lyrics{
     z-index: 1 ;
@@ -198,14 +263,18 @@ name: "LyricsPage",
     z-index: 10;
     width: 900px;
     height: 80px;
-    margin-top: 90px;
+    margin-top: 30px;
     text-shadow: 0 0 5px rgba(20,20,20,.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .songname{
     color: white;
     z-index: 11;
     font-size: 24pt;
     font-weight: bolder;
+    width: 70%;
 
   }
   .artists{

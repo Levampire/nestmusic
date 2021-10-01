@@ -5,7 +5,7 @@
          :value="modelValue"
          name="Input"
          id="Input_search"
-         placeholder="Type to search"
+         placeholder="搜索"
          @input="$emit('update:modelValue',$event.target.value)"
   />
 </div>

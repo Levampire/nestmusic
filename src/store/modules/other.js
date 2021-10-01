@@ -1,6 +1,7 @@
 const state = ()=>({
     Tittle:'this is tittle',
-    MainPageScrollInfo:{}
+    MainPageScrollInfo:{},
+    AudioCtxData:[],
 })
 const getters = {
     getTittle:(state)=>{ return state.Tittle },
@@ -11,7 +12,8 @@ const actions = {
 }
 const mutations = {
     setMainPageScrollInfo(state,scrollRect){ state.MainPageScrollInfo = scrollRect },
-    setTittle(state,tittle){ state.Tittle = tittle }
+    setTittle(state,tittle){ state.Tittle = tittle },
+    setAudioCtxData(state,dataArray){ state.AudioCtxData = dataArray }
 }
 
 export default {

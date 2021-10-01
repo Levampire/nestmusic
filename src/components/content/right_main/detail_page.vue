@@ -45,18 +45,20 @@
     </div>
     <div v-else >
     </div>
-    <div class="swatch">
-      <div class="list_btn">歌曲</div>
-      <div class="comm_btn">评论</div>
-    </div>
+<!--    <div class="swatch">-->
+<!--      <div class="list_btn">歌曲</div>-->
+<!--      <div class="comm_btn">评论</div>-->
+<!--    </div>-->
     <div class="list">
     </div>
     <div class="comm">
     </div>
     <div  style="overflow-y:auto;padding: 0 10px">
-      <musiclittle_item v-for="item in listData.list"
+      <musiclittle_item v-for="(item,index) in listData.list"
                         :info="item"
                         type="songs"
+                        :index="index+1"
+                        key="item.id"
       ></musiclittle_item>
     </div>
   </div>
@@ -285,7 +287,6 @@ name: "Detial_page",
       this.listData.shareCount=shareCount
       this.listData.updateTime=updateTime
       this.listData.updateFrequency=updateFrequency
-      console.log(this.listData)
     },
     addToLike(){
       console.log('add')
@@ -333,12 +334,14 @@ name: "Detial_page",
   border-radius: 8px;
   transition: .5s;
   flex-shrink: 0;
+  box-shadow:0 0 10px  #D9D9D9;
 }
 
 .coverimgBig{
   position: relative;
   width: 300px;
   height: 300px;
+  box-shadow:0 0 15px  #D9D9D9;
 }
 .text{
   position: relative;

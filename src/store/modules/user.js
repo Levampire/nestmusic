@@ -3,7 +3,7 @@
 const state = () => ({
     isLogin:window.localStorage.getItem('userid')?(window.localStorage.getItem('userid') !== ''):false,
     userinfo:window.localStorage.getItem('userinfo')?window.localStorage.getItem('userinfo') :'',
-    idOfLovedSongs:window.localStorage.getItem('idOfLovedOnes')?window.localStorage.getItem('idOfLovedOnes') :[],
+    idOfLovedSongs:[],
 })
 // mutations
 const mutations = {
@@ -12,6 +12,11 @@ const mutations = {
     },
     setUserinfo(state,userinfo){
        state.userinfo = userinfo;
+    },
+    setIdOfLovedSongs(state,ids){
+        // console.log(ids)
+       window.localStorage.setItem('idOfLovedOnes',ids)
+       state.idOfLovedSongs = ids;
     }
 }
 // getters

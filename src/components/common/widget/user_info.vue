@@ -71,8 +71,10 @@ computed:{
     }
   },
   mounted() {
+  if(this.userinfo){
     this.UserName=JSON.parse(this.userinfo).nickname
     this.profile=JSON.parse(this.userinfo).avatarUrl
+  }
   }
 }
 </script>

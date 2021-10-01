@@ -51,7 +51,7 @@
   </div>
     <div class="playlist"
          ref="btn_playlist"
-         @click="showPlaylistCard">  <i class="iconfont Player-icon-randommdpi"></i></div>
+         @click="showPlaylistCard">  <i class="iconfont Player-icon-list1"></i></div>
   </div>
 
   <AudioPlay ></AudioPlay>
@@ -80,10 +80,11 @@ name: "footer_cord",
     play(){ this.$audio.play()  } ,
     pause(){  this.$audio.pause() },
     nextSong:async function(){
-      if(this.musicList.length>2){
+      const currentIndex = this.musicList.findIndex(item=>item.id===this.currentID)
+      if(this.musicList.length>2&& this.musicList[currentIndex+1]!==undefined){
         clearInterval(this.Timer)
           //当前列表项index
-          const currentIndex = this.musicList.findIndex(item=>item.id===this.currentID)
+
           const nextSong =  this.musicList[currentIndex+1]
           this.$audio.pause()
           await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)

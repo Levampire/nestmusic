@@ -6,6 +6,62 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "929540",
+      "name": "list",
+      "font_class": "list1",
+      "unicode": "e76d",
+      "unicode_decimal": 59245
+    },
+    {
+      "icon_id": "24475001",
+      "name": "set up",
+      "font_class": "a-setup",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "24475002",
+      "name": "success",
+      "font_class": "success",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "24475003",
+      "name": "tips",
+      "font_class": "tips",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "24476054",
+      "name": "scanning",
+      "font_class": "scanning",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "24589335",
+      "name": "添加、加号",
+      "font_class": "a-tianjiajiahao",
+      "unicode": "e6a1",
+      "unicode_decimal": 59041
+    },
+    {
+      "icon_id": "24590573",
+      "name": "隐私保护、验证码",
+      "font_class": "a-yinsibaohuyanzhengma",
+      "unicode": "e6b1",
+      "unicode_decimal": 59057
+    },
+    {
+      "icon_id": "24609176",
+      "name": "LIKE",
+      "font_class": "LIKE",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
       "icon_id": "24477776",
       "name": "navigation",
       "font_class": "navigation",
