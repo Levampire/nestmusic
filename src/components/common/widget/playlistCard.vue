@@ -1,7 +1,7 @@
 <template>
   <div class="card" @scroll.stop.prevent>
-    <div class="title">播放列表</div>
-    <div style="overflow-y:auto;height: 95% ">
+    <div class="cardtitle">播放列表</div>
+    <div style="overflow-y:auto;height: 92% ">
       <div class="item"
            v-for="item in currentPlaylist"
            @click="setPlay(item)"
@@ -62,7 +62,7 @@ export default {
   width: 350px;
   background-color: white;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(80, 80, 80, 0.4);
+  box-shadow: 0 0 10px rgba(80, 80, 80, 0.2);
   z-index: 950;
   font-family: var(--VamFont);
 }
@@ -73,6 +73,7 @@ export default {
   margin-right: 5px;
 }
 .item {
+  padding: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -80,16 +81,19 @@ export default {
   font-weight: bold;
   text-align: left;
   font-size: 12pt;
-  height: 55px;
   display: flex;
-
+  border-radius: 10px;
 }
-
-.title {
+.item:hover{
+  background-color:#EAECED;
+  transition: .4s;
+}
+.cardtitle {
   font-weight: bold;
   font-size: 15pt;
   color: var(--title_text);
   margin-bottom: 10px;
+  font-family: PingFang Semibold;
 
 }
 .artist{

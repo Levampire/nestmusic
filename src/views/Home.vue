@@ -20,6 +20,7 @@
                 @keydown.enter="search(input_search)" >
         </search>
         <div v-if="isShow" class="mainPageTitle" :class="{opacity:opacity}">{{tittle}}</div>
+        <div class="stepStone"></div>
         <div class="LoginBar" v-if="islogin === false">
           <little_btn
               @click="click_login=true;enter_type='login'"
@@ -35,7 +36,6 @@
         </div>
       </div>
       <!--main_page-->
-
       <router-view v-if="this.$route.meta.index!==0" v-slot="{ Component }" :key="$route.fullPath">
         <keep-alive include="playlistDetail">
         <transition :name="transitionName">
@@ -55,6 +55,11 @@
     <!--朋友信息-->
     <div class="userFriends" v-if="islogin ===true" >
       <friend></friend>
+    </div>
+    <div class="userFriends" v-else>
+      <div style="height: 500px;line-height: 500px">
+        请先登录
+      </div>
     </div>
   </div>
   <!--  歌词页 -->
@@ -249,6 +254,13 @@ export default {
   height: 100%;
   line-height: 40px;
   text-align: center;
+}
+.stepStone{
+  position: absolute;
+  right: 0 ;
+  background-color: var(--BackColor);
+  width: 40px;
+  height: 60px;
 }
 ::-webkit-scrollbar{
   display: none;

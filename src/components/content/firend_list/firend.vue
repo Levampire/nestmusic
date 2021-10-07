@@ -115,6 +115,7 @@ export default {
   font-weight: bold;
   color: var(--inform_textcolor);
   margin: 0 0 10px 2px;
+  font-size: 18px;
 }
 .item{
   border-radius: 10px;

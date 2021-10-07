@@ -118,12 +118,15 @@ export default {
   white-space:nowrap;
   text-align: left;
   transition: 0.2s cubic-bezier(0.2 ,0.4 ,.6, 0.8);
-  margin: 0;
-  padding-left: 20px;
+  margin: 0 0 0 15px;
+  padding-left: 5px;
+  border-radius: 5px;
 }
 .item p:hover{
   color: var(--Main_blue);
+  background-color: #F8F9F9 ;
   transition: 0.2s cubic-bezier(0.2 ,0.4 ,.6, 0.8);
+
 }
 .line{
   margin-left: 20px;
@@ -137,7 +140,7 @@ export default {
   width: 100%;
   height: 200px;
   font-size: 10pt;
-  color: rgb(50,50,50);
+  color: var(--info_text);
 }
 ::-webkit-scrollbar{
   display: unset;

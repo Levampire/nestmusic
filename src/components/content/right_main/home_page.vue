@@ -116,7 +116,7 @@
         ></square>
       </div>
     </li>
-
+    <div class="steppingStones"></div>
   </div>
 </template>
 
@@ -197,6 +197,7 @@ export default {
 
     //获取精品歌单数据
     playlist_highquality().then(result=>{
+      console.log(result)
       playlist.highQuality.list = result.data.playlists;
     }).catch(error=>{ console.log('精品歌单数据获取失败'+error);})
     /*日推 需要登录*/

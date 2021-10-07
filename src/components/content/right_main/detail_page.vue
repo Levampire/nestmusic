@@ -1,30 +1,36 @@
 <template>
   <div class="detailPage" ref="mainPage">
   <div class="page " >
+    <img  v-show="!isloding"  class="coverImgShadow coverimgLittle"
+          :src="listData?.pic+'?param=300y300'"
+          alt=""
+          @load="isloding=false"
+    >
     <div v-if="type === 'playlist'||type === 'newAlbum'||type==='myList'" class="headPart">
       <img  v-show="!isloding"  class="coverimg coverimgLittle"
-            :src="listData?.pic+'?param=200y200'"
+            :src="listData?.pic+'?param=300y300'"
             alt=""
             @load="isloding=false"
       >
-      <div class="coverimg coverimgLittle img"  v-show="isloding===true"   alt=""></div>
+      <div class="coverimg coverimgLittle playlistimg"  v-show="isloding===true"   alt=""></div>
       <div class="text" >
-        <div class="type">{{ typeName[type] }}</div>
+        <div class="title" ref="pageTitle" @click.self="showDialog=!showDialog">{{listData.title.trim()}}</div>
         <div class="tags">
           <div class="tag" v-for="tag in listData.tags">{{tag}}</div>
         </div>
-        <div class="title" ref="pageTitle" @click.self="showDialog=!showDialog">{{listData.title.trim()}}</div>
         <div class="btnGroup">
-          <div class="profile" :style="{backgroundImage:'url('+listData.profile+'?param=30y30)'}"></div>
+          <div >{{ typeName[type] +''}}  By</div>
+<!--          <div class="profile" :style="{backgroundImage:'url('+listData.profile+'?param=30y30)'}"></div>-->
           <div class="profileName">{{' '+listData.author}}</div>
-          <div class="little_span" v-if="listData.subscribers">{{listData.subscribers}}人收藏</div>
-          <div class="little_span" v-if="listData.shareCount"> {{listData.shareCount}}次分享</div>
+          <div class="little_span" v-if="listData.subscribers"> · {{listData.subscribers}}人收藏</div>
+          <div class="little_span" v-if="listData.shareCount"> ·  {{listData.shareCount}}次分享</div>
+          <div class="dislike_btn" v-if="subscribed&&subscribed!==0&&type!=='myList'"  @click="removeFromLike()"><i class="iconfont Player-icon-buoumaotubiao16"
+          ></i>取消收藏</div>
+          <div class="like_btn"  @click="addToLike()" v-if="!subscribed&&subscribed!==0&&type!=='myList'" ><i class="iconfont Player-icon-jiahao"
+          ></i>收藏</div>
         </div>
         <div class="info" @click="showDialog=!showDialog"> {{ listData.description }} </div>
-        <div class="dislike_btn" v-if="subscribed&&subscribed!==0"  @click="removeFromLike()"><i class="iconfont Player-icon-buoumaotubiao16"
-        ></i>取消收藏</div>
-        <div class="like_btn"  @click="addToLike()" v-if="!subscribed&&subscribed!==0" ><i class="iconfont Player-icon-jiahao"
-        ></i>收藏</div>
+
       </div>
     </div>
     <div v-if="type==='singer'" class="headPart">
@@ -33,7 +39,7 @@
             alt=""
             @load="isloding=false"
       >
-      <div class="coverimg coverimgLittle img"  v-show="isloding===true"   alt=""></div>
+      <div class="coverimg coverimgLittle playlistimg"  v-show="isloding===true"   alt=""></div>
       <div class="text">
         <div class="type">{{ typeName[type] }}</div>
         <div class="tags">
@@ -44,23 +50,36 @@
       </div>
     </div>
     <div v-else >
+
     </div>
 <!--    <div class="swatch">-->
 <!--      <div class="list_btn">歌曲</div>-->
 <!--      <div class="comm_btn">评论</div>-->
 <!--    </div>-->
-    <div class="list">
+<!--    <div class="list">-->
+<!--    </div>-->
+<!--    <div class="comm">-->
+<!--    </div>-->
+    <div  style="overflow-y:auto;padding: 0 10px" v-if="listData.list.length!==0">
+        <musiclittle_item v-for="(item,index) in listData.list"
+                          :info="item"
+                          type="songs"
+                          :index="index+1"
+                          key="item.id"
+        ></musiclittle_item>
     </div>
-    <div class="comm">
+    <div v-else class="emptyInfo">您还没有收藏歌曲</div>
+    <div class="footerInfo">
+      <span v-if="currentRoutePath.indexOf('newAlbum')!==-1">
+         ·  共{{ listData.list.length }}首音乐 · 专辑发布于{{formtTime}} <br>© {{ albumCompany }}
+      </span>
+      <span v-else>
+        ·  共{{ listData.list.length}}首音乐 · 最后更新于{{formtTime}}
+
+      </span>
+
     </div>
-    <div  style="overflow-y:auto;padding: 0 10px">
-      <musiclittle_item v-for="(item,index) in listData.list"
-                        :info="item"
-                        type="songs"
-                        :index="index+1"
-                        key="item.id"
-      ></musiclittle_item>
-    </div>
+    <div class="steppingStones"></div>
   </div>
   <cover_dialog :is-visible="showDialog">
      <div class="dialogDit" @scroll.stop>
@@ -89,6 +108,7 @@
        <div class="infoDit"> {{ listData.description }} </div>
      </div>
   </cover_dialog>
+
 </div>
 </template>
 <script>
@@ -97,9 +117,10 @@ import musiclittle_item from "items/musiclittle_item";
 import store from "../../../store/store";
 import Cover_dialog from "../../common/Vam_Layout/cover_dialog";
 import {mapState} from "vuex";
+import {timeDateTrans} from "utils/tools";
 
 export default {
-name: "Detial_page",
+name: "detail_page",
   components: {Cover_dialog, musiclittle_item},
   data(){ return{
     id:Number,
@@ -107,6 +128,7 @@ name: "Detial_page",
     isloding:true,
     showDialog:false,
     subscribed:false,
+    albumCompany:'',
     listData:{
       title:'',
       author:'',
@@ -126,13 +148,20 @@ name: "Detial_page",
       'playlist':'播放清单',
       'newAlbum':'专辑',
       'singer':'歌手',
-      'Radio':'电台节目'
+      'Radio':'电台节目',
+      'myList':'播放清单'
     }
   }},
   computed:{
   ...mapState({
     userInfo:state => state.user.userinfo,
-  })
+  }),
+    formtTime(){
+    return timeDateTrans(this.listData.updateTime)
+    },
+    currentRoutePath(){
+    return this.$route.fullPath
+    }
   },
   watch:{
    id:function (newId){
@@ -184,6 +213,7 @@ name: "Detial_page",
                result.data.album.publishTime,
                false
            )
+           this.albumCompany = result.data.album.company
          }).catch(error=>{console.log("专辑详情获取失败"+error);});
          break;
        }
@@ -306,37 +336,50 @@ name: "Detial_page",
       }).catch(()=>{
         this.$msgbox('取消收藏失败',200)
       })
-    }
+    },
+
   },
   mounted() {
     this.id = this.$route.params.id;
     this.type= this.$route.params.type;
     this.$refs.mainPage.addEventListener('scroll',this.handleScroll)
+    console.log(this.listData)
   }
 }
 </script>
 <style scoped>
-.img{
+@import "~assets/css/detailpage.css";
+.playlistimg{
   background-image: url("~assets/img/coverimg.png");
 }
 .detailPage{
-
-  height: 100%;
+  position: relative;
+  height:calc( 100% - 60px) ;
   overflow-y: auto;
 }
 .headPart{
   width: 100%;
-  height: 230px;
+  height: 300px;
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
 }
 .coverimg{
   border-radius: 8px;
   transition: .5s;
   flex-shrink: 0;
   box-shadow:0 0 10px  #D9D9D9;
+  z-index: 2;
 }
-
+.coverImgShadow{
+  position: absolute;
+  top: 40px;
+  left:0 ;
+  opacity: .5;
+  filter: blur(15px);
+  z-index: 1;
+  transform: matrix(0.92, 0, 0, 0.96, 0, 0);
+}
 .coverimgBig{
   position: relative;
   width: 300px;
@@ -344,10 +387,11 @@ name: "Detial_page",
   box-shadow:0 0 15px  #D9D9D9;
 }
 .text{
+  margin-top: 20px;
   position: relative;
   text-align: left;
   margin-left:25px;
-  height: 220px;
+  height: 280px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -369,11 +413,13 @@ name: "Detial_page",
   position: relative;
   top: 0;
   color: #454F63;
+  font-family: var(--VamFont);
 }
 .tags{
   margin-top: 5px;
+  margin-bottom: 20px;
   display: flex;
-
+  font-family: var(--VamFont);
 }
 .tag{
   overflow: hidden;
@@ -388,20 +434,9 @@ name: "Detial_page",
   border-radius: 5px;
   line-height: 1.2rem;
   padding: 0 10px 0 10px;
+  font-family: var(--VamFont);
 }
-.title{
-  width: 100%;
-  height: 60px;
-  line-height: 60px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: -1px;
-  margin-top: 5px;
-  font-size: 30pt;
-  font-weight: 800;
-  color: var(--title_text);
-  font-family: circularBold;
-}
+
 .btnGroup{
   display: flex;
   flex-direction: row;
@@ -409,29 +444,16 @@ name: "Detial_page",
   align-items: center;
   height: 35px;
   color: var(--title_text);
+  font-family: Barlow-Medium,var(--VamFont);
+  margin-bottom: 10px;
 }
 .profile{
   height: 25px;
   width: 25px;
   border-radius: 15px;
+  font-family: var(--VamFont);
 }
-.info{
-  width: 90%;
-  max-height: 120px;
-  color: #454F63;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-}
-.infoDit{
-  width: 70%;
-  color: #454F63;
-  font-size: 16px;
-  white-space: break-spaces;
-  padding: 40px;
-  user-select: text !important;
-}
+
 .swatch{
   margin-left: 30px;
   width: 180px;
@@ -448,9 +470,7 @@ name: "Detial_page",
   line-height: 30px;
 }
 .like_btn,.dislike_btn{
-  position: absolute;
-  top: 5px;
-  right: 10px;
+  margin-left: 20px;
 }
 .Player-icon-buoumaotubiao16,.Player-icon-jiahao{
   font-size: 12px;
@@ -480,6 +500,60 @@ name: "Detial_page",
   height: calc(100% - 40px) ;
   margin-top: 40px;
   overflow-y: auto;
+}
+.emptyInfo{
+  color: var(--info_text);
+  position: relative;
+  top: 200px;
+}
+.coverimgLittle{
+  width: 250px;
+  height: 250px;
+  margin-left: 20px;
+}
+
+.title{
+  width: 100%;
+  height: 80px;
+  line-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -1px;
+  margin-top: 5px;
+  font-size: 24pt;
+  font-weight: 800;
+  color: var(--title_text);
+  font-family: circularBold;
+}
+.info{
+  width: 90%;
+  max-height: 120px;
+  color: #454F63;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  font-family: PingFang Light;
+  font-weight: bold;
+}
+.infoDit{
+  width: 70%;
+  color: #454F63;
+  font-size: 16px;
+  white-space: break-spaces;
+  padding: 40px;
+  user-select: text !important;
+}
+.footerInfo{
+  color: #646A76;
+  width: 80%;
+  margin-left: -30px;
+  height: 60px;
+  padding-top: 20px;
+  line-height: 20px;
+  text-align: left;
+  font-family: Barlow-Medium,var(--VamFont);
+  transform: scale(.85);
 }
 </style>
 

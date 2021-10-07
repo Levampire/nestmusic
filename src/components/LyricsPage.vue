@@ -1,5 +1,5 @@
 <template>
-  <div style="position: relative;z-index: 1">
+  <div style="position: relative;z-index: 1;overflow: hidden;height: 100vh;box-shadow: 0 0 10px #d9d9d9;border-radius: 20px 20px">
     <div class="Lyricspage" :style="{backgroundImage:coverImg}">
     </div>
     <div class="cover_mode" >
@@ -19,13 +19,19 @@
       <div class="lyrics">
         <div class="lyricsCard"
              @scroll.stop.prevent ref="lyrCard">
-          <div class="title" >歌词</div>
-          <div ref="words"
+          <div class="stones" ></div>
+          <div :ref="words+index"
                class="words"
                v-for="(words,index) in lyrics"
                :key="index"
-               :class="[timeTransBack(words.slice(1,words.indexOf(']')))<Time?[style='light',scroll(index)]:style='dark']||style">
-                {{words.slice(words.indexOf(']')+1)}}
+               :class="[words.startTime+0.8<=Time&&Time<=words.endTime-0.8?[style='light',scroll(index,words+index)]:style='dark']||style"
+               >
+            <span>
+              {{words.content}}
+            </span><br>
+            <span>
+              {{words.tl}}
+            </span>
           </div>
         </div>
       </div>
@@ -46,6 +52,7 @@ name: "LyricsPage",
   data(){
    return{
      lyrics:[],
+     tlLyrics:[],
      isPlay:false,
      songName:'',
      artist:'',
@@ -74,14 +81,11 @@ name: "LyricsPage",
     }
   },
   methods:{
-  scroll(index){
-    if(index>this.wordsNow){
+  scroll(index,ref){
+    const proof = this.$refs[`${ref}`].offsetTop - this.$refs.lyrCard.clientHeight/2
+    if(proof>0){
       //歌词滚动
-      this.$refs.lyrCard.scrollTop = 40*index-this.wordsNow-280
-      if(index>this.wordsNow){this.wordsNow = index}
-      if(this.wordsNow===10){
-        this.$refs.lyrCard.scrollTop = 0
-      }
+      this.$refs.lyrCard.scrollTop = proof +this.$refs[`${ref}`].clientHeight
     }
   },
   timeTransBack(index){
@@ -95,11 +99,45 @@ name: "LyricsPage",
       music_lyrics(id).then(result=>{
         if(result.data.lrc!==undefined){
           this.lyrics=analysisLyrics(result.data.lrc.lyric)
+          this.tlLyrics = analysisLyrics(result.data.tlyric.lyric)
+          this.lyricWithTranslation()
         }else{
           this.lyrics= ['没有歌词']
         }
       })
+      this.$refs.lyrCard.scrollTop = 0
     },
+    //type: 1 带翻译 0 不带翻译
+    //:class="[===Time?[style='light',scroll(index)]:style='dark']||style"
+     lyricWithTranslation:function(){
+    if(this.lyrics.length){
+      let lyrics=[]
+      // let tlLyrics=[]
+     // console.log(this.lyrics)
+      this.lyrics.forEach((words,index)=>{
+        const item = {
+          startTime:timeTransBack(words.slice(1,words.indexOf(']'))),
+          endTime:this.lyrics[index+1]?timeTransBack(this.lyrics[index+1].slice(1,words.indexOf(']'))) : '',
+          content: words.slice(words.indexOf(']')+1),
+          tl:''
+        }
+        item.tl = this.tlLyrics.filter(tlItem=>{
+         return   item.startTime===timeTransBack(tlItem.slice(1,tlItem.indexOf(']')))
+        }).toString().slice(words.indexOf(']')+1)
+        lyrics.push(item)
+      })
+      // this.tlLyrics.forEach((words)=>{
+      //   const item = {
+      //     time:timeTransBack(words.slice(1,words.indexOf(']'))),
+      //     content: words.slice(words.indexOf(']')+1)
+      //   }
+      //   tlLyrics.push(item)
+      // })
+
+      this.lyrics=lyrics
+      // this.tlLyrics=tlLyrics
+    }
+  },
     showSpinDisk(){
     const canvas = this.$refs.canvasDisk;
     const ctx = canvas.getContext('2d');
@@ -176,7 +214,7 @@ name: "LyricsPage",
     },
     currentTime:function (currentTime){
       this.Time = currentTime
-      // console.log(currentTime/this.maxTime);
+      console.log(currentTime);
     },
     maxTime:function (maxTime){
       this.MaxTime = maxTime
@@ -203,10 +241,11 @@ name: "LyricsPage",
   .Lyricspage{
     overflow: hidden;
     position: absolute;
-    height: 100vh;
+    height:calc(100vh + 10px) ;
     width: 100vw;
     background-size: cover;
-    filter: blur(25px) brightness(70%);
+    filter: blur(50px) brightness(70%);
+    transform: scale(1.1);
     z-index: -1 ;
   }
 
@@ -231,7 +270,7 @@ name: "LyricsPage",
     justify-content: flex-start;
     align-items: center;
     z-index: 1 ;
-    width: 60%;
+    width: 50%;
     height: 100%;
   }
   .round {
@@ -252,11 +291,9 @@ name: "LyricsPage",
     width: 40%;
     height: 100%;
   }
-  .title{
-    font-weight: bold;
-    font-size: 15pt;
-    margin-top: 10px;
-    color:var(--title_text)
+  .stones{
+    height: 100px;
+    width: 100px;
 
   }
   .head{
@@ -285,32 +322,40 @@ name: "LyricsPage",
   .lyricsCard{
     padding: 0 15px 0 15px;
     border-radius:14px ;
-    margin-top: 20px;
     text-align: left;
     z-index: 11;
-    width: 94%;
-    height: 740px;
+    width: 110%;
+    height: 820px;
     overflow-x: hidden;
     overflow-y: scroll;
     scroll-behavior: smooth;
-    box-shadow: 0 0 10px rgba(20,20,20,.1);
+    transition: .4s;
   }
   .words{
     letter-spacing: -1px;
     font-family:circularBold,"Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-    max-width: 680px;
+    max-width: 800px;
     z-index:15;
     line-height: 1.8rem;
     font-size: 20pt;
     font-weight: bold;
     margin: 10px 0 10px 0;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .words:hover{
+    background-color:rgba(220,220,220,.5);
+    transition: 0.3s ;
   }
   .light{
+    font-size: 20pt;
     transition: .4s;
     color: white;
+    opacity: .9;
   }
   .dark{
     transition: .4s;
-    color: var(--title_text)
+    color: white;
+    opacity: .3;
   }
 </style>

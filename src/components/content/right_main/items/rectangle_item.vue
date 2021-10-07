@@ -202,7 +202,8 @@ export default {
   height: 70px;
   width: 285px;
   border-radius: 5px;
-  box-shadow:0 0 5px rgba(80,80,80,.1);
+  box-shadow:0 0 5px rgba(80,80,80,.1),
+    0 0 15px rgba(220,220,220,.1);
   overflow: hidden;
 }
 .item_self:hover{

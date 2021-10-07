@@ -19,3 +19,15 @@
     font-family: PingFang SC Semibold;
     src: url('./PingFang SC Semibold.ttf')format('truetype');
 }
+@font-face{
+    font-family: PingFang Light;
+    src: url('./PingFang Light.ttf')format('truetype');
+}
+@font-face{
+    font-family: KlavikaMedium-Italic;
+    src: url('./KlavikaMedium-Italic.otf')format('opentype');
+}
+@font-face{
+    font-family: Barlow-Medium;
+    src: url('./Barlow-Medium.ttf')format('truetype');
+}

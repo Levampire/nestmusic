@@ -63,7 +63,7 @@ const routes = [
       //歌手详情页---------------Overwrite
         path: 'artistDetail/:id&:type',
         name:'artistDetail',
-        component: () => import('main/detail_page'),
+        component: () => import('main/artist_page'),
         meta:{index:0}
       }
     ]

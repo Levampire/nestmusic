@@ -1,9 +1,10 @@
 <template>
- <div class="item_self"
+ <div
       @mousedown=" startPos = $event.target.getBoundingClientRect()"
       @mouseover="isOn=true"
       @mouseleave="isOn=false"
       @mouseup.self="clickPlay($event)"
+      :class="[type==='toplist'?'item_self':(!isPlay?'item_self':'item_self_play')]"
      >
    <div v-if="type==='songs'" class="index" >
      {{index}}
@@ -27,7 +28,9 @@
    <div v-if="type==='toplist'" class="ranking">{{ranking+1}}</div>
    <div class="info" @click="clickPlay($event)">
      <div class="songsname" >{{ songname }}</div>
-     <div class="singer" @click.stop="toSingerPage()" >{{ singer}}</div>
+     <div class="singer"
+          v-if="currentRoutePath.indexOf('newAlbum')===-1"
+          @click.stop="toSingerPage()" >{{ singer}}</div>
    </div>
    <div v-if="type==='songs'||type==='diskSongs'" class="info" @click="clickPlay($event)">
      <div class="songsname albumName" v-if="currentRoutePath.indexOf('newAlbum')===-1" @click.stop="toAlbumPage()">{{ albumName }}</div>
@@ -40,7 +43,7 @@
         class="collection iconfont Player-icon-enshrine"
         @click="addToLikeList()"
    ></div>
-   <div v-if="type==='songs'" class="time">{{maxTime}}</div>
+   <div v-if="type==='songs'" class="time">{{formatMaxTime}}</div>
    <div v-if="type==='toplist'" class="rankState">
      <img  class="rankinfo" src="" alt="">
    </div>
@@ -75,6 +78,7 @@ export default {
       currentRoutePath:''
     }
   },
+
   props: {
     info: {
       type: Object,
@@ -106,6 +110,9 @@ export default {
       musicID:state => state.musicplay.musicID,
       idOfLovedList: state => state.user.idOfLovedSongs
     }),
+    formatMaxTime(){
+      return timeTrans(Math.round(this.info.dt/1000))
+    }
   },
   watch:{
     isPlay:function (state){
@@ -253,7 +260,7 @@ export default {
 </script>
 
 <style scoped>
-.item_self{
+.item_self,.item_self_play{
   margin-left: 0px !important;
   /*不被挤压*/
   flex-shrink: 0;
@@ -266,10 +273,15 @@ export default {
   flex-direction: row !important;
   align-items: center;
   transition: 0.3s ;
+  color: var(--title_text);
 }
 .item_self:hover{
-  box-shadow:0 0 10px rgba(80,80,80,.1);
-  background-color: rgba(255,255,255,0.4);
+  background-color:#EAECED;
+  transition: 0.3s ;
+}
+.item_self_play{
+  color: var(--Main_blue);
+  background-color:var(--btn_back_light);
   transition: 0.3s ;
 }
 .index{
@@ -309,12 +321,10 @@ export default {
   width: 38%;
   margin-right: 20px;
   text-align: left;
-  color: #A7A8B2;
 }
 .songsname{
   line-height: 20px ;
   font-weight: bolder;
-  color: rgb(80,80,80);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -324,7 +334,6 @@ export default {
   height: 18px;
   font-size: 10pt;
   text-align: left;
-  color: #646A76;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -335,7 +344,6 @@ export default {
   border-bottom: 1px solid rgba(255,255,255,0.4);
   font-weight: unset;
   width: fit-content;
-  color: #646A76;
 }
 .singer:hover,.albumName:hover{
   border-bottom: 1px solid;
@@ -345,6 +353,7 @@ export default {
   right: 50px;
   font-size: 12pt;
   color: rgb(80,80,80);
+  font-family: Barlow-Medium;
 }
 .collection{
   position:absolute;
@@ -372,6 +381,8 @@ export default {
   background-size: contain;
   background-repeat: no-repeat;
   z-index: 1;
+  color: var(--Main_blue);
+
 }
 .play-enter-active {
   transition: all .3s ease;

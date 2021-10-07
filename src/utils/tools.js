@@ -4,14 +4,14 @@
   *返回时间 00：00：00
  */
 export  function timeTrans (timenum) {
-    let h =timenum/3600>=1? Math.floor(timenum/3600):0;
+    let h =timenum/3600>=1? Math.floor(timenum/3600).toFixed(2):0;
     h = h<10?"0"+h:h
-    let m = timenum/3600>=1? Math.floor(timenum%3600/60):Math.floor(timenum/60);
+    let m = timenum/3600>=1? Math.floor(timenum%3600/60).toFixed(2):Math.floor(timenum/60);
     m = m<10?"0"+m:m
     let s = timenum/60>=1? Math.floor(timenum%60):timenum;
     s = s<10?"0"+s:s
     if(h>=1){
-        return h+':'+m+''+':'+s
+        return  h+':'+m+''+':'+s
     }
     else{
         return m+''+':'+s
@@ -53,7 +53,9 @@ export  function artistsNameComB (artists) {
   *输入数据 歌词文本lrc歌词
  */
 export  function analysisLyrics (lyricsData) {
-    return lyricsData.split('\n')
+    const lyric = lyricsData.split('\n').filter(item =>
+        item!=='')
+    return lyric
 }
 /*
   *时间戳转换

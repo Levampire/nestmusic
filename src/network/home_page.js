@@ -1,4 +1,5 @@
 import {request} from 'network/Base_request';
+const timestamp = Date.now();
 //主页信息获取
 export function homepage_info(){
     return request({
@@ -20,8 +21,9 @@ export function new_songs(type){
 //精品歌单标签列表
 //说明 : 调用此接口 , 可获取精品歌单标签列表
 export function playlist_highquality(){
+
     return request({
-        url:'/top/playlist/highquality?before=1503639064232&limit=10',
+        url:'/top/playlist/highquality?before='+timestamp+'&limit=10',
     })
 }
 //今日优选电台

@@ -19,7 +19,7 @@ body{
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    background-color: var(--whitesmoke);
+    background: var(--BaseBackColor);
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
 
@@ -31,7 +31,7 @@ body{
 @import "~assets/css/loginpage.css";
 @import "~assets/font/fontinfo.css";
 @import "~assets/css/play.css";
-@import "~assets/css/detailpage.css";
+
 /*标签*/
 input{
     max-lines: 1;
@@ -52,17 +52,25 @@ input{
 /*类*/
 .main_page{
     width: calc(100vw - 480px) ;
-    height:calc(100vh - 140px) ;
+    height:calc(100vh ) ;
     background-color: #F8F9F9;
+    border-radius: 20px 0 0 10px;
+    overflow: hidden;
+}
+.steppingStones{
+ height: 140px;
 }
 .userFriends{
     position: absolute;
     top: 60px;
     right: 0;
     width: 280px;
-    height:calc(100% - 140px) ;
+    height:calc(100% - 60px) ;
     background-color: #F8F9F9;
-    z-index: 90;
+    z-index: 0;
+    color:var(--info_text);
+    display: flex;
+    justify-content: center;
 }
 .navBar{
     width: calc(100vw - 200px);
@@ -81,8 +89,11 @@ input{
     bottom: 0;
     left: 0;
     width: 100vw;
-    height: 80px;
-    background-color: white;
+    height: 70px;
+    background-color: rgba(250,250,250,0.5);
+    backdrop-filter: blur(15px);
+    border-radius: 10px 10px 0 0 ;
+    box-shadow: 0 15px #EAECED;
     display: flex;
     flex-direction: row;
     align-items: center;

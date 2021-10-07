@@ -1,4 +1,7 @@
 <template>
+  <div>
+
+  </div>
     <transition name="cardenter" >
       <playlist-card  v-show="showPlaylist" :style="{position:'fixed',left:playlist_pos.x-150+'px',bottom:'85px',zIndex:'-2'}" ></playlist-card>
     </transition>
@@ -139,47 +142,48 @@ name: "footer_cord",
 
 <style scoped>
 .cardenter-enter-active ,.cardenter-leave-active {
-  transition: all .2s cubic-bezier(0.4,0.5,0.6,0.9);
+  transition: all .3s cubic-bezier(0.4,0.5,0.6,0.9);
+  opacity: 1;
 }
 .cardenter-enter-from, .cardenter-leave-to
   /* .slide-fade-leave-active for below version 2.1.8 */ {
   transform: translateY(500px);
+  opacity: 0 ;
 }
 .coverImg{
-  background-color: white;
-  height: 70px;
-  width: 70px;
+  height: 50px;
+  width: 50px;
   margin-left: 20px;
   border-radius: 5px;
 }
 .info{
   padding-left: 20px;
+  margin-top: 5px;
   text-align: left;
-  height: 90%;
-  width: 325px
+  height: 80%;
+  width: 325px;
+  font-family: Barlow-Medium,var(--VamFont);
  }
 .songname{
-  font-size: 15pt;
-  font-weight: bolder;
-  line-height: 40px;
+  font-size: 12pt;
+  line-height: 30px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--title_text);
 }
-.singer{
+.singer {
   font-size: 10pt;
-  font-weight: bold;
-  color: var(--title_text);
+  transform: scale(.8);
+  margin-left: -35px;
 }
 .btnGroup{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  margin-bottom: 5px;
-  height: 35px;
-  padding: 0 20px 0 20px;
+  margin-top: 5px;
+  height: 30px;
+  padding: 0 20px 0 10px;
 }
 i{
   height: 20px;
@@ -198,13 +202,10 @@ i:hover{
 }
 .progressbar{
   height: calc(100% - 10px);
-  padding-top: 10px;
   width: 50%;
-  background-color: white;
   z-index: 1;
 }
 .other{
-  background-color: white;
   z-index: 1;
   height: 90%;
   width: 24%;

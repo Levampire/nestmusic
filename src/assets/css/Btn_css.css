@@ -25,6 +25,7 @@
 }
 .sideBar_btn:hover{
     color: var(--Main_blue);
+    background:#F8F9F9 ;
     transition: 0.2s cubic-bezier(0.1,0.4,0.6,0.8);
 }
 .sideBar_btn_beforeClick{
@@ -79,6 +80,7 @@
     padding-top: 10px;
     width: 380px;
     height: 60px;
+    background: var(--BackColor);
 }
 /*Footer*/
 
