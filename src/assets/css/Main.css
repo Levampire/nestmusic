@@ -52,7 +52,8 @@ input{
 /*类*/
 .main_page{
     width: calc(100vw - 480px) ;
-    height:calc(100vh ) ;
+    height:100vh ;
+    min-height: 100vh;
     background-color: #F8F9F9;
     border-radius: 20px 0 0 10px;
     overflow: hidden;
@@ -92,7 +93,7 @@ input{
     height: 70px;
     background-color: rgba(250,250,250,0.5);
     backdrop-filter: blur(15px);
-    border-radius: 10px 10px 0 0 ;
+    border-radius: 8px 8px 0 0 ;
     box-shadow: 0 15px #EAECED;
     display: flex;
     flex-direction: row;

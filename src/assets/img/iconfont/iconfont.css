@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2545711 */
-  src: url('./iconfont.woff2?t=1632794064924') format('woff2'),
-       url('./iconfont.woff?t=1632794064924') format('woff'),
-       url('./iconfont.ttf?t=1632794064924') format('truetype');
+  src: url('./iconfont.woff2?t=1634007731135') format('woff2'),
+       url('./iconfont.woff?t=1634007731135') format('woff'),
+       url('./iconfont.ttf?t=1634007731135') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,22 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.Player-icon-Player-icon-loopmdpi:before {
+  content: "\e60d";
+}
+
+.Player-icon-Player-icon-loopOnemdpi:before {
+  content: "\e61c";
+}
+
+.Player-icon-lastmdpi:before {
+  content: "\e60c";
+}
+
+.Player-icon-nextmdpi:before {
+  content: "\e60b";
 }
 
 .Player-icon-list1:before {
@@ -181,14 +197,6 @@
   content: "\e6bd";
 }
 
-.Player-icon-lastmdpi:before {
-  content: "\e601";
-}
-
-.Player-icon-loopmdpi:before {
-  content: "\e602";
-}
-
 .Player-icon-lowmdpi:before {
   content: "\e603";
 }
@@ -199,10 +207,6 @@
 
 .Player-icon-mutemdpi:before {
   content: "\e605";
-}
-
-.Player-icon-nextmdpi:before {
-  content: "\e606";
 }
 
 .Player-icon-pausemdpi:before {
