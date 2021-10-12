@@ -53,9 +53,8 @@ export  function artistsNameComB (artists) {
   *输入数据 歌词文本lrc歌词
  */
 export  function analysisLyrics (lyricsData) {
-    const lyric = lyricsData.split('\n').filter(item =>
-        item!=='')
-    return lyric
+    return lyricsData.split('\n').filter(item =>
+        item.slice(item.indexOf(']') + 1) !== '')
 }
 /*
   *时间戳转换

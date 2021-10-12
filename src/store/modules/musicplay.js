@@ -8,7 +8,7 @@ const state = () => ({
     musicList:{},
     isPlay:false,
     isRandom:false,
-    loopMode:'',//single单曲循环,all列表循环
+    loopMode:0,// 0关闭 1 single单曲循环,2 all列表循环, 默认 1
     maxTime:'300',
     currentTime:'0',
     progress:0,
@@ -17,7 +17,7 @@ const state = () => ({
 // mutations
 const mutations = {
     setUrl(state,[ID,NAME,ARTISTS,PICURL]){
-        // console.log(INFO);
+        console.log(NAME);
         state.musicUrl = 'https://music.163.com/song/media/outer/url?id='+ID+'.mp3'
         state.musicID = ID
         state.musicInfo = {NAME,ARTISTS,PICURL};
@@ -28,14 +28,45 @@ const mutations = {
     setPause(state){ state.isPlay = false;},
     setMaxTime(state,maxTime){ state.maxTime = maxTime ;},
     setcurrentTime(state,timeNow){ state.currentTime = timeNow; },
-    isRandom(state,isRandom){  state.isRandom = isRandom;  },
-    loopMode(state,loopMode){  state.isLoop = loopMode;  },
+    initPlayMode(state,[random,loop]){
+        state.isRandom = random
+        state.loopMode = loop
+    },
+    isRandom(state){  state.isRandom = !state.isRandom;
+        window.localStorage.setItem('isRandom',state.isRandom)
+        },
+    loopMode(state){
+        if(state.loopMode<2){
+            state.loopMode++;
+        }else {
+            state.loopMode = 0
+        }
+        window.localStorage.setItem('loopMode',state.loopMode)
+        },
     setVolume(state,volume){  state.volume = volume;  },
     setProgress(state,progress){ state.progress = progress; },
     setMusicList(state,[musicList,id]){
         state.PlaylistID = id
         state.musicList = musicList;
-    }
+    },
+    RandomPlayNext(state){
+
+    },
+    // AutoPlay:async (state)=>{
+    //    setTimeout(()=>{
+    //        state.isPlay = false
+    //    },1)
+    //     const temp=[state.musicID,state.musicInfo]
+    //     state.musicUrl = ''
+    //     state.musicID = ''
+    //     state.musicInfo = {};
+    //     if(state.loopMode=== 0 ){
+    //         state.musicUrl = 'https://music.163.com/song/media/outer/url?id='+temp[0]+'.mp3'
+    //         state.musicID = temp[0]
+    //         state.musicInfo = temp[1];
+    //     }
+    //     state.isPlay = true
+    // }
 }
 // getters
 const getters = {
@@ -50,6 +81,7 @@ const getters = {
 }
 // actions
 const actions = {
+
 
 }
 export default {
