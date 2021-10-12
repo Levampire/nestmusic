@@ -10,7 +10,6 @@
   <div class="music">
     <Home class="home">
     </Home>
-
     <div class="main_page">
       <!--登录-->
       <div class="navBar"
@@ -246,6 +245,8 @@ export default {
   flex-direction: row;
   width: 100vw;
   height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
 }
 .mainPageTitle{
   color:var(--title_text);

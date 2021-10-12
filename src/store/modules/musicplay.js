@@ -49,9 +49,6 @@ const mutations = {
         state.PlaylistID = id
         state.musicList = musicList;
     },
-    RandomPlayNext(state){
-
-    },
     // AutoPlay:async (state)=>{
     //    setTimeout(()=>{
     //        state.isPlay = false
