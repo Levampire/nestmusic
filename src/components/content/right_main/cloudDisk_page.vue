@@ -241,7 +241,7 @@ export default {
 .chooseFile,.storage,.uploadInfo{
   height: 250px;
   border-radius: 10px;
-  box-shadow:0 0 5px rgba(80,80,80,.1);
+  background-color: white;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -283,7 +283,7 @@ export default {
   overflow: hidden;
   flex: 1;
   background-color: var(--btn_back_light);
-  border: 2px dashed var(--Main_blue);
+  border: 2px var(--Main_blue);
   border-radius: 10px;
   display: flex;
   flex-direction: column;

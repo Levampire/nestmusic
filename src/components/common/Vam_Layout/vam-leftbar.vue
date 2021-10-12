@@ -36,7 +36,6 @@ export default {
   display: flex;
   margin-top: 10px;
   justify-content: left;
-  height: 100px;
   padding-left: 10px;
 }
 p{
@@ -45,7 +44,8 @@ p{
 }
 .leftBar{
   width: 200px;
-  height:100vh ;
+  height:100vh;
+  max-height:100vh ;
   background-color: #EAECED;
   padding-left: 10px;
   padding-right: 10px;

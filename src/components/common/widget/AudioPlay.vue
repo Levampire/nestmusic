@@ -20,6 +20,8 @@ export default {
       Timer:setTimeout,
       audioCtxTimer:setTimeout,
       analyser:'',
+      tempList:[],
+      listId:0
     }
   },
   computed:{
@@ -29,7 +31,9 @@ export default {
       updateProgress:state => state.musicplay.progress,
       updateVolume:state => state.musicplay.volume,
       musicList:state => state.musicplay.musicList,
-      currentID:state => state.musicplay.musicID
+      currentID:state => state.musicplay.musicID,
+      randomPLay:state => state.musicplay.isRandom,
+      loop:state => state.musicplay.loopMode
     })
   },
   watch:{
@@ -43,12 +47,40 @@ export default {
       this.updatevolume(index)
     },
     musicUrl(index){
-      // console.log("新UEL"+OLDVALUE);
-       console.log(index);
+      console.log("新UEL"+index);
       this.url = index
+    },
+    currentID(newID){
+      if(newID!==this.listId){
+        console.log('setRandomList')
+        let len = this.musicList.length;
+        for (let i = 0; i < len; i++) {
+          let index = Math.floor(Math.random() * this.musicList.length);
+          this.tempList.push(this.musicList[index]);
+          this.tempList.splice(index, 1);
+        }
+      }
+      console.log(this.tempList)
+      newID=this.listId
+    },
+    loop(mode){
+      if(mode===1){
+        console.log('loopo')
+        this.$refs.audio.setAttribute('loop','loop')
+      }else {
+        console.log('remove')
+        this.$refs.audio.removeAttribute('loop')
+      }
+
     }
+
 },
   methods:{
+    init(){
+     let RandomPlay = window.localStorage.getItem('isRandom') !== 'false'
+     let loop =Number(window.localStorage.getItem('loopMode'))
+     this.$store.commit('musicplay/initPlayMode',[RandomPlay,loop])
+    },
     handlePlay(state){
       state?this.audioPlay():this.audioPause();
     },
@@ -72,7 +104,7 @@ export default {
       this.$refs.audio.currentTime = progress/100 * this.$refs.audio.duration
     },
     audioError:async function (){
-       this.$msgbox.msgbox('资源加载出错',800)
+     this.$msgbox.msgbox('资源加载出错',800)
      if(this.musicList.length>2){
        clearInterval(this.Timer)
        this.Timer = setTimeout(async()=>{
@@ -97,7 +129,30 @@ export default {
       this.$refs.audio.volume = index
     },
     onended(){
-      this.$audio.pause()
+      if( this.randomPLay ){
+        if(this.loop===2){
+          this.NEXT(1,this.musicList,this.currentID)
+        }
+      }else {
+        console.log('noredom')
+        if(this.loop===2){
+          this.NEXT(0,this.musicList,this.currentID)
+        }
+      }
+    },
+    NEXT: async function (index,list,currentID){
+      await this.$audio.pause()
+      if(index===0){//顺序播放下一首
+        console.log('isIn')
+        const currentIndex = await  list.findIndex(item=>item.id===currentID)
+        const nextSong = await list[currentIndex+1]
+        await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
+      }else {
+        this.tempList = this.tempList.filter(item=> item.id!==currentID)
+        const nextSong =  this.tempList[0]
+        await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
+      }
+       this.$audio.play()
     },
     /*音乐可视化*/
     audioCtxInit(){
@@ -133,6 +188,7 @@ export default {
     this.url = this.musicUrl
     this.$audio.setVolume(1)
     //this.audioCtxInit()
+    this.init()
 
   }
 }

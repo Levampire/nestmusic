@@ -6,9 +6,10 @@
     <div v-if="user_playlist.length<=0" class="item">
       <div class="tip" >您还没有收藏歌单</div>
     </div>
-    <div v-else class="item line"> </div>
+    <div v-else class="line"> </div>
       <div class="item list">
        <p v-for="item in user_playlist" @click="toPlaylist(item)">{{ item.name.trim()}}</p>
+        <div class="steppingStones"></div>
       </div>
   </div>
 </template>
@@ -99,11 +100,12 @@ export default {
 
 <style scoped>
 .back{
-  height: 120px;
+  height: 52%;
+  overflow: hidden;
 }
 .list{
   overflow-y: scroll;
-  height: 390px;
+  height:100%;
 }
 .item p{
   width: 145px ;
@@ -144,5 +146,8 @@ export default {
 }
 ::-webkit-scrollbar{
   display: unset;
+}
+.steppingStones{
+  height: 100px;
 }
 </style>
