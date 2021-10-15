@@ -124,7 +124,7 @@ export default {
               this.$audio.pause()
               this.$audio.setPlaylist(result.data.playlist.tracks,this.info.id)
               const music = this.$store.getters['musicplay/getMusicList']
-              this.$audio.setUrl(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl)
+              this.$audio.setUrl(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
             }).then(()=>{
               this.$audio.play()
               this.isPlay=true

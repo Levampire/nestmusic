@@ -58,6 +58,7 @@
 import {mapState} from "vuex";
 import {song_like} from "network/music";
 import {timeTrans} from "utils/tools";
+import {artistsNameComB} from "utils/tools";
 
 export default {
   name: "musiclittle_item",
@@ -150,7 +151,7 @@ export default {
           //更新播放列表
           this.$parent.updatePlaylist()
           this.$audio.pause()
-          await this.$audio.setUrl(this.info.id,this.info.name,this.info.ar,this.info.al.picUrl)
+          await this.$audio.setUrl(this.info.id,this.info.name,this.info.ar,this.info.al.picUrl,this.info)
           this.$audio.play()
           break
         }
@@ -158,7 +159,7 @@ export default {
           //更新播放列表
           this.$parent.updatePlaylist()
           this.$audio.pause()
-          await this.$audio.setUrl(this.info.id,this.info.name,this.info.ar,this.info.al.picUrl)
+          await this.$audio.setUrl(this.info.id,this.info.name,this.info.ar,this.info.al.picUrl,this.info)
           this.$audio.play()
           break
         }
@@ -166,7 +167,7 @@ export default {
           //更新播放列表
           this.$parent.updatePlaylist()
           this.$audio.pause()
-          await this.$audio.setUrl(this.info.songId,this.info.fileName,this.info.simpleSong.ar,this.info.simpleSong.al.picUrl)
+          await this.$audio.setUrl(this.info.songId,this.info.fileName,this.info.simpleSong.ar,this.info.simpleSong.al.picUrl,this.info)
           this.$audio.play()
           break
         }
@@ -230,7 +231,7 @@ export default {
     switch (this.type) {
       case "songs": {
         this.songname = this.info.name.trim()
-        this.singer = this.info.ar[0].name
+        this.singer =artistsNameComB(this.info.ar)
         this.coverImg = this.info.al.picUrl
         this.albumName = this.info.al.name
         this.id = this.info.id
@@ -238,7 +239,7 @@ export default {
       }
       case "toplist":{
         this.songname = this.info.name
-        this.singer = this.info.ar[0].name
+        this.singer = artistsNameComB(this.info.ar)
         this.coverImg = this.info.al.picUrl
         this.albumName = this.info.al.name
         this.id = this.info.id

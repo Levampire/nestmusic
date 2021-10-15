@@ -67,7 +67,6 @@ import ProgressBar from "./progressBar";
 import playlistCard from "widget/playlistCard.vue";
 import {timeTrans,artistsNameComB} from 'utils/tools'
 import AudioPlay from "./AudioPlay";
-import store from "../../../store/store";
 export default {
 name: "footer_cord",
   components: {AudioPlay, ProgressBar,playlistCard},
@@ -87,31 +86,44 @@ name: "footer_cord",
     RandomStateChange(){this.$store.commit('musicplay/isRandom')},
     loopModeChange(){this.$store.commit('musicplay/loopMode')},
     nextSong:async function(){
-      const currentIndex = this.musicList.findIndex(item=>item.id===this.currentID)
-      if(this.musicList.length>2&& this.musicList[currentIndex+1]!==undefined){
+      let  tempList;
+      if(!this.isRandom){
+        tempList = this.musicList
+      }else{
+        tempList = this.RandomList
+      }
+      const currentIndex = tempList.findIndex(item=>item.id===this.currentID)
+      let nextSong;
+      if(tempList.length>2&& tempList[currentIndex+1]!==undefined){
         clearInterval(this.Timer)
           //当前列表项index
-
-          const nextSong =  this.musicList[currentIndex+1]
-          this.$audio.pause()
-          await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
-          this.$audio.play()
+          nextSong =  tempList[currentIndex+1]
       }else{
-        this.$msgbox.msgbox('没有下一曲了',1000)
+        nextSong =  tempList[0]
         }
+      this.$audio.pause()
+      await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl,nextSong)
+      this.$audio.play()
     },
     lastSong:async function(){
-      const currentIndex = this.musicList.findIndex(item=>item.id===this.currentID)
-      if(this.musicList&&currentIndex>0){
+      let  tempList;
+      if(!this.isRandom){
+        tempList = this.musicList
+      }else{
+        tempList = this.RandomList
+      }
+      const currentIndex = tempList.findIndex(item=>item.id===this.currentID)
+      let lastSong;
+      if(tempList&&currentIndex>0){
         clearInterval(this.Timer)
           //当前列表项index
-          const nextSong =  this.musicList[currentIndex-1]
-          this.$audio.pause()
-          await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
-          this.$audio.play()
+          lastSong  =  tempList[currentIndex-1]
       }else{
-        this.$msgbox.msgbox('没有上一曲了',1000)
+        lastSong  =  tempList[this.musicList.length-1]
         }
+      this.$audio.pause()
+      await this.$audio.setUrl(lastSong.id,lastSong.name,lastSong.ar,lastSong.al.picUrl,lastSong)
+      this.$audio.play()
     },
     showPlaylistCard(){
       this.playlist_pos = this.$refs.btn_playlist.getBoundingClientRect()
@@ -128,6 +140,7 @@ name: "footer_cord",
       currentID:state => state.musicplay.musicID,
       loopMode :state => state.musicplay.loopMode,
       isRandom :state => state.musicplay.isRandom,
+      RandomList :state => state.musicplay.randomList,
    }),
   },
   watch:{

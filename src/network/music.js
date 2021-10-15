@@ -182,12 +182,20 @@ export function hot_topic(){
         url:'/hot/topic'
     })
 }
-//热门话题
 export function dj_detail(id){
     return request({
         url:'/dj/detail?id='+id
     })
 }
+/*获取歌曲详情
+说明 : 调用此接口 , 传入音乐 id(支持多个 id, 用 , 隔开), 可获得歌曲详情
+
+必选参数 : ids: 音乐 id, 如 ids=347230
+
+接口地址 : /song/detail
+
+调用例子 : /song/detail?ids=347230,/song/detail?ids=347230,347231*/
+
 export function song_detail(ids){
     return request({
         url:'/song/detail?ids='+ids

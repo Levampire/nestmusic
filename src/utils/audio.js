@@ -1,11 +1,17 @@
 
 import store from "../store/store";
-const setUrl = (id,NAME,ARTISTS,PICURL) => store.commit('musicplay/setUrl',[id,NAME,ARTISTS,PICURL])
+const setUrl = (id,NAME,ARTISTS,PICURL,fullInfo) => {
+    store.commit('musicplay/setUrl',[id,NAME,ARTISTS,PICURL])
+        if(fullInfo){
+          store.dispatch('musicplay/addInList',fullInfo)
+        }
+}
 const play =  () => {store.commit('musicplay/setPlay')}
 const pause = () => store.commit('musicplay/setPause')
 const updateProgress = (index) => store.commit('musicplay/setProgress',index)
 const setVolume = (index) => store.commit('musicplay/setVolume',index)
 const setPlaylist = (list,id) => {
+        console.log(list)
         store.commit('musicplay/setMusicList',[list,id])
 }
 

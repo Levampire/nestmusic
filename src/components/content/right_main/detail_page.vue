@@ -52,14 +52,6 @@
     <div v-else >
 
     </div>
-<!--    <div class="swatch">-->
-<!--      <div class="list_btn">歌曲</div>-->
-<!--      <div class="comm_btn">评论</div>-->
-<!--    </div>-->
-<!--    <div class="list">-->
-<!--    </div>-->
-<!--    <div class="comm">-->
-<!--    </div>-->
     <div  style="overflow-y:auto;padding: 0 10px" v-if="listData.list.length!==0">
         <musiclittle_item v-for="(item,index) in listData.list"
                           :info="item"
@@ -217,22 +209,7 @@ name: "detail_page",
          }).catch(error=>{console.log("专辑详情获取失败"+error);});
          break;
        }
-       // case 'myList':{
-       //   //获取我喜欢的音乐
-       //   this.setDataList(
-       //       '',
-       //       '已收藏的歌曲',
-       //       this.userInfo.name,
-       //       this.userInfo.avatarUrl,
-       //       ['私人收藏'],
-       //       this.userInfo.coverImgUrl,
-       //       '',
-       //       '0',
-       //       '0',
-       //       '0',
-       //       '0',
-       //       '0'
-       //   )
+
        //   likelist(window.localStorage.getItem('userid')).then(result => {
        //     this.listIds= result.data.ids;
        //     let idgroup;
@@ -343,7 +320,6 @@ name: "detail_page",
     this.id = this.$route.params.id;
     this.type= this.$route.params.type;
     this.$refs.mainPage.addEventListener('scroll',this.handleScroll)
-    console.log(this.listData)
   }
 }
 </script>

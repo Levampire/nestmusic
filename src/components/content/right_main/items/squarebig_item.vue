@@ -67,7 +67,7 @@ export default {
     setPlay : async function(state){
           //更新播放列表
           this.$audio.pause()
-          await this.$audio.setUrl(this.firstone.id,this.firstone.name,this.firstone.ar,this.firstone.al.picUrl)
+          await this.$audio.setUrl(this.firstone.id,this.firstone.name,this.firstone.ar,this.firstone.al.picUrl,this.firstone)
           this.$audio.play()
     }
   },

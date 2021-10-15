@@ -1,6 +1,6 @@
 <template>
   <div style="position: relative;z-index: 1;overflow: hidden;height: 100vh;box-shadow: 0 0 10px #d9d9d9,0 0 20px #d9d9d9;
-  border-radius: 8px 8px;min-height: 100vh;"
+  min-height: 100vh;"
   >
     <div class="Lyricspage" :style="{backgroundImage:coverImg}">
     </div>
@@ -12,26 +12,30 @@
         </div>
         <canvas class="round" width="1200" height="1000" ref="canvasDisk" >不支持canvas</canvas>
         <canvas class="AudioContext" width="1200" height="1000" ref="canvasAudioContext" >不支持canvas</canvas>
-        <comments
-            :Visible = 'commentsVisible'
-            :id="currentMusicID"
-        >
-        </comments>
+<!--        <comments-->
+<!--            :Visible = 'commentsVisible'-->
+<!--            :id="currentMusicID"-->
+<!--        >-->
+<!--        </comments>-->
       </div>
       <div class="lyrics">
+        <div class="lyricsCard" v-if="lyrics.length===0">
+          <div class="tips">没有歌词</div>
+        </div>
         <div class="lyricsCard"
+             v-else
              @scroll.stop.prevent ref="lyrCard">
           <div class="stones" ></div>
-          <div :ref="words+index"
+          <div :ref="'words'+index"
                class="words"
+               :key="currentMusicID+index"
                v-for="(words,index) in lyrics"
-               :key="index"
-               :class="[words.startTime<=Time&&Time<=words.endTime-0.1?[style='light',scroll(index,words+index)]:style='dark']||style"
+               :class="[words.startTime<=Time&&Time<=words.endTime-0.1&&index>lastWordsIndex?[style='light',scroll(index,'words'+index)]:style='dark']||style"
                >
             <span>
               {{words.content}}
             </span><br>
-            <span>
+            <span >
               {{words.tl}}
             </span>
           </div>
@@ -56,6 +60,7 @@ name: "LyricsPage",
      lyrics:[],
      tlLyrics:[],
      isPlay:false,
+     lyricsTl:true,
      songName:'',
      artist:'',
      coverImg: {},
@@ -66,7 +71,9 @@ name: "LyricsPage",
      currentPlaylistID:0,
      CardColor:'',
      commentsVisible:true,
-     currentWordsIndex:0
+     lastWordsIndex:-1,
+     currentWordsIndex:-1,
+     timer:setInterval,
    }
   },
   computed:{
@@ -85,17 +92,21 @@ name: "LyricsPage",
   },
   methods:{
   scroll(index,ref){
-    if(this.playState&&index!==this.currentWordsIndex){
-      const offset =  this.$refs[`${ref}`].clientHeight >90?this.$refs[`${ref}`].clientHeight:0
-      this.currentWordsIndex = index
-      const proof = this.$refs[`${ref}`].offsetTop - this.$refs.lyrCard.clientHeight/2 -offset
-      if(proof>0){
-        //歌词滚动
-        this.$refs.lyrCard.scrollTop = proof +this.$refs[`${ref}`].clientHeight
+    // console.log('in:'+ index)
+      this.lastWordsIndex = index-1
+      if(this.playState&&index>this.currentWordsIndex){
+          const offset =  this.$refs[`${ref}`].clientHeight >90?this.$refs[`${ref}`].clientHeight:0
+          this.currentWordsIndex = index
+          const proof = this.$refs[`${ref}`].offsetTop - this.$refs.lyrCard.clientHeight/2 -offset
+        // console.log(proof)
+          if(proof>=0){
+            //歌词滚动
+            // console.log('scroll:'+ index)
+            this.$refs.lyrCard.scrollTop = proof +this.$refs[`${ref}`].clientHeight
+          }else {
+            this.$refs.lyrCard.scrollTop = 0
+          }
       }
-    }else if(index===0){
-      this.$refs.lyrCard.scrollTop = 0
-    }
   },
   timeTransBack(index){
     return  timeTransBack(index)
@@ -105,21 +116,21 @@ name: "LyricsPage",
   //   },
   //加载歌词
     loadLyrics(id){
+      this.lastWordsIndex = -1;
       music_lyrics(id).then(result=>{
         if(result.data.lrc!==undefined){
-          this.lyrics=analysisLyrics(result.data.lrc?.lyric)
-          if(result.data.tlyric?.lyric!==''){this.tlLyrics = analysisLyrics(result.data.tlyric?.lyric)}
-
+          this.lyrics=analysisLyrics(result.data.lrc.lyric)
+          if(result.data.tlyric.lyric!==''){this.tlLyrics = analysisLyrics(result.data.tlyric.lyric)}
           this.lyricWithTranslation()
+
         }else{
-          this.lyrics= ['没有歌词']
+          this.lyrics= []
         }
       })
-      this.$refs.lyrCard.scrollTop = 0
     },
     lyricWithTranslation:function(){
+      let lyrics=[]
       if(this.lyrics.length){
-        let lyrics=[]
         this.lyrics.forEach((words,index)=>{
           const item = {
             startTime:timeTransBack(words.slice(1,words.indexOf(']'))),
@@ -127,7 +138,7 @@ name: "LyricsPage",
             content: words.slice(words.indexOf(']')+1),
             tl:''
           }
-          if(this.tlLyrics!==''){
+          if(this.tlLyrics!==''&&this.lyricsTl){
             item.tl = this.tlLyrics.filter(tlItem=>{
               return   item.startTime===timeTransBack(tlItem.slice(1,tlItem.indexOf(']')))
             }).toString().slice(words.indexOf(']')+1)
@@ -202,7 +213,14 @@ name: "LyricsPage",
       if(this.isPlay!==newstate && this.currentPlaylistID===this.currentMusicID){
         this.isPlay = newstate
       }
-        this.showSpinDisk()
+      // if(newstate){
+      //   this.timer=setInterval(()=>{
+      //     const index = this.lyrics.findIndex(item=> item.startTime<=this.Time&&this.Time<=item.endTime-0.1)
+      //     this.scroll(index,'words'+index)
+      //   }, 800)
+      // }else {
+      //   clearInterval(this.timer)
+      // }
     },
     musicID:function (currentMusicID){
       this.currentMusicID=currentMusicID
@@ -219,27 +237,31 @@ name: "LyricsPage",
       this.coverImg='url("' + newState.PICURL +'?param=19y10' + '")'
       // this.getColor(this.musicInfo.PICURL,).then(res=>{
       //   this.CardColor =  res[0].color})
+
+      this.showSpinDisk()
     },
-    currentTime:function (currentTime){
-      this.Time = currentTime
+    currentTime:function (currentTime,oldtime){
+        this.Time = currentTime
+        if(currentTime<oldtime){
+          this.lastWordsIndex=-1
+          this.currentWordsIndex=-1
+        }
     },
     maxTime:function (maxTime){
       this.MaxTime = maxTime
     },
     setAudioCtxData:function (newData){
-      console.log(newData)
+      // console.log(newData)
     }
+  },
+  created() {
+    this.loadLyrics(this.musicID)
   },
   mounted() {
   //初始化数据
     this.songName=this.musicInfo.NAME
     this.artist = artistsNameComB(this.musicInfo.ARTISTS)
     this.coverImg='url("' + this.musicInfo.PICURL +'?param=1920y1080' + '")'
-    this.loadLyrics(this.musicID)
-    this.showSpinDisk()
-    // this.getColor(this.musicInfo.PICURL).then(res=>{
-    //  this.CardColor =  res[0].color})
-
   }
 }
 // background-image: linear-gradient(to bottom, #F1F4F5, #F4F6F6, #FAFAFA);
@@ -331,7 +353,7 @@ name: "LyricsPage",
     text-align: left;
     z-index: 11;
     width: 112%;
-    height: 800px;
+    height: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
     scroll-behavior: smooth;
@@ -356,7 +378,7 @@ name: "LyricsPage",
     font-size: 25pt;
     color: white;
     opacity: .9;
-    transition: .6s cubic-bezier(.56,.34,.2,.85);
+    transition: .8s cubic-bezier(.56,.34,.2,.85);
   }
   .dark{
 
@@ -364,5 +386,14 @@ name: "LyricsPage",
     transition: .2s cubic-bezier(.31,.97,.74,.63);
     color: white;
     opacity: .3;
+  }
+  .tips{
+    height: inherit;
+    width: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
   }
 </style>

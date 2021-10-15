@@ -117,9 +117,9 @@ export default {
     MouseLeave(){
       this.isOn = false;
     },
-    PLAY:async function (ID,NAME,ARTISTS,PICURL){
+    PLAY:async function (ID,NAME,ARTISTS,PICURL,fullInfo){
       this.$audio.pause()
-      await this.$audio.setUrl(ID,NAME,ARTISTS,PICURL)
+      await this.$audio.setUrl(ID,NAME,ARTISTS,PICURL,fullInfo)
       this.isPlay=true
       this.$audio.play()
     },
@@ -128,7 +128,7 @@ export default {
         switch (this.type){
           case 'newSong': {
             //直接点击音乐播放 播放列表添加内容
-            this.PLAY(this.item.id,this.item.name,this.item.artists,this.item.album.picUrl)
+            this.PLAY(this.item.id,this.item.name,this.item.artists,this.item.album.picUrl,this.item)
             break;
           }
           case'playlist':{
@@ -136,7 +136,7 @@ export default {
             playlist_detail(this.item.id).then(result => {
               this.$audio.setPlaylist(result.data.playlist.tracks,this.item.id)
               const music = this.$store.getters['musicplay/getMusicList']
-              this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl)
+              this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
             }).then(()=>{
               this.isPlay=true
             }).catch(error=>{console.log("歌单详情获取失败"+error);});

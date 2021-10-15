@@ -128,7 +128,7 @@ import channel_item from "items/channel_item";
 import {reactive} from 'vue'
 import {search_hot,homepage_info,new_songs,playlist_highquality} from 'network/home_page';
 import {radio_hot,top_album,top_list,recommend_resource,personalized_djprogram} from "network/music";
-import {useStore} from "vuex";
+import {mapState, useStore} from "vuex";
 export default {
 
   name: "Home_page",
@@ -197,7 +197,6 @@ export default {
 
     //获取精品歌单数据
     playlist_highquality().then(result=>{
-      console.log(result)
       playlist.highQuality.list = result.data.playlists;
     }).catch(error=>{ console.log('精品歌单数据获取失败'+error);})
     /*日推 需要登录*/
@@ -229,6 +228,11 @@ export default {
         recommend:['每日推荐','recommend']
       }
     }
+  },
+  computed:{
+    ...mapState({
+      LoginState: state => state.user.isLogin,
+    })
   },
   methods: {
     getMouseX(e) {
@@ -268,6 +272,7 @@ export default {
     else if (hour < 19) {this.hello = '晚上好！' }
     else if (hour < 24) {this.hello = '晚安！'}
     window.addEventListener('mouseup',this.MouseLeave);
+
   },
 }
 </script>

@@ -36,7 +36,6 @@ export  function timeTransBack (timeData) {
   *输入数据歌手数据数组
  */
 export  function artistsNameComB (artists) {
-    // console.log(artists)
     let name =''
     artists.forEach(
         function (value,key){

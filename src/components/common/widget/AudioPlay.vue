@@ -33,6 +33,7 @@ export default {
       musicList:state => state.musicplay.musicList,
       currentID:state => state.musicplay.musicID,
       randomPLay:state => state.musicplay.isRandom,
+      RandomList:state => state.musicplay.randomList,
       loop:state => state.musicplay.loopMode
     })
   },
@@ -47,28 +48,12 @@ export default {
       this.updatevolume(index)
     },
     musicUrl(index){
-      console.log("新UEL"+index);
       this.url = index
-    },
-    currentID(newID){
-      if(newID!==this.listId){
-        console.log('setRandomList')
-        let len = this.musicList.length;
-        for (let i = 0; i < len; i++) {
-          let index = Math.floor(Math.random() * this.musicList.length);
-          this.tempList.push(this.musicList[index]);
-          this.tempList.splice(index, 1);
-        }
-      }
-      console.log(this.tempList)
-      newID=this.listId
     },
     loop(mode){
       if(mode===1){
-        console.log('loopo')
         this.$refs.audio.setAttribute('loop','loop')
       }else {
-        console.log('remove')
         this.$refs.audio.removeAttribute('loop')
       }
 
@@ -91,6 +76,7 @@ export default {
      // console.log('***************播放********************')
       this.$refs.audio.play()
      // this.vueXDataSync(this.analyser)
+
     },
     audioPause(){
      // console.log('***************暂停********************')
@@ -109,11 +95,23 @@ export default {
        clearInterval(this.Timer)
        this.Timer = setTimeout(async()=>{
          await this.$msgbox.msgbox('切换到下一曲',1000)
+         let  tempList;
+         if(!this.isRandom){
+           tempList = this.musicList
+         }else{
+           tempList = this.RandomList
+         }
          //当前列表项index
-         const currentIndex = this.musicList.findIndex(item=>item.id===this.currentID)
-         const nextSong =  this.musicList[currentIndex+1]
+         const currentIndex = tempList.findIndex(item=>item.id===this.currentID)
+         let nextSong ;
+         if(tempList.length>2&& tempList[currentIndex+1]!==undefined){
+           //当前列表项index
+           nextSong =  tempList[currentIndex+1]
+         }else{
+           nextSong =  tempList[0]
+         }
          this.$audio.pause()
-         await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
+         await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl,nextSong)
          this.$audio.play()
        },1500)
      }else{
@@ -129,12 +127,14 @@ export default {
       this.$refs.audio.volume = index
     },
     onended(){
-      if( this.randomPLay ){
+      if(this.loop===0){
+        this.$audio.pause()
+      }
+      if( this.randomPLay){
         if(this.loop===2){
           this.NEXT(1,this.musicList,this.currentID)
         }
       }else {
-        console.log('noredom')
         if(this.loop===2){
           this.NEXT(0,this.musicList,this.currentID)
         }
@@ -143,14 +143,13 @@ export default {
     NEXT: async function (index,list,currentID){
       await this.$audio.pause()
       if(index===0){//顺序播放下一首
-        console.log('isIn')
         const currentIndex = await  list.findIndex(item=>item.id===currentID)
         const nextSong = await list[currentIndex+1]
-        await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
+        await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl,nextSong)
       }else {
-        this.tempList = this.tempList.filter(item=> item.id!==currentID)
+        this.tempList = this.RandomList.filter(item=> item.id!==currentID)
         const nextSong =  this.tempList[0]
-        await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl)
+        await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl,nextSong)
       }
        this.$audio.play()
     },

@@ -32,30 +32,29 @@
           </div>
           <div class="uploadList" v-if="uploadList.length!==0"></div>
         </div>
-
+        <input type="file" v-show="false" ref="fileUploadBtn" @change="fileSelected()" accept=".mp3,.aac,.wma,.wav,.ogg,.m4a,.ape,.flac,.cue)"/>
       </div>
     </div>
 <!--    <div class="tipTok" :style="{left:tipLeft}"></div>-->
     <div style='width: fit-content; margin-left: 20px' class="title">我的音乐</div>
-    <div class="diskPageCtx" >
-
-      <div class="diskPage musicList" :style="{left:posLeft }">
+      <div class="diskPage " >
         <div class="tableTitle" v-if="!musicListData.length!==0">
           <div style="width:40%"> 标题</div>
           <div style="width:50%">专辑</div>
           <div >操作</div>
         </div>
-        <musiclittle_item v-for="(item,index) in musicListData"
-                          :info="item"
-                          type="diskSongs"
-                          :index="index+1"
-                          :key="item.id"
-        ></musiclittle_item>
-        <div class="tip" v-if="musicListData.length===0"> 您的云盘还没有上传音乐</div>
+        <div class="tip" v-else > 您的云盘还没有上传音乐</div>
+        <div>
+          <musiclittle_item v-for="(item,index) in musicListData"
+                            :info="item"
+                            type="diskSongs"
+                            :index="index+1"
+                            :key="item.id"
+          ></musiclittle_item>
+        </div>
+        <div style="height: 200px;overflow: hidden"><div></div></div>
       </div>
     </div>
-  </div>
-  <input type="file" ref="fileUploadBtn" @change="fileSelected()" accept=".mp3,.aac,.wma,.wav,.ogg,.m4a,.ape,.flac,.cue)"/>
 </template>
 <script>
 import {user_cloud} from "network/cloudDisk";
@@ -145,7 +144,6 @@ export default {
 <style scoped>
 .main_page{
   width: 100%;
-  height: 100%;
 }
 .switchbar{
   padding-left: 15px;
@@ -194,24 +192,13 @@ export default {
   top: 40%;
   left: 0;
 }
-
-.diskPageCtx{
-  position: relative;
-  width: 100%;
-  min-height: 95%;
-  display: flex;
-  overflow: hidden;
-}
 .diskPage{
   display: flex;
   flex-direction: column;
-  padding: 0px 10px 0 10px ;
-  position: relative;
-  flex-shrink:0;
-  width: calc(100% - 20px);
-  overflow-y: scroll;
+  padding: 0px 10px 80px 10px ;
   overflow-x: hidden;
-  transition: cubic-bezier(0.4,0.5,0.6,1.05) 0.4s;
+  height: 400px;
+  overflow-y: scroll;
 }
 .tableTitle{
   width: 100%;
@@ -223,9 +210,6 @@ export default {
   background-color: #F8F9F9;
   margin: 0 10px 0 60px;
   z-index: 15;
-}
-.musicList{
-  height: 480px;
 }
 .upload{
   /*background-color: #42b983;*/

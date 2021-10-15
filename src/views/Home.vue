@@ -31,7 +31,7 @@
           </little_btn>
         </div>
         <div class="LoginBar" v-if="islogin === true">
-          <userinfo class="userInfo"></userinfo>
+          <userinfo ></userinfo>
         </div>
       </div>
       <!--main_page-->
@@ -77,6 +77,7 @@ import Footer_cord from "widget/footer_cord";
 import {login_status} from "network/login";
 import {useStore,mapState} from 'vuex'
 import userinfo from "widget/user_info";
+import {playlist_detail} from "../network/music";
 
 export default {
   name: 'HomePage',
@@ -131,6 +132,16 @@ export default {
     // }).catch(error => {
     //   console.log('登录状态检查错误' + error)
     // })
+    if(this.LoginState){
+      let myList = [];
+      playlist_detail(window.localStorage.getItem('myMusicList')).then(res=>{
+        myList = res.data.playlist.tracks
+      }).then(()=>{
+        this.$audio.setPlaylist(myList)
+        this.$audio.setUrl(myList[0].id,myList[0].name,myList[0].ar,myList[0].al.picUrl)
+      })
+    }
+
   },
   methods: {
     //关闭登录卡片
@@ -165,7 +176,10 @@ export default {
     //初始化登录状态
     this.islogin = this.LoginState
     this.tittle = this.Tittle
-    //登出
+
+
+    //
+    // //登出
     // logout().then(result => {
     //   console.log('已登出')
     //   console.log(result)
