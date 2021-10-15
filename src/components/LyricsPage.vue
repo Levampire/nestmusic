@@ -61,6 +61,7 @@ name: "LyricsPage",
      tlLyrics:[],
      isPlay:false,
      lyricsTl:true,
+     lyricsLoading:true,
      songName:'',
      artist:'',
      coverImg: {},
@@ -94,7 +95,7 @@ name: "LyricsPage",
   scroll(index,ref){
     // console.log('in:'+ index)
       this.lastWordsIndex = index-1
-      if(this.playState&&index>this.currentWordsIndex){
+      if(this.playState&&index>this.currentWordsIndex&&this.lyricsLoading===false){
           const offset =  this.$refs[`${ref}`].clientHeight >90?this.$refs[`${ref}`].clientHeight:0
           this.currentWordsIndex = index
           const proof = this.$refs[`${ref}`].offsetTop - this.$refs.lyrCard.clientHeight/2 -offset
@@ -116,6 +117,7 @@ name: "LyricsPage",
   //   },
   //加载歌词
     loadLyrics(id){
+      this.lyricsLoading=true
       this.lastWordsIndex = -1;
       music_lyrics(id).then(result=>{
         if(result.data.lrc!==undefined){
@@ -126,6 +128,8 @@ name: "LyricsPage",
         }else{
           this.lyrics= []
         }
+      }).then(()=>{
+        this.lyricsLoading = false
       })
     },
     lyricWithTranslation:function(){

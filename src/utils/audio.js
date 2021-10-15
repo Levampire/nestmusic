@@ -11,7 +11,6 @@ const pause = () => store.commit('musicplay/setPause')
 const updateProgress = (index) => store.commit('musicplay/setProgress',index)
 const setVolume = (index) => store.commit('musicplay/setVolume',index)
 const setPlaylist = (list,id) => {
-        console.log(list)
         store.commit('musicplay/setMusicList',[list,id])
 }
 

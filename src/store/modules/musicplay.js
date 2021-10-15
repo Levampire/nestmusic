@@ -47,7 +47,6 @@ const mutations = {
     setVolume(state,volume){  state.volume = volume;  },
     setProgress(state,progress){ state.progress = progress; },
     setMusicList(state,[musicList,id]){
-        console.log(musicList)
         state.PlaylistID = id
         state.musicList = musicList;
         let tempList=[];
