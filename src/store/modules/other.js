@@ -1,4 +1,5 @@
 const state = ()=>({
+    showFriends:true,
     Tittle:'this is tittle',
     MainPageScrollInfo:{},
     AudioCtxData:[],

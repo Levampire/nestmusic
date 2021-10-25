@@ -84,6 +84,7 @@ export default {
 
 <style scoped>
 .bar{
+  width: inherit;
   position: relative;
   background-color: rgba(200,200,230,.5);
   height: 6px;

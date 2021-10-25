@@ -27,10 +27,14 @@
         alt=""/>
    <div v-if="type==='toplist'" class="ranking">{{ranking+1}}</div>
    <div class="info" @click="clickPlay($event)">
-     <div class="songsname" >{{ songname }}</div>
+     <div class="songsname" >
+       {{ songname }}
+     </div>
      <div class="singer"
           v-if="currentRoutePath.indexOf('newAlbum')===-1"
-          @click.stop="toSingerPage()" >{{ singer}}</div>
+          @click.stop="toSingerPage()" >
+       {{ singer}}
+     </div>
    </div>
    <div v-if="type==='songs'||type==='diskSongs'" class="info" @click="clickPlay($event)">
      <div class="songsname albumName" v-if="currentRoutePath.indexOf('newAlbum')===-1" @click.stop="toAlbumPage()">{{ albumName }}</div>
@@ -109,30 +113,42 @@ export default {
     ...mapState({
       playState:state => state.musicplay.isPlay,
       musicID:state => state.musicplay.musicID,
-      idOfLovedList: state => state.user.idOfLovedSongs
+      idOfLovedList: state => state.user.idOfLovedSongs,
+
     }),
     formatMaxTime(){
-      return timeTrans(Math.round(this.info.dt/1000))
+      return timeTrans(Math.round((this.info.dt||this.info.duration)/1000))
     }
   },
   watch:{
     isPlay:function (state){
     },
     playState:function (newstate){
-      if(this.isPlay!==newstate && this.currentMusicID===this.id){
+      if(this.musicID===this.id){
         this.isPlay = newstate
       }
     },
     musicID:function (currentMusicID){
       this.currentMusicID=currentMusicID
+      this.isPlay = this.musicID === this.id;
     },
     idOfLovedList:function (ids){
       this.ids=ids
+    },
+    info:function (){
+      this.initData()
+    if(this.type==='RadioMainSong'){
+        this.songname = this.info.name
+        this.singer =artistsNameComB( this.info.artists)
+        this.coverImg = this.info.album.picUrl
+        this.albumName = this.info.album.name
+        this.maxTime = timeTrans(this.info.duration)
+        this.id = this.info.id
+      }
     }
   },
   methods:{
     clickPlay(e){
-      console.log('play')
       this.endPos = e.target.getBoundingClientRect()
       if(Math.abs(this.endPos.x-this.startPos.x) < 7){
         this.handlePlay(!this.isPlay)
@@ -151,7 +167,7 @@ export default {
           //更新播放列表
           this.$parent.updatePlaylist()
           this.$audio.pause()
-          await this.$audio.setUrl(this.info.id,this.info.name,this.info.ar,this.info.al.picUrl,this.info)
+          await this.$audio.setUrl(this.info.id,this.info.name,this.info?.ar||this.info.artists,this.info.al?.picUrl||this.info.album.picUrl,this.info)
           this.$audio.play()
           break
         }
@@ -171,6 +187,14 @@ export default {
           this.$audio.play()
           break
         }
+        case 'RadioMainSong':{
+          //更新播放列表
+          this.$parent.updatePlaylist()
+          this.$audio.pause()
+          await this.$audio.setUrl(this.info.id,this.info.name,this.info.artists,this.info.album.picUrl)
+          this.$audio.play()
+          break
+        }
       }
     },
     toSingerPage(){
@@ -187,7 +211,7 @@ export default {
         name: 'albumDetail',
         params: {
           type:'newAlbum',
-          id: this.info.al.id
+          id: this.info.al?.id || this.info.album.id
         }
       })
     },
@@ -223,39 +247,46 @@ export default {
     },
     deleteDiskMusic(){
       this.$parent.deleteDiskMusic(this.id)
+    },
+    initData(){
+      switch (this.type) {
+        case "songs": {
+          this.songname = this.info.name.trim()
+          this.singer = artistsNameComB(this.info.ar||this.info?.artists)
+          this.coverImg = this.info.al?.picUrl || this.info.album?.picUrl
+          this.albumName = this.info.al?.name || this.info.album?.name ||''
+          this.id = this.info.id
+          break;
+        }
+        case "toplist":{
+          this.songname = this.info.name
+          this.singer = artistsNameComB(this.info.ar)
+          this.coverImg = this.info.al.picUrl
+          this.albumName = this.info.al.name
+          this.id = this.info.id
+          break;
+        }
+        case "diskSongs":{
+          this.songname = this.info.fileName
+          this.singer = this.info.artist
+          this.coverImg = this.info.simpleSong.al.picUrl
+          this.albumName = this.info.simpleSong.al.name
+          this.maxTime = timeTrans(this.info.simpleSong.dt)
+          this.id = this.info.songId
+          break;
+        }
+
+      }
     }
   } ,
   mounted() {
     this.ids = this.idOfLovedList;
     this.currentRoutePath = this.$route.path
-    switch (this.type) {
-      case "songs": {
-        this.songname = this.info.name.trim()
-        this.singer =artistsNameComB(this.info.ar)
-        this.coverImg = this.info.al.picUrl
-        this.albumName = this.info.al.name
-        this.id = this.info.id
-        break;
-      }
-      case "toplist":{
-        this.songname = this.info.name
-        this.singer = artistsNameComB(this.info.ar)
-        this.coverImg = this.info.al.picUrl
-        this.albumName = this.info.al.name
-        this.id = this.info.id
-        break;
-      }
-      case "diskSongs":{
-        this.songname = this.info.fileName
-        this.singer = this.info.artist
-        this.coverImg = this.info.simpleSong.al.picUrl
-        this.albumName = this.info.simpleSong.al.name
-        this.maxTime = timeTrans(this.info.simpleSong.dt)
-        this.id = this.info.songId
-        break;
-      }
+    this.initData()
+    if(this.musicID===this.id){
+      this.isPlay = this.playState
     }
-  },
+  }
 }
 
 </script>
@@ -319,7 +350,7 @@ export default {
   filter:brightness(80%);
 }
 .info{
-  width: 38%;
+  width: 30%;
   margin-right: 20px;
   text-align: left;
 }
@@ -331,7 +362,7 @@ export default {
   white-space: nowrap;
 }
 .singer{
-  width: fit-content;
+  max-width: fit-content;
   height: 18px;
   font-size: 10pt;
   text-align: left;
@@ -344,7 +375,10 @@ export default {
 .albumName{
   border-bottom: 1px solid rgba(255,255,255,0.4);
   font-weight: unset;
-  width: fit-content;
+  max-width: fit-content;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
 }
 .singer:hover,.albumName:hover{
   border-bottom: 1px solid;

@@ -5,16 +5,19 @@
       <div class="li_group1">
         <div class="type_title"> 热门搜索结果 </div>
         <div class="can">
-          <squarebig_item :firstone="firstone"></squarebig_item>
+          <squarebig_item :firstone="firstone"
+                          type="search"
+          ></squarebig_item>
         </div>
       </div>
       <div class="li_group2">
         <div class="type_title"> 歌曲 </div>
         <div class="into_detail"> 查看全部 </div>
         <div class="can" style="overflow-y: auto;height: 240px" >
-          <musiclittle_item v-for="song in search_result.single.songs"
+          <musiclittle_item v-for="(song,index) in search_result.single.songs"
                             :info="song"
                             :key="song"
+                            :index="index+2"
                             type="songs"
            > </musiclittle_item>
         </div>
@@ -52,10 +55,11 @@
         <square v-for="playlist in search_result.playlist.playlists"
                 :info="playlist"
                 :key="playlist"
-                com_type="playlist"
+                com_type="user_playlist"
         ></square>
       </div>
     </li>
+    <div class="steppingStones"></div>
 <!--    <li class="item_li"  >-->
 <!--      <div class="type_title"> 电台 </div>-->
 <!--      <div class="into_detail"> 查看全部 </div>-->
@@ -172,7 +176,13 @@ export default {
           }).catch(error=>{ console.log(key+'搜索请求失败'+error) })
       })
       console.log(this.search_result)
-    }
+    },
+    setPlaylist(){
+      this.$audio.setPlaylist(this.search_result.single.songs)
+    },
+    updatePlaylist(){
+      this.$audio.setPlaylist(this.search_result.single.songs)
+    },
   },
   mounted() {
     window.addEventListener('mouseup',this.MouseLeave);
@@ -190,11 +200,14 @@ export default {
 
 <style scoped>
 .back{
-  height: 100%;
+  height: inherit;
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
+}
+.steppingStones{
+  padding-bottom: 50px;
 }
 .item_li{
   position: relative;
@@ -203,11 +216,11 @@ export default {
   margin-bottom: 10px;
 }
 .li_group1{
-  width: 480px;
+  width: 50%;
   height: 300px;
 }
 .li_group2{
-  width: calc(100% - 480px);
+  width: 50%;
   height: 300px;
 }
 .can{

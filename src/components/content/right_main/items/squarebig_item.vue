@@ -1,15 +1,32 @@
 <template>
   <div class="item_self" @mouseenter="MouseisOn()" @mouseleave="MouseLeave() ">
-    <img :src="src"
-         oncontextmenu="return false;"
-         ondragstart="return false;"
-         loading="lazy"
-         alt="">
-    <div class="squareitem_info">
+    <div class="samllOne">
+      <img :src="src"
+           oncontextmenu="return false;"
+           ondragstart="return false;"
+           loading="lazy"
+           alt="">
+      <img :src="src"
+           class="shadowImg"
+           oncontextmenu="return false;"
+           ondragstart="return false;"
+           loading="lazy"
+           alt="">
+      <div class="squareitem_info" v-if="type!=='search'">
+        <label class="samllsongname">{{song}}</label>
+        <label class="publishTime">发布于{{publishTime}}</label>
+        <label class="size">{{firstone.type}} · {{firstone.size}}首歌</label>
+      </div>
+    </div>
+
+    <div class="squareitem_info" v-if="type==='search'">
       <label class="songname">{{song}}</label>
       <label class="artist">{{artist}}</label>
     </div>
-    <label class="info">单曲</label>
+    <label class="info"
+           v-if="type==='search'">
+      单曲
+    </label>
     <transition name="play_cover">
       <div v-if="isOn" :class="[!isPlay?'play_cover':'pause_cover']"  @click="clickplay()">
       </div>
@@ -18,6 +35,7 @@
 </template>
 <script>
 import {mapState} from "vuex";
+import {timeDateTrans} from 'utils/tools'
 
 export default {
   name: "squarebig_item",
@@ -27,7 +45,6 @@ export default {
       song:'',
       artist:'',
       src:'',
-      type:'',
       id:'',
       isPlay:false,
     }
@@ -38,13 +55,24 @@ export default {
       default:function (){
         return{}
       }
+    },
+    type:{
+      type:String,
+      default:''
     }
   },
   computed:{
     ...mapState({
     playState:state => state.musicplay.isPlay,
     musicID:state => state.musicplay.musicID,
-  })
+
+  }),
+    publishTime:function(){
+      if(this.firstone.publishTime){
+        return timeDateTrans(this.firstone.publishTime)
+      }
+     return ''
+    }
 },
   methods:{
     MouseisOn(){
@@ -65,6 +93,7 @@ export default {
       this.$audio.pause()
     },
     setPlay : async function(state){
+      this.$parent.setPlaylist()
           //更新播放列表
           this.$audio.pause()
           await this.$audio.setUrl(this.firstone.id,this.firstone.name,this.firstone.ar,this.firstone.al.picUrl,this.firstone)
@@ -73,9 +102,9 @@ export default {
   },
   watch:{
     firstone:function (newvalue,oldvalue){
-      this.song = newvalue.al.name
-      this.artist = newvalue.ar[0].name;
-       this.src=  newvalue.al.picUrl;
+      this.song = newvalue?.al?.name||newvalue.name
+      this.artist = newvalue?.ar?.[0]?.name||newvalue.artists?.[0].name;
+       this.src=  newvalue?.al?.picUrl||newvalue.picUrl;
       // console.log('热搜')
       // console.log(newvalue)
     },
@@ -98,17 +127,19 @@ export default {
   position: relative;
   /*不被挤压*/
   flex-shrink: 0;
-  padding-top: 10px;
+  padding: 10px 0 10px 0;
   margin-left: 20px;
-  align-items: center;
-  background-color: rgba(255,255,255,0.6);
-  height: 230px;
   width: 440px;
   border-radius: 5px;
-  box-shadow:0 0 5px rgba(80,80,80,.1);
+  transition: 0.3s ;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
 }
 .item_self:hover{
-  background-color: rgba(255,255,255,1);
+  background-color:#EAECED;
+  transition: 0.3s ;
 }
 img{
   border-radius: 8px;
@@ -116,6 +147,19 @@ img{
   height: 130px;
   float: left;
   margin-left: 10px;
+}
+.samllOne{
+  display: flex;
+  align-items: center;
+}
+.shadowImg{
+  position: absolute;
+  top: 10px;
+  left:0 ;
+  opacity: .5;
+  filter: blur(15px);
+  z-index: 1;
+  transform: matrix(0.92, 0, 0, 0.96, 0, 0);
 }
 .songname{
   margin-bottom: 5px;
@@ -127,10 +171,19 @@ img{
   text-align: left;
   max-lines: 1;
   font-weight: 800;
-  font-size: 18pt;
+  font-size: 16pt;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.samllsongname{
+  font-size: 18px;
+}
+.publishTime{
+  font-size: 15px;
+}
+.size{
+  font-size: 12px;
 }
 .artist{
   margin-bottom: 10px;
@@ -163,7 +216,7 @@ img{
     bottom: 0;
     height: 100px;
     width: 90px;
-    transition: 2s ;
+    transition: .6s ;
 }
 .pause_cover{
     position: absolute;
@@ -171,16 +224,17 @@ img{
     bottom: 0;
     height: 100px;
     width: 90px;
-    transition: 2s ;
+    transition: .6s ;
 }
 .squareitem_info{
-  position: absolute;
-  width: calc(100% - 100px);
+  padding: 10px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   bottom: 5px;
-  left:10px ;
   height: 70px;
+  font-family: Barlow-Medium,"PingFang SC";
 }
 .play_cover-enter-active {
   transition: all .3s ease;

@@ -11,11 +11,7 @@ export function dj_program_detail(id){
         url:'/dj/program/detail?id='+id
     })
 }
-export function dj_program(id){
-    return request({
-        url:'/dj/program?rid='+id
-    })
-}
+
 
 //最近播放: type=1 时只返回 weekData, type=0 时返回 allData
 export function user_record(user_uid,type){
@@ -182,11 +178,6 @@ export function hot_topic(){
         url:'/hot/topic'
     })
 }
-export function dj_detail(id){
-    return request({
-        url:'/dj/detail?id='+id
-    })
-}
 /*获取歌曲详情
 说明 : 调用此接口 , 传入音乐 id(支持多个 id, 用 , 隔开), 可获得歌曲详情
 
@@ -217,3 +208,109 @@ export function song_like(id,trueORfalse){
         url: '/like?id='+id+'&like='+trueORfalse
     })
 }
+/*
+歌手全部歌曲
+说明 : 调用此接口,可获取歌手全部歌曲 必选参数 :
+
+    id : 歌手 id
+
+可选参数 :
+
+    order : hot ,time 按照热门或者时间排序
+
+limit: 取出歌单数量 , 默认为 50
+
+offset: 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*50, 其中 50 为 limit 的值
+
+接口地址 : /artist/songs
+
+调用例子 : /artist/songs?id=6452
+*/
+export function artist_songs(id,order,limit,offset){
+    let url = '/artist/songs?id='+id+'&order='+order;
+    if(limit!== undefined && offset!== undefined ) { url = '/artist/songs?'+id+'&limit=50'+'&offset='+offset}
+    return request({
+        url :url
+    })
+}
+/*
+获取歌手单曲
+说明 : 调用此接口 , 传入歌手 id, 可获得歌手部分信息和热门歌曲
+
+必选参数 : id: 歌手 id, 可由搜索接口获得
+
+接口地址 : /artists
+
+调用例子 : /artists?id=6452*/
+export function artists(id){
+
+    return request({
+        url :'/artists?id='+id
+    })
+}
+/*
+获取歌手专辑
+说明 : 调用此接口 , 传入歌手 id, 可获得歌手专辑内容
+
+必选参数 : id: 歌手 id
+
+可选参数 : limit: 取出数量 , 默认为 50
+
+offset: 偏移数量 , 用于分页 , 如 :( 页数 -1)*50, 其中 50 为 limit 的值 , 默认 为 0
+
+接口地址 : /artist/album
+
+调用例子 : /artist/album?id=6452&limit=30 ( 周杰伦 )*/
+export function artist_album(id,limit){
+    return request({
+        url :'/artist/album?id='+id+'&limit='+limit
+    })
+}
+/*获取相似歌手
+说明 : 调用此接口 , 传入歌手 id, 可获得相似歌手
+
+必选参数 : id: 歌手 id
+
+接口地址 : /simi/artist
+
+调用例子 : /simi/artist?id=6452 ( 对应和周杰伦相似歌手 )*/
+export function simi_artist(id){
+    return request({
+        url :'/simi/artist?id='+id
+    })
+}
+/*    获取相似歌单
+说明 : 调用此接口 , 传入歌曲 id, 可获得相似歌单
+
+必选参数 : id: 歌曲 id
+
+接口地址 : /simi/playlist
+
+调用例子 : /simi/playlist?id=347230 ( 对应 ' 光辉岁月 ' 相似歌单 )*/
+export function simi_playlist(id){
+    return request({
+        url :'/simi/playlist?id='+id
+    })
+}
+/*相似 mv
+说明 : 调用此接口 , 传入 mvid 可获取相似 mv
+
+必选参数 : mvid: mv id
+
+接口地址 : /simi/mv
+
+调用例子 : /simi/mv?mvid=5436712*/
+export function simi_mv(id){
+    return request({
+        url :'/simi/mv?mvid='+id
+    })
+}
+/*
+    获取相似音乐
+说明 : 调用此接口 , 传入歌曲 id, 可获得相似歌曲
+
+必选参数 : id: 歌曲 id
+
+接口地址 : /simi/song
+
+调用例子 : /simi/song?id=347230 ( 对应 ' 光辉岁月 ' 相似歌曲 )*/

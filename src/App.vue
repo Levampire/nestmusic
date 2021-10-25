@@ -3,6 +3,7 @@
 </template>
 <style>
 @import "assets/css/Main.css";
+@import "assets/css/media.css";
 
 
 #app {

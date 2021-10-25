@@ -1,12 +1,16 @@
 
 import store from "../store/store";
+let musicRecord;
 const setUrl = (id,NAME,ARTISTS,PICURL,fullInfo) => {
     store.commit('musicplay/setUrl',[id,NAME,ARTISTS,PICURL])
         if(fullInfo){
-          store.dispatch('musicplay/addInList',fullInfo)
+         musicRecord = fullInfo
         }
 }
-const play =  () => {store.commit('musicplay/setPlay')}
+const play =  () => {
+    store.commit('musicplay/setPlay')
+    store.dispatch('musicplay/addInList',musicRecord)
+}
 const pause = () => store.commit('musicplay/setPause')
 const updateProgress = (index) => store.commit('musicplay/setProgress',index)
 const setVolume = (index) => store.commit('musicplay/setVolume',index)
@@ -20,7 +24,6 @@ const PLAY = async function (ID,NAME,ARTISTS,PICURL){
         this.isPlay=true
         this.$audio.play()
 }
-
 export default {
         PLAY,
         play,

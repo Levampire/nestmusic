@@ -36,16 +36,6 @@
         ></square>
       </div>
     </li>
-<!--排行榜-->
-    <li class="item_li"  >
-      <div class="type_title"> 排行榜  </div>
-      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
-        <div class="column" v-for="(playlist,index) in playlist.top_list.list" :key="index" >
-          <toplist
-                   :items="playlist"  ></toplist>
-        </div>
-      </div>
-    </li>
 <!--新歌速递-->
     <li class="item_li">
       <div class="type_title"> 新歌速递 </div>
@@ -73,6 +63,16 @@
                      :item="item"
                      :type="playlist.new_songs.type"
           ></rectangle>
+        </div>
+      </div>
+    </li>
+    <!--排行榜-->
+    <li class="item_li"  >
+      <div class="type_title"> 排行榜  </div>
+      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
+        <div class="column" v-for="(playlist,index) in playlist.top_list.list" :key="index" >
+          <toplist
+              :items="playlist"  ></toplist>
         </div>
       </div>
     </li>
@@ -129,6 +129,7 @@ import {reactive} from 'vue'
 import {search_hot,homepage_info,new_songs,playlist_highquality} from 'network/home_page';
 import {radio_hot,top_album,top_list,recommend_resource,personalized_djprogram} from "network/music";
 import {mapState, useStore} from "vuex";
+import {playlist_detail} from "../../../network/music";
 export default {
 
   name: "Home_page",
@@ -149,15 +150,15 @@ export default {
       //推荐电台
       user_fm:{},
       //精品歌单
-      highQuality:{type:"playlist",list:[]},
+      highQuality:{'type':"playlist",'list':[]},
       //热门电台
-      hotRadios:{type:"Radio",list:[]},
+      hotRadios:{'type':"Radio",'list':[]},
       //新歌
-      new_songs:{type:"newSong",list:[]},
+      new_songs:{'type':"newSong",'list':[]},
       //新碟
-      new_albums:{type:"newAlbum",list:[]},
+      new_albums:{'type':"newAlbum",'list':[]},
       //排行榜
-      top_list:{type:"",list:[]},
+      top_list:{'type':"topList",'list':[]},
       //首页数据
       home_page:{},
       //最近播放
@@ -259,7 +260,6 @@ export default {
           }
         })
       }
-
     }
   },
   mounted() {
@@ -272,7 +272,6 @@ export default {
     else if (hour < 19) {this.hello = '晚上好！' }
     else if (hour < 24) {this.hello = '晚安！'}
     window.addEventListener('mouseup',this.MouseLeave);
-
   },
 }
 </script>
@@ -282,5 +281,6 @@ export default {
   height: 100%;
   overflow-y: auto;
   background-image: linear-gradient(to bottom, #F1F4F5, #F4F6F6, #FAFAFA);
+  scroll-behavior: smooth;
 }
 </style>

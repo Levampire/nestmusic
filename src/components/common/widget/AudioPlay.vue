@@ -76,6 +76,7 @@ export default {
      // console.log('***************播放********************')
       this.$refs.audio.play()
      // this.vueXDataSync(this.analyser)
+     //  console.log(this.musicUrl)
 
     },
     audioPause(){
@@ -90,33 +91,34 @@ export default {
       this.$refs.audio.currentTime = progress/100 * this.$refs.audio.duration
     },
     audioError:async function (){
-     this.$msgbox.msgbox('资源加载出错',800)
-     if(this.musicList.length>2){
-       clearInterval(this.Timer)
-       this.Timer = setTimeout(async()=>{
-         await this.$msgbox.msgbox('切换到下一曲',1000)
-         let  tempList;
-         if(!this.isRandom){
-           tempList = this.musicList
-         }else{
-           tempList = this.RandomList
-         }
-         //当前列表项index
-         const currentIndex = tempList.findIndex(item=>item.id===this.currentID)
-         let nextSong ;
-         if(tempList.length>2&& tempList[currentIndex+1]!==undefined){
-           //当前列表项index
-           nextSong =  tempList[currentIndex+1]
-         }else{
-           nextSong =  tempList[0]
-         }
-         this.$audio.pause()
-         await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl,nextSong)
-         this.$audio.play()
-       },1500)
-     }else{
-       this.$msgbox.msgbox('播放失败,请重试',1000)
-     }
+     //
+     // this.$msgbox.msgbox('资源加载出错',200)
+     // if(this.musicList.length>2){
+     //   clearInterval(this.Timer)
+     //   this.Timer = setTimeout(async()=>{
+     //     await this.$msgbox.msgbox('切换到下一曲',1000)
+     //     let  tempList;
+     //     if(!this.isRandom){
+     //       tempList = this.musicList
+     //     }else{
+     //       tempList = this.RandomList
+     //     }
+     //     //当前列表项index
+     //     const currentIndex = tempList.findIndex(item=>item.id===this.currentID)
+     //     let nextSong ;
+     //     if(tempList.length>2&& tempList[currentIndex+1]!==undefined){
+     //       //当前列表项index
+     //       nextSong =  tempList[currentIndex+1]
+     //     }else{
+     //       nextSong =  tempList[0]
+     //     }
+     //     this.$audio.pause()
+     //     await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl,nextSong)
+     //     this.$audio.play()
+     //   },1500)
+     // }else{
+     //   this.$msgbox.msgbox('播放失败,请重试',1000)
+     // }
     },
     onloadedmetadata(e){
       this.$store.commit('musicplay/setMaxTime', parseInt(e.target.duration))
@@ -184,11 +186,10 @@ export default {
     }
   },
   mounted() {
-    this.url = this.musicUrl
     this.$audio.setVolume(1)
     //this.audioCtxInit()
     this.init()
-
+    this.url = this.musicUrl
   }
 }
 </script>

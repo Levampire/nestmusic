@@ -32,6 +32,7 @@
 <script>
 import {playlist_detail} from 'network/music'
 import {mapState} from "vuex";
+import {dj_program_detail} from "network/music";
 
 export default {
   name: "square_item",
@@ -63,6 +64,7 @@ export default {
       isOnPlayBtn:false,
       currentMusicID:0,
       currentPlaylistID:0,
+      dj_program_detail:[],
       //数据
       title:'nie',
       coverImg:'eee',
@@ -75,9 +77,14 @@ export default {
       if(this.isPlay!==newstate && this.currentPlaylistID===this.info.id){
         this.isPlay = newstate
       }
+      if(this.com_type==='user_playlist_dj'&&this.currentMusicID === this.dj_program_detail.id){
+        console.log('ok')
+        this.isPlay = newstate;
+      }
     },
     musicID:function (currentMusicID){
       this.currentMusicID=currentMusicID
+      this.isPlay = this.musicID === this.dj_program_detail.id;
     },
     PlaylistID:function (currentPlaylistID){
       this.currentPlaylistID=currentPlaylistID
@@ -101,6 +108,17 @@ export default {
           type :'Radio',
           id   :this.info.id
         },
+        'artist':{
+          router:'artistDetail',
+          type :'singer',
+          id   :this.info.id
+        },
+        'album':{
+          router:'albumDetail',
+          type :'newAlbum',
+          id   :this.info.id
+        },
+
       }
         //防止滑动触发click
         this.endPos = e.target.getBoundingClientRect()
@@ -119,7 +137,7 @@ export default {
     clickPlay(){
       if(!this.isPlay){
         switch (this.com_type){
-          case 'user_playlist': case 'user_playlist_dj': {
+          case 'user_playlist':  {
             playlist_detail(this.info.id).then(result => {
               this.$audio.pause()
               this.$audio.setPlaylist(result.data.playlist.tracks,this.info.id)
@@ -133,8 +151,20 @@ export default {
             // this.$audio.play(music[0].id,music[0])
             break;
           }
+          case 'user_playlist_dj':{
+            dj_program_detail(this.info.id).then(result => {
+              const song = result.data.program.mainSong
+              this.dj_program_detail = result.data.program.mainSong
+              this.$audio.pause()
+              this.$audio.setUrl(song.id,song.name,song.artists,song.album.picUrl)
+            }).then(()=>{
+              this.$audio.play()
+            })
+            break;
+          }
           case'songs':{
             console.log('songs')
+            console.log(this.info)
           }
         }
       }else {
@@ -175,7 +205,7 @@ export default {
       //用户每日推荐
       case "user_playlist" : case'user_playlist_dj':{
         this.title = this.info.name;
-        this.coverImg = this.info.picUrl;
+        this.coverImg = this.info.picUrl||this.info.coverImgUrl;
         this.detail = this.info.copywriter
         this.tag = this.info.creator? this.info.creator.nickname:''
         break;

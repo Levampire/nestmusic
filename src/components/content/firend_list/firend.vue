@@ -98,6 +98,7 @@ export default {
 .firend{
   width: 100%;
   height: calc(100vh - 160px);
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -115,7 +116,7 @@ export default {
   font-weight: bold;
   color: var(--inform_textcolor);
   margin: 0 0 10px 2px;
-  font-size: 18px;
+  font-size: 14px;
 }
 .item{
   border-radius: 10px;

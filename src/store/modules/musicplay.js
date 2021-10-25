@@ -3,14 +3,15 @@
 import {song_detail} from "../../network/music";
 
 const state = () => ({
-    musicUrl:"https://music.163.com/song/media/outer/url?id=1842802205.mp3",
-    musicInfo:{NAME:'庞贝',ARTISTS:[{"img1v1Id":18686200114669624,"topicPerson":0,"followed":false,"alias":[],"picId":0,"trans":"","albumSize":0,"img1v1Url":"http://p4.music.126.net/VnZiScyynLG7atLIZ2YPkw==/18686200114669622.jpg","picUrl":"http://p4.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg","briefDesc":"","musicSize":0,"name":"许嵩","id":5771,"img1v1Id_str":"18686200114669622"}],PICURL:'http://p4.music.126.net/EepVxZ_7Z0qAiW_UYcC7EA==/109951165954048759.jpg'},
-    musicID:1842802205,
+    musicUrl:"https://music.163.com/song/media/outer/url?id=1887190390.mp3",
+    musicInfo:{},
+    musicID:Number,
     PlaylistID:Number,
     musicList:{},
     isPlay:false,
     isRandom:false,
     randomList:[],
+    RecentList:JSON.parse(window.localStorage.getItem('musicRecord'))||[],
     loopMode:0,// 0关闭 1 single单曲循环,2 all列表循环, 默认 1
     maxTime:'300',
     currentTime:'0',
@@ -58,8 +59,8 @@ const mutations = {
         }
         state.randomList =  Array.from(new Set(tempList))
     },
-    setRandomList(){
-
+    setRecentList(state,musicRecord){
+        state.RecentList = musicRecord
     }
 }
 // getters
@@ -80,6 +81,7 @@ const actions = {
         //保留播放记录
         if(!music.al){
           await  song_detail(music.id).then(res=>{
+              console.log(res)
                 music=res.data.songs[0]
             })
         }
@@ -95,6 +97,7 @@ const actions = {
         }
         musicRecord = [item,...musicRecord]
         window.localStorage.setItem('musicRecord',JSON.stringify(musicRecord))
+         state.commit('setRecentList',musicRecord)
         // console.log( JSON.parse(window.localStorage.getItem('musicRecord')))
     },
 

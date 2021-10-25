@@ -1,5 +1,4 @@
 <template>
-
   <div class="cover" v-if="click_login=== true">
     <login-card :methods_type="enter_type" @close_login="close_login"/>
   </div>
@@ -52,14 +51,11 @@
       </router-view>
     </div>
     <!--朋友信息-->
-    <div class="userFriends" v-if="islogin ===true" >
-      <friend></friend>
-    </div>
-    <div class="userFriends" v-else>
-      <div style="height: 500px;line-height: 500px">
-        请先登录
+    <transition >
+      <div class="userFriends" v-if="islogin ===true && showFriends" >
+        <friend></friend>
       </div>
-    </div>
+    </transition>
   </div>
   <!--  歌词页 -->
   <Lyric></Lyric>
@@ -74,10 +70,11 @@ import search_btn from 'widget/search_btn'
 import little_btn from 'widget/little_btn'
 import login_card from "widget/login_card";
 import Footer_cord from "widget/footer_cord";
-import {login_status} from "network/login";
 import {useStore,mapState} from 'vuex'
 import userinfo from "widget/user_info";
-import {playlist_detail} from "../network/music";
+import {playlist_detail} from "network/music";
+import {new_songs} from "network/home_page";
+import {song_detail} from "network/music";
 
 export default {
   name: 'HomePage',
@@ -116,6 +113,7 @@ export default {
        LoginState: state => state.user.isLogin,
        Tittle:state => state.other.Tittle,
        MainPageScrollInfo: state => state.other.MainPageScrollInfo,
+      showFriends:state => state.other.showFriends,
     })
   },
   created() {
@@ -132,15 +130,20 @@ export default {
     // }).catch(error => {
     //   console.log('登录状态检查错误' + error)
     // })
-    if(this.LoginState){
-      let myList = [];
-      playlist_detail(window.localStorage.getItem('myMusicList')).then(res=>{
-        myList = res.data.playlist.tracks
-      }).then(()=>{
-        this.$audio.setPlaylist(myList)
-        this.$audio.setUrl(myList[0].id,myList[0].name,myList[0].ar,myList[0].al.picUrl)
-      })
-    }
+    // let myList = window.localStorage.getItem('myMusicList');
+    // if(this.LoginState&&myList.length>0){
+    //   console.log(myList)
+    //   this.loadLovedSongs(myList)
+    // } else {
+
+      new_songs(0).then(result=>{
+        const song   = result.data.data[0];
+        this.setList(song.id)
+       this.$audio.setUrl(song.id,song.name,song.artists,song.album.picUrl,song)
+      }).catch(error=>{ console.log('新歌速递数据获取失败'+error);})
+    //
+    // }
+
 
   },
   methods: {
@@ -159,6 +162,7 @@ export default {
       const scroll = this.MainPageScrollChange
       let scrollOffset = scroll.scrollTop-scroll.tittleTop;
       if(path.indexOf(this.$route.name)!==-1) {
+
         if (scroll.scrollTop<80){this.isShow = false} else {this.isShow=true}
         if (scrollOffset < 10) {
           this.opacity=(Math.abs(scrollOffset)/10)
@@ -170,6 +174,20 @@ export default {
       else {
         this.isShow=false
       }
+    },
+    setList(id){
+      song_detail(id).then(res=>{
+        this.$audio.setPlaylist(res.data.songs)
+      })
+     },
+    loadLovedSongs(ids){
+      let myList=[]
+      playlist_detail(ids).then(res=>{
+        myList = res.data.playlist.tracks
+      }).then(()=>{
+        this.$audio.setPlaylist(myList)
+        myList[0]!==undefined &&  this.$audio.setUrl(myList[0].id,myList[0].name,myList[0].ar,myList[0].al.picUrl,myList[0])
+      })
     }
   },
   mounted() {
@@ -248,6 +266,15 @@ export default {
 .slide_bottom-enter-to,
 .slide_top-leave-from {
   opacity: 1;
+}
+.userFriends-enter-active ,.userFriends-leave-active {
+  transition: all .3s cubic-bezier(0.4,0.5,0.6,0.9);
+  opacity: 1;
+}
+.userFriends-enter-from, .userFriends-leave-to
+  /* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateY(500px);
+  opacity: 0 ;
 }
 
 .home {

@@ -32,20 +32,33 @@ export default {
   methods:{
     //点击按钮切换Main页面
     sideBar_btn(btn){
-      this.btn_now = btn;
+      const loginState = window.localStorage.getItem('userid')?(window.localStorage.getItem('userid') !== ''):false
       switch (btn){
         default:{
           this.$router.push('/Home/'+ btn );
           break;
         }
+        case 'cloudDisk':{
+          if(!loginState){
+            this.$msgbox.msgbox('请先登录',200)
+          }else {
+            this.$router.push('/Home/'+ btn );
+          }
+          break;
+        }
         case'favorite': {
-          this.$router.push({
-            name: 'playlistDetail',
-            params: {
-              type:'myList',
-              id: window.localStorage.getItem('myMusicList')
-            }
-          })
+          if(!loginState){
+            this.$msgbox.msgbox('请先登录',200)
+          }else {
+            this.$router.push({
+              name: 'playlistDetail',
+              params: {
+                type:'myList',
+                id: window.localStorage.getItem('myMusicList')
+              }
+            })
+          }
+          break;
         }
       }
 
@@ -53,11 +66,26 @@ export default {
   },
   watch:{
     '$route.path':function (newValue){
-      this.btn_now = newValue.substring(6);
+      const pattern = {
+          'home':RegExp(/home/),
+          'library':RegExp(/library/),
+          'cloudDisk':RegExp(/cloudDisk/),
+          'favorite' :RegExp(/&myList$/),
+      }
+      for (let key in pattern) {
+        const res = pattern[key].test(newValue)
+        if(res!==false){
+         this.btn_now = key
+          return
+        }else{
+          this.btn_now=''
+        }
+      }
+
     }
   },
   mounted() {
-    this.sideBar_btn('home');
+    this.btn_now = 'home';
   }
 }
 </script>

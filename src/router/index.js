@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+const loginState = window.localStorage.getItem('userid')?(window.localStorage.getItem('userid') !== ''):false
 const routes = [
   {
     //re
@@ -25,7 +25,14 @@ const routes = [
         //音乐主界面 云盘
         path: 'cloudDisk',
         component: () => import('main/cloudDisk_page'),
-        meta:{index:3}
+        meta:{index:3},
+        beforeEnter:(to,from,next)=>{
+          if(!loginState){
+            next(false)
+          }else {
+            next()
+          }
+        }
       },  {
         //音乐主界面 我的喜欢
         path: 'favorite',
@@ -52,7 +59,14 @@ const routes = [
         path: 'playlistDetail/:id&:type',
         name:'playlistDetail',
         component: () => import('main/detail_page'),
-        meta:{index:0}
+        meta:{index:0},
+        beforeEnter:(to,from,next)=>{
+          if(!loginState&&to.params.type==='myList'){
+            next(false)
+          }else {
+            next()
+          }
+        }
       },{
       //专辑详情页---------------Overwrite
         path: 'albumDetail/:id&:type',
@@ -63,7 +77,7 @@ const routes = [
       //歌手详情页---------------Overwrite
         path: 'artistDetail/:id&:type',
         name:'artistDetail',
-        component: () => import('main/artist_page'),
+        component: () => import('main/detail_page'),
         meta:{index:0}
       }
     ]

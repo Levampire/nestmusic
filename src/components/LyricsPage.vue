@@ -58,9 +58,7 @@ name: "LyricsPage",
   data(){
    return{
      lyrics:[],
-     tlLyrics:[],
      isPlay:false,
-     lyricsTl:true,
      lyricsLoading:true,
      songName:'',
      artist:'',
@@ -96,9 +94,9 @@ name: "LyricsPage",
     // console.log('in:'+ index)
       this.lastWordsIndex = index-1
       if(this.playState&&index>this.currentWordsIndex&&this.lyricsLoading===false){
-          const offset =  this.$refs[`${ref}`].clientHeight >90?this.$refs[`${ref}`].clientHeight:0
+          // const offset =  this.$refs[`${ref}`].clientHeight >90?this.$refs[`${ref}`].clientHeight:0
           this.currentWordsIndex = index
-          const proof = this.$refs[`${ref}`].offsetTop - this.$refs.lyrCard.clientHeight/2 -offset
+          const proof = this.$refs[`${ref}`].offsetTop - this.$refs.lyrCard.clientHeight/2
         // console.log(proof)
           if(proof>=0){
             //歌词滚动
@@ -120,19 +118,25 @@ name: "LyricsPage",
       this.lyricsLoading=true
       this.lastWordsIndex = -1;
       music_lyrics(id).then(result=>{
+        let tl = ''
         if(result.data.lrc!==undefined){
           this.lyrics=analysisLyrics(result.data.lrc.lyric)
-          if(result.data.tlyric.lyric!==''){this.tlLyrics = analysisLyrics(result.data.tlyric.lyric)}
-          this.lyricWithTranslation()
-
+          if(result.data?.tlyric?.lyric&&result.data?.tlyric?.lyric!==''){
+            tl =analysisLyrics(result.data.tlyric?.lyric)
+          }
+          this.lyricWithTranslation(tl)
         }else{
           this.lyrics= []
         }
-      }).then(()=>{
+        return result.data?.lrc?.lyric
+      }).then(ly=>{
+        if(ly&&ly!==''){
+          this.$refs.lyrCard.scrollTop = 0
+        }
         this.lyricsLoading = false
       })
     },
-    lyricWithTranslation:function(){
+    lyricWithTranslation:function(tl){
       let lyrics=[]
       if(this.lyrics.length){
         this.lyrics.forEach((words,index)=>{
@@ -142,8 +146,8 @@ name: "LyricsPage",
             content: words.slice(words.indexOf(']')+1),
             tl:''
           }
-          if(this.tlLyrics!==''&&this.lyricsTl){
-            item.tl = this.tlLyrics.filter(tlItem=>{
+          if(tl&&tl!==''){
+            item.tl = tl.filter(tlItem=>{
               return   item.startTime===timeTransBack(tlItem.slice(1,tlItem.indexOf(']')))
             }).toString().slice(words.indexOf(']')+1)
           }
@@ -259,13 +263,13 @@ name: "LyricsPage",
     }
   },
   created() {
-    this.loadLyrics(this.musicID)
+    // this.loadLyrics(this.musicID)
   },
   mounted() {
   //初始化数据
-    this.songName=this.musicInfo.NAME
-    this.artist = artistsNameComB(this.musicInfo.ARTISTS)
-    this.coverImg='url("' + this.musicInfo.PICURL +'?param=1920y1080' + '")'
+  //   this.songName=this.musicInfo.NAME
+  //   this.artist = artistsNameComB(this.musicInfo.ARTISTS)
+  //   this.coverImg='url("' + this.musicInfo.PICURL +'?param=1920y1080' + '")'
   }
 }
 // background-image: linear-gradient(to bottom, #F1F4F5, #F4F6F6, #FAFAFA);
@@ -304,6 +308,7 @@ name: "LyricsPage",
     z-index: 1 ;
     width: 53%;
     height: 100%;
+    transition: .5s ease-in-out;
   }
   .round {
     margin-top: 30px;
@@ -370,7 +375,7 @@ name: "LyricsPage",
     font-weight: bold;
     border-radius: 10px;
     margin: 10px 0 10px 0;
-    padding: 10px;
+    padding:  20px;
     overflow: hidden;
     transition: .4s ;
   }
@@ -385,7 +390,6 @@ name: "LyricsPage",
     transition: .8s cubic-bezier(.56,.34,.2,.85);
   }
   .dark{
-
     font-size: 20pt;
     transition: .2s cubic-bezier(.31,.97,.74,.63);
     color: white;

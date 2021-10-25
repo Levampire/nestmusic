@@ -30,7 +30,7 @@
 <script>
 import {mapState} from "vuex";
 import {timeDateTrans} from "utils/tools";
-import {playlist_detail} from 'network/music'
+import {playlist_detail,album} from 'network/music'
 
 export default {
   name: "rectangle_item",
@@ -59,7 +59,7 @@ export default {
       isPlay:false,
       currentMusicID:0,
       currentPlaylistID:0,
-      playListType:['playlist','newAlbum']
+      playListType:['playlist','newAlbum','Radio']
     }
   },
   computed:{
@@ -77,6 +77,16 @@ export default {
       if(this.isPlay!==newstate &&(this.currentMusicID===this.item.id || this.currentPlaylistID===this.item.id)){
         this.isPlay = newstate
       }
+      switch (this.type) {
+        case "newSong":{
+          if(this.musicID===this.item.id&&newstate){
+            this.isPlay = true
+          }else {
+            this.isPlay = false
+          }
+          break;
+        }
+      }
     },
     musicID:function (currentMusicID){
       // console.log(currentMusicID+this.item.name+":"+this.item.id);
@@ -88,7 +98,11 @@ export default {
     MusicID:function (currentMusicID){
       this.currentMusicID=currentMusicID
     },
-
+    item(newInfo){
+      if(this.playState){
+        this.isPlay = this.musicID===this.item.id
+      }
+    }
   },
   methods:{
     toDetailPage(e){
@@ -132,7 +146,6 @@ export default {
             break;
           }
           case'playlist':{
-            console.log(this.item)
             playlist_detail(this.item.id).then(result => {
               this.$audio.setPlaylist(result.data.playlist.tracks,this.item.id)
               const music = this.$store.getters['musicplay/getMusicList']
@@ -140,8 +153,20 @@ export default {
             }).then(()=>{
               this.isPlay=true
             }).catch(error=>{console.log("歌单详情获取失败"+error);});
+            break;
+          }
+
+          case'newAlbum':{
+            album(this.item.id).then(result => {
+              this.$audio.setPlaylist(result.data.songs,this.item.id)
+              const music = this.$store.getters['musicplay/getMusicList']
+              this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
+            }).then(()=>{
+              this.isPlay=true
+            }).catch(error=>{console.log("歌单详情获取失败"+error);});
           }
         }
+
       }else {
         this.isPlay=false
         this.$audio.pause()
@@ -176,7 +201,6 @@ export default {
         this.coverImg = this.item.album.picUrl;
         this.author = this.item.artists[0].name;
         this.tag = timeDateTrans(this.item.album.publishTime)
-
         break;
       }
       case "newAlbum":{

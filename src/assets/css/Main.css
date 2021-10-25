@@ -22,7 +22,8 @@ body{
     background: var(--BaseBackColor);
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
-
+    min-width: 980px;
+    min-height: 800px;
 }
 
 @import "~assets/img/iconfont/iconfont.css";
@@ -31,6 +32,7 @@ body{
 @import "~assets/css/loginpage.css";
 @import "~assets/font/fontinfo.css";
 @import "~assets/css/play.css";
+@import "~assets/css/detailpage.css";
 
 /*标签*/
 input{
@@ -51,7 +53,7 @@ input{
 }
 /*类*/
 .main_page{
-    width: calc(100vw - 480px) ;
+    flex: 1;
     height:100vh ;
     min-height: 100vh;
     background-color: #F8F9F9;
@@ -62,7 +64,7 @@ input{
  height: 140px;
 }
 .userFriends{
-    position: absolute;
+    position: relative;
     top: 60px;
     right: 0;
     width: 280px;
@@ -72,6 +74,7 @@ input{
     color:var(--info_text);
     display: flex;
     justify-content: center;
+    transition: .8s ease-in-out;
 }
 .navBar{
     width: calc(100vw - 200px);
@@ -123,6 +126,7 @@ input{
     padding:10px 0  20px 0;
 }
 .item_li_group{
+    width: 100%;
     position: relative;
     display: flex;
     flex-direction: row;
@@ -138,7 +142,7 @@ input{
     justify-content: start;
     margin-top: 10px;
     background-color: #F8F9F9;
-    height: calc(100% - 30px);
+    height:100%;
     overflow: hidden;
 }
 .content_item_group{

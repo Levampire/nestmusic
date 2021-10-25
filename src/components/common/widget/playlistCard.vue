@@ -8,14 +8,13 @@
       >
         <img class="songImg"
              loading="lazy"
-             :src="item.al.picUrl+'?param=30y30'"
+             :src="item.al?.picUrl||item.album?.picUrl||''+'?param=30y30'"
              oncontextmenu="return false;"
              ondragstart="return false;"
              alt=""/>
-        <div>
-          <text>{{ item.name }}</text>
-          <br>
-          <text class="artist">{{ artistsName(item.ar)}}</text>
+        <div class="info">
+          <div class="songName">{{ item.name }}</div>
+          <div class="artist">{{ artistsName(item.ar||item.artists)}}</div>
         </div>
       </div>
     </div>
@@ -65,6 +64,7 @@ export default {
   box-shadow: 0 0 10px rgba(80, 80, 80, 0.2);
   z-index: 950;
   font-family: var(--VamFont);
+  scroll-behavior: smooth;
 }
 .songImg{
   height: 40px;
@@ -74,8 +74,6 @@ export default {
 }
 .item {
   padding: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--title_text);
   font-weight: bold;
@@ -83,23 +81,38 @@ export default {
   font-size: 12pt;
   display: flex;
   border-radius: 10px;
+
 }
 .item:hover{
   background-color:#EAECED;
   transition: .4s;
 }
 .cardtitle {
-  font-weight: bold;
-  font-size: 15pt;
+  width: 100px;
+  font-size: 14pt;
   color: var(--title_text);
   margin-bottom: 10px;
-  font-family: PingFang Semibold;
+  font-family: "PingFang SC";
 
+}
+.songName{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .artist{
   font-size: 10pt;
   font-weight: normal;
   font-family: var(--VamFont);
-  color: rgba(80,80,80);
+  color: rgb(80,80,80);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.info{
+  width: 85%;
+}
+::-webkit-scrollbar{
+  display: unset;
 }
 </style>

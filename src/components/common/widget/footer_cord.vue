@@ -1,11 +1,14 @@
 <template>
     <transition name="cardenter" >
-      <playlist-card  v-show="showPlaylist" :style="{position:'fixed',left:playlist_pos.x-150+'px',bottom:'85px',zIndex:'-2'}" ></playlist-card>
+      <playlist-card  v-show="showPlaylist" :style="{position:'fixed',left:playlist_pos.x-220+'px',bottom:'85px',zIndex:'-2'}" ></playlist-card>
     </transition>
-  <img :src="coverImg+'?param=70y70'" alt="" class="coverImg">
-  <div class="info">
-    <div class="songname">{{ songName }}</div>
-    <div class="singer">{{ artist }}</div>
+
+  <div class="songInfo">
+    <img :src="coverImg+'?param=70y70'" alt="" class="coverImg" loading="lazy">
+    <div class="textInfo" >
+      <div class="songname">{{ songName }}</div>
+      <div class="singer">{{ artist.trim() }}</div>
+    </div>
   </div>
   <div class="progressbar">
     <div class="btnGroup">
@@ -36,9 +39,12 @@
     </div>
     <div class="progress">
       <div class="time">{{timeTrans(currentTime)}}</div>
-      <progress-bar class="progress_bar"
-                    :progress="(currentTime/maxTime)*100"
-                    type="audio"></progress-bar>
+      <div class="progress_bar">
+        <progress-bar style="width: inherit"
+                      :progress="(currentTime/maxTime)*100"
+                      type="audio"></progress-bar>
+      </div>
+
       <div class="time">{{timeTrans(maxTime)}}</div>
     </div>
   </div>
@@ -53,10 +59,24 @@
                   :progress="volume*100">
     </progress-bar>
   </div>
-    <div class="playlist"
+
+  <div class="playlist"
          ref="btn_playlist"
-         @click="showPlaylistCard">  <i class="iconfont Player-icon-list1"></i></div>
+         @click="showPlaylistCard">  <i class="iconfont Player-icon-list1"></i>
   </div>
+  <div class="like"
+        @click="addInLikeList()">
+      <i v-if="ids.indexOf(currentID)!==-1"
+             class=" iconfont Player-icon-LIKE"
+    ></i>
+      <i v-if="ids.indexOf(currentID)===-1"
+           class="iconfont Player-icon-enshrine"
+      ></i></div>
+    <div class="playlist"
+         @click="showLyrics">  <i class="iconfont Player-icon-a-untiegps"></i>
+    </div>
+  </div>
+
 
   <AudioPlay ></AudioPlay>
 </template>
@@ -67,6 +87,7 @@ import ProgressBar from "./progressBar";
 import playlistCard from "widget/playlistCard.vue";
 import {timeTrans,artistsNameComB} from 'utils/tools'
 import AudioPlay from "./AudioPlay";
+import {song_like} from "network/music";
 export default {
 name: "footer_cord",
   components: {AudioPlay, ProgressBar,playlistCard},
@@ -76,7 +97,10 @@ name: "footer_cord",
     coverImg:'',
     songName:'',
     artist:'',
-    showPlaylist:false
+    showPlaylist:false,
+    musicVolume:10,
+    ids:[],
+    timer:setInterval,
    }
   },
   methods:{
@@ -128,6 +152,53 @@ name: "footer_cord",
     showPlaylistCard(){
       this.playlist_pos = this.$refs.btn_playlist.getBoundingClientRect()
       this.showPlaylist=!this.showPlaylist
+    },
+    addInLikeList(){
+      if(this.ids.indexOf(this.currentID)!==-1){
+        song_like(this.currentID,false).then(res=>{
+          if (res.data.code===200){
+            let ids = window.localStorage.getItem('idOfLovedOnes').split(',').map(item=>{return parseInt(item)});
+            ids = ids.filter(item=>{
+              return item!==this.currentID})
+            this.$store.commit('user/setIdOfLovedSongs',ids)
+          }
+        }).catch(err=>{
+          this.handleError(err)
+        })
+      }else{
+        song_like(this.currentID,true).then(res=>{
+          if (res.data.code===200){
+            let ids = window.localStorage.getItem('idOfLovedOnes').split(',');
+            ids = ids.map(item=>{return parseInt(item)})
+            ids.push(this.currentID)
+            this.$store.commit('user/setIdOfLovedSongs',ids)
+          }
+        }).catch(err=>{
+              this.handleError(err)
+            }
+        )
+      }
+    },
+    showLyrics(){
+      let index = 0,offset = 0
+      const bottom = document.documentElement
+      let bottomOfWindow = Math.floor(bottom.scrollHeight - bottom.scrollTop)  ;
+
+
+      this.timer=setInterval(
+          ()=>{
+            index+=offset
+            if(offset>=bottomOfWindow/1.5){
+              offset-=.5
+            }else {offset+=.5}
+
+            index<bottomOfWindow &&  window.scrollTo(0,index )
+          },60/1000
+      )
+        bottomOfWindow  === bottom.clientHeight && clearInterval(this.timer)
+    },
+    handleError(msg){
+      this.$msgbox.msgbox(msg,200)
     }
   },
   computed:{
@@ -141,6 +212,7 @@ name: "footer_cord",
       loopMode :state => state.musicplay.loopMode,
       isRandom :state => state.musicplay.isRandom,
       RandomList :state => state.musicplay.randomList,
+     idOfLovedList: state => state.user.idOfLovedSongs
    }),
   },
   watch:{
@@ -150,11 +222,18 @@ name: "footer_cord",
       this.songName=newState.NAME
       this.artist=artistsNameComB(newState.ARTISTS)
       this.coverImg=newState.PICURL
+    },
+    volume:function (newLevel){
+      this.musicVolume = newLevel
+    },
+    idOfLovedList:function (ids){
+      this.ids=ids
     }
-  },mounted() {
-    this.songName=this.musicInfo.NAME
-    this.artist=artistsNameComB(this.musicInfo.ARTISTS)
-    this.coverImg=this.musicInfo.PICURL
+  },
+  mounted() {
+    // this.songName=this.musicInfo.NAME
+    // this.artist=artistsNameComB(this.musicInfo.ARTISTS)
+    // this.coverImg=this.musicInfo.PICURL
   }
 }
 </script>
@@ -175,30 +254,42 @@ name: "footer_cord",
   margin-left: 20px;
   border-radius: 5px;
 }
-.info{
-  padding-left: 20px;
-  margin-top: 5px;
-  text-align: left;
+.songInfo{
   height: 80%;
-  width: 325px;
   font-family: Barlow-Medium,var(--VamFont);
+  transition: .5s ease-in-out;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 25%;
  }
+.textInfo{
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 1;
+}
 .songname{
   font-size: 12pt;
   line-height: 30px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: left;
 }
 .singer {
   font-size: 10pt;
-  transform: scale(.8);
-  margin-left: -35px;
+  width: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .btnGroup{
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   height: 18px;
   padding: 0 20px 0 10px;
@@ -206,6 +297,7 @@ name: "footer_cord",
 }
 .btnGroup i:hover{
   background-color: rgba(220,220,220,.7);
+  color: var(--Main_blue);
 }
 i{
   padding: 8px;
@@ -218,7 +310,7 @@ i{
 .Player-icon-nextmdpi,.Player-icon-lastmdpi{
   font-size: 13pt;
 }
-.Player-icon-Player-icon-loopmdpi,.Player-icon-Player-icon-loopOnemdpi{
+.Player-icon-Player-icon-loopmdpi,.Player-icon-Player-icon-loopOnemdpi,{
   width: 18px;
   height: 16px;
 }
@@ -230,32 +322,32 @@ i{
   background-color: rgba(220,220,220,.7);
   transition: .3s cubic-bezier(.31,.97,.74,.63);
 }
-i:hover{
-  transition: .3s cubic-bezier(.31,.97,.74,.63);
-}
 .progressbar{
   height: calc(100% - 10px);
-  width: 50%;
   z-index: 1;
+  width: 50%;
+
 }
 .other{
   z-index: 1;
   height: 90%;
-  width: 24%;
+  width: 25%;
 }
-.progress_bar{
-  width: 780px;
-}
+
 .progress{
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+  width: 100%;
 }
 .time{
   font-size: 10pt;
   margin: 0 10px 0 10px;
 
+}
+.progress_bar{
+  flex: 1;
 }
 .progress_volume{
   height: 90%;
@@ -264,13 +356,33 @@ i:hover{
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 150px;
+  min-width: 120px;
 }
 .playlist{
   float: right;
   display: flex;
   align-items: center;
   height: 70px;
-  width: 70px;
+  width: 10%;
+}
+.like{
+  float: right;
+  display: flex;
+  align-items: center;
+  height: 70px;
+  width: 10%;
+  font-size: 10pt;
+}
+.like i{
+  width: 18px;
+  height: 16px;
+
+}
+.like i:hover{
+  background-color: rgba(220,220,220,.7);
+}
+.Player-icon-LIKE{
+  color: #f34c48;
+  font-size: 10pt;
 }
 </style>
