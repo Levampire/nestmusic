@@ -146,11 +146,11 @@ export default {
       await this.$audio.pause()
       if(index===0){//顺序播放下一首
         const currentIndex = await  list.findIndex(item=>item.id===currentID)
-        const nextSong = await list[currentIndex+1]
+        let nextSong = await list.filter(item=>item.playable!==false)[currentIndex+1]
         await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl,nextSong)
       }else {
         this.tempList = this.RandomList.filter(item=> item.id!==currentID)
-        const nextSong =  this.tempList[0]
+        let nextSong =  this.tempList.filter(item=>item.playable!==false)[0]
         await this.$audio.setUrl(nextSong.id,nextSong.name,nextSong.ar,nextSong.al.picUrl,nextSong)
       }
        this.$audio.play()

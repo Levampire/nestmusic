@@ -1,0 +1,29 @@
+.playListActions{
+    width: inherit;
+    display: flex;
+    flex-direction: row;
+}
+.moreActions ,.playAll,.like_btn,.dislike_btn{
+    height: inherit;
+    text-align: center;
+    border-radius: 8px;
+    transition: .6s;
+}
+.moreActions:hover ,.like_btn:hover,.dislike_btn:hover,.playAll:hover{
+    transform: scale(1.05);
+    transition: .3s;
+}
+.playAll{
+    color: var(--Main_blue);
+    padding: 8px 20px 8px 20px;
+    background: var(--btn_back_light);
+}
+.moreActions,.like_btn,.dislike_btn{
+    margin-left: 20px;
+    color: var(--title_text);
+    padding: 8px 15px 8px 15px;
+    background: #EAECED;
+}
+.moreActions{
+    line-height: 65%;
+}

@@ -115,7 +115,7 @@
     z-index: 2;
     transition: 0.3s cubic-bezier(0.2 ,0.4 ,.6, 0.8);
 }
-.like_btn{
+/*.like_btn{
     background-color:var(--Main_blue);
     line-height: 30px;
     text-align: center;
@@ -138,4 +138,4 @@
     padding: 0 5px 0 5px;
     color: var(--title_text);
     font-weight: normal;
-}
+}*/

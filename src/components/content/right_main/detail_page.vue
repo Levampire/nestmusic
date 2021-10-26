@@ -88,16 +88,16 @@
           </div>
           <div class="info" @click="showDialog=!showDialog"> {{ listData.description }} </div>
           <div class="playListActions">
-            <div class="playAll">
+            <div class="playAll" @click="playAll">
               <div v-show="!isPlay">
                 <i class="iconfont Player-icon-playmdpi"
-                      @click="play()">
-              </i>
+                      >
+                </i>
                 播放
               </div>
               <div v-show="isPlay">
                 <i class="iconfont Player-icon-pausemdpi"
-                   @click="play()">
+                   >
                 </i>
                 暂停
               </div>
@@ -154,12 +154,20 @@
           </div>
           <div class="info" @click="showDialog=!showDialog"> {{ listData.description }} </div>
           <div class="playListActions">
-            <div class="playAll">
-              <i class="iconfont Player-icon-playmdpi"
-                 @click="play()"
-                 v-show="$store.getters['musicplay/getPlayState']===false">
-              </i>
-              播放
+            <div class="playAll" @click="playAll()">
+              <div v-show="!isPlay">
+                <i class="iconfont Player-icon-playmdpi"
+                >
+                </i>
+                播放
+              </div>
+              <div v-show="isPlay">
+                <i class="iconfont Player-icon-pausemdpi"
+                   >
+                </i>
+                暂停
+              </div>
+
             </div>
             <div class="dislike_btn"
                  v-if="subscribed&&subscribed!==0&&type!=='myList'"
@@ -204,7 +212,7 @@
                     :info="RadioMainSong"
                     type="RadioMainSong"
                     :index="index+1"
-                    :key="item.id"
+                    :key="item?.id"
                 ></musiclittle_item>
               </div>
             </div>
@@ -213,7 +221,7 @@
                                 :info="item"
                                 type="songs"
                                 :index="index+1"
-                                :key="item.id"
+                                :key="item?.id"
               ></musiclittle_item>
             </div>
             <div v-else  class="emptyInfo">
@@ -282,6 +290,8 @@ import Squarebig_item from "items/squarebig_item";
 import square_item from 'items/square_item'
 import {mapState} from "vuex";
 import {timeDateTrans} from "utils/tools";
+import {listInit} from "utils/isPlayable";
+import {isThisSongPlayable, isTrackPlayable} from "utils/isPlayable";
 
 export default {
 name: "detail_page",
@@ -324,6 +334,7 @@ name: "detail_page",
   }},
   computed:{
   ...mapState({
+    isLogin:state=>state.user.isLogin,
     userInfo:state => state.user.userinfo,
     playState:state => state.musicplay.isPlay,
     currentPlayMusic:state=>state.musicplay.musicID,
@@ -357,9 +368,10 @@ name: "detail_page",
                result.data.program.subscribed,
                result.data.program.subscribedCount,
                result.data.program.createTime,
-               false
+               false,
+               result.data.program.privileges,
            )
-           this.RadioMainSong=result.data.program.mainSong
+           this.RadioMainSong=isThisSongPlayable( result.data.program.mainSong)
          })
              .catch(error => { console.log("电台详情获取失败" + error);
          });
@@ -379,7 +391,8 @@ name: "detail_page",
              result.data.playlist.subscribed,
              result.data.playlist.subscribedCount,
              result.data.playlist.updateTime,
-             result.data.playlist.updateFrequency
+             result.data.playlist.updateFrequency,
+               result.data.privileges,
            )
          }).catch(error=>{console.log("歌单详情获取失败"+error);});
          break;
@@ -399,9 +412,13 @@ name: "detail_page",
                false,
                false,
                result.data.album.publishTime,
-               false
+               false,
+               [],
            )
            this.albumCompany = result.data.album.company
+           artist_album(result.data.album.artist.id,this.artistAlbumLimit).then(res=>{
+             this.simiData=res.data.hotAlbums
+           })
          }).catch(error=>{console.log("专辑详情获取失败"+error);});
          break;
        }
@@ -433,6 +450,7 @@ name: "detail_page",
                '',
                '',
                '',
+               [],
            )
          })
          artist_album(newId,this.artistAlbumLimit).then(res=>{
@@ -505,13 +523,14 @@ name: "detail_page",
         }
       }
     },
-    setDataList(...[list,title,author,tags,picUrl,description,shareCount,subscribed,subscriberCount,updateTime,updateFrequency]){
+    setDataList(...[list,title,author,tags,picUrl,description,shareCount,subscribed,subscriberCount,updateTime,updateFrequency,privileges]){
+      //,privileges,this.isLogin,this.userInfo  vipType
       this.listData.title=title
       this.listData.author=author
       this.listData.tags=tags
       this.listData.pic=picUrl
       this.listData.description=description
-      this.listData.list=list
+      this.listData.list=listInit(list,privileges)
       this.subscribed=subscribed
       this.listData.subscribers=subscriberCount
       this.listData.shareCount=shareCount
@@ -520,7 +539,6 @@ name: "detail_page",
       this.isPlay = this.playState && list.filter(item =>item.id===this.currentPlayMusic).length>0;
     },
     addToLike(){
-      console.log('add')
       playlist_subscribe(1,this.id).then(res=>{
         if(res.code===200){
           this.subscribed=true;
@@ -538,7 +556,26 @@ name: "detail_page",
         this.$msgbox('取消收藏失败',200)
       })
     },
-
+    playAll:async function(){
+      if(this.listData.list.filter(item =>item.id===this.currentPlayMusic).length===0){
+        this.isPlay = !this.isPlay
+        await this.$audio.pause()
+          this.$audio.setPlaylist(this.listData.list )
+          const music = this.listData.list.filter(item=>item.playable!==false)
+          if(music.length>0){
+            await this.$audio.setUrl(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
+            this.$audio.play()
+          }else {
+            this.handleError('无可用音乐资源')
+          }
+      }else {
+        this.isPlay && this.$audio.pause()
+        !this.isPlay && this.$audio.play()
+      }
+    },
+    handleError(msg){
+      this.$msgbox.msgbox(msg,200)
+    }
   },
   mounted() {
     this.id = this.$route.params.id;
@@ -735,7 +772,6 @@ name: "detail_page",
 
 .title{
   width: 100%;
-  height: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: -1px;
@@ -744,6 +780,7 @@ name: "detail_page",
   font-weight: 800;
   color: black !important;
   font-family: circularBold;
+  margin-bottom: 30px;
 }
 .info{
   width: 90%;

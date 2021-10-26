@@ -6,11 +6,14 @@
       @mouseup.self="clickPlay($event)"
       :class="[type==='toplist'?'item_self':(!isPlay?'item_self':'item_self_play')]"
      >
+   <div v-show="!info.playable" class="disable"
+        @click="handleError(info.reason)"
+   ></div>
    <div v-if="type==='songs'" class="index" >
      {{index}}
    </div>
-   <transition name="play">
-     <div v-show="isOn&&currentRoutePath.indexOf('newAlbum')===-1"
+   <transition name="play" >
+     <div v-show="isOn&&currentRoutePath.indexOf('newAlbum')===-1 && info.playable"
           @mouseover="isOnPlayBtn = true"
           @mouseleave="isOnPlayBtn = false"
           class="play_btn"
@@ -150,10 +153,9 @@ export default {
   methods:{
     clickPlay(e){
       this.endPos = e.target.getBoundingClientRect()
-      if(Math.abs(this.endPos.x-this.startPos.x) < 7){
-        this.handlePlay(!this.isPlay)
+      if( this.info.playable){
+        Math.abs(this.endPos.x-this.startPos.x) < 7 && this.handlePlay(!this.isPlay)
       }
-
     },
     handlePlay(state){
       state?this.setPlay(state):this.setPause();
@@ -307,6 +309,13 @@ export default {
   transition: 0.3s ;
   color: var(--title_text);
 }
+.disable{
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  background: rgba(245,245,245,.6);
+  z-index: 15;
+}
 .item_self:hover{
   background-color:#EAECED;
   transition: 0.3s ;
@@ -333,11 +342,12 @@ export default {
   font-family:"Century Gothic";
 }
 .rankinfo{
-  height: 10px;
+  height: 4px;
   width: 10px;
-  background-color: #42b983;
+  background-color: rgba(0,0,0,.3);
   position: absolute;
   right: 15px;
+  border-radius: 5px;
   bottom: 26px;
 
 }
@@ -360,6 +370,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
 }
 .singer{
   max-width: fit-content;
@@ -369,16 +380,16 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  border-bottom: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid transparent;
   z-index: 980;
 }
 .albumName{
-  border-bottom: 1px solid rgba(255,255,255,0.4);
+  border-bottom: 1px solid transparent;
   font-weight: unset;
   max-width: fit-content;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap
+  white-space: nowrap;
 }
 .singer:hover,.albumName:hover{
   border-bottom: 1px solid;

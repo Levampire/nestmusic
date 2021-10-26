@@ -15,6 +15,7 @@
 <script>
 import musiclittle from "items/musiclittle_item";
 import {playlist_detail} from 'network/music'
+import {listInit} from "utils/isPlayable";
 export default {
 name: "toplist_card",
   components:{
@@ -42,8 +43,9 @@ name: "toplist_card",
   },
   mounted() {
     playlist_detail(this.items.id).then(result=>{
-      this.list = result?.data.playlist.tracks
+      this.list = listInit(result?.data.playlist.tracks)
       // console.log(result);
+      console.table(result?.data.playlist.tracks)
     })
   }
 }
@@ -61,7 +63,7 @@ name: "toplist_card",
   background-color: #42b983;
   background-color: rgba(255,255,255,0.6);
   height: 320px;
-  width: 280px;
+  width: 300px;
   border-radius: 5px;
   box-shadow:0 0 5px rgba(80,80,80,.1);
 }
@@ -72,10 +74,13 @@ name: "toplist_card",
   color: var(--title_text);
 }
 .item{
-  width: 100%;
+  padding: 0 10px 0 10px ;
+  width:calc(100% - 20px) ;
   height: 100%;
 }
 .songs_item{
+  width: 100%;
+  border-radius: 8px;
   margin-top: 10px;
   box-shadow: none;
 }

@@ -243,14 +243,15 @@ export default {
 .item_self {
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: center;
+
   position: relative;
   /*不被挤压*/
   flex-shrink: 0;
-  padding:10px 0 10px 10px;
+  padding:10px 5px 10px 5px;
   margin-left: 20px;
   background-color: rgba(255, 255, 255, 0.6);
-  height: 260px;
+  min-height: 220px;
   width: 170px;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(80, 80, 80, .1),
@@ -273,8 +274,7 @@ img {
 }
 
 .tag {
-  width: fit-content;
-  max-width: 160px;
+  width:fit-content ;
   margin: 0 0 2px 5px;
   color: var(--Ligth_Text);
   background-color: #5FDEAD;
@@ -285,7 +285,7 @@ img {
   padding: 0 2px 0 2px;
   font-size: 8pt;
   overflow: hidden;
-  transform: scale(.9) translateX(-5px);
+  transform: scale(.9) translateX(-2px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -304,7 +304,8 @@ img {
 }
 
 .info {
-  width: 160px;
+  margin-left: 5px;
+  width: inherit;
   color: var(--title_text);
   text-align: left;
   font-size: 8pt;
@@ -316,7 +317,7 @@ img {
 .play_btn{
   position: absolute;
   right: 0;
-  bottom: 5px;
+  top: 200px;
   height: 70px;
   width: 70px;
   transition: .3s;

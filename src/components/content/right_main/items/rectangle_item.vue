@@ -31,6 +31,7 @@
 import {mapState} from "vuex";
 import {timeDateTrans} from "utils/tools";
 import {playlist_detail,album} from 'network/music'
+import {isThisSongPlayable, listInit} from "../../../../utils/isPlayable";
 
 export default {
   name: "rectangle_item",
@@ -106,13 +107,15 @@ export default {
   },
   methods:{
     toDetailPage(e){
+      console.log(this.item)
       //防止滑动触发click
       this.endPos = e.target.getBoundingClientRect()
       if(Math.abs(this.endPos.x-this.startPos.x) < 7 && this.isOnPlayBtn === false){
         if(this.playListType.indexOf(this.type)!==-1){
           const id = {
             'playlist':this.item.id,
-            'newAlbum':this.item.id
+            'newAlbum':this.item.id,
+            'Radio':this.item.id,
           }
           console.log(this.type)
           this.$router.push({
@@ -137,32 +140,48 @@ export default {
       this.isPlay=true
       this.$audio.play()
     },
+    checkPlayable(list){
+      const result = list.filter(item=>item.playable!==false)
+      if(result.length===0) {
+        this.handleError('没有可用音乐')
+        return false
+      } else{
+        return result
+      }
+
+    },
     clickPlay:function(){
       if(!this.isPlay){
         switch (this.type){
           case 'newSong': {
-            //直接点击音乐播放 播放列表添加内容
-            this.PLAY(this.item.id,this.item.name,this.item.artists,this.item.album.picUrl,this.item)
+            if(this.item.playable){
+              //直接点击音乐播放 播放列表添加内容
+              this.PLAY(this.item.id,this.item.name,this.item.artists,this.item.album.picUrl,this.item)
+            }else{
+              this.handleError(this.item.reason)
+            }
             break;
           }
           case'playlist':{
             playlist_detail(this.item.id).then(result => {
-              this.$audio.setPlaylist(result.data.playlist.tracks,this.item.id)
-              const music = this.$store.getters['musicplay/getMusicList']
-              this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
-            }).then(()=>{
-              this.isPlay=true
+              const vaild =  this.checkPlayable(listInit(result.data.playlist.tracks))
+              if(!vaild){
+                this.$audio.setPlaylist(vaild,this.item.id)
+                const music = this.$store.getters['musicplay/getMusicList']
+                this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
+              }
             }).catch(error=>{console.log("歌单详情获取失败"+error);});
             break;
           }
 
           case'newAlbum':{
             album(this.item.id).then(result => {
-              this.$audio.setPlaylist(result.data.songs,this.item.id)
-              const music = this.$store.getters['musicplay/getMusicList']
-              this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
-            }).then(()=>{
-              this.isPlay=true
+              const vaild =  this.checkPlayable(listInit((result.data.songs)))
+              if(!vaild){
+                this.$audio.setPlaylist(vaild,this.item.id)
+                const music = this.$store.getters['musicplay/getMusicList']
+                this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
+              }
             }).catch(error=>{console.log("歌单详情获取失败"+error);});
           }
         }
@@ -171,6 +190,9 @@ export default {
         this.isPlay=false
         this.$audio.pause()
       }
+    },
+    handleError(msg){
+      this.$msgbox.msgbox(msg,200)
     }
   },
   mounted() {

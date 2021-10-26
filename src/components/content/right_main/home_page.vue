@@ -130,6 +130,7 @@ import {search_hot,homepage_info,new_songs,playlist_highquality} from 'network/h
 import {radio_hot,top_album,top_list,recommend_resource,personalized_djprogram} from "network/music";
 import {mapState, useStore} from "vuex";
 import {playlist_detail} from "../../../network/music";
+import {isThisSongPlayable, listInit} from "../../../utils/isPlayable";
 export default {
 
   name: "Home_page",
@@ -193,7 +194,7 @@ export default {
     //获取新歌 全部 0 华语 7 欧美 96 日本 8 韩国 16
     new_songs(0).then(result=>{
       // console.log(result);
-      playlist.new_songs.list = result.data.data;
+      playlist.new_songs.list = listInit(result.data.data);
     }).catch(error=>{ console.log('新歌速递数据获取失败'+error);})
 
     //获取精品歌单数据
