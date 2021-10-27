@@ -45,7 +45,6 @@ name: "toplist_card",
     playlist_detail(this.items.id).then(result=>{
       this.list = listInit(result?.data.playlist.tracks)
       // console.log(result);
-      console.table(result?.data.playlist.tracks)
     })
   }
 }

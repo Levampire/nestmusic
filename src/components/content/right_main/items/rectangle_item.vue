@@ -107,7 +107,6 @@ export default {
   },
   methods:{
     toDetailPage(e){
-      console.log(this.item)
       //防止滑动触发click
       this.endPos = e.target.getBoundingClientRect()
       if(Math.abs(this.endPos.x-this.startPos.x) < 7 && this.isOnPlayBtn === false){
@@ -148,7 +147,6 @@ export default {
       } else{
         return result
       }
-
     },
     clickPlay:function(){
       if(!this.isPlay){
@@ -165,10 +163,9 @@ export default {
           case'playlist':{
             playlist_detail(this.item.id).then(result => {
               const vaild =  this.checkPlayable(listInit(result.data.playlist.tracks))
-              if(!vaild){
+              if(vaild){
                 this.$audio.setPlaylist(vaild,this.item.id)
-                const music = this.$store.getters['musicplay/getMusicList']
-                this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
+                this.PLAY(vaild[0].id,vaild[0].name,vaild[0].ar,vaild[0].al.picUrl,vaild[0])
               }
             }).catch(error=>{console.log("歌单详情获取失败"+error);});
             break;
@@ -177,10 +174,9 @@ export default {
           case'newAlbum':{
             album(this.item.id).then(result => {
               const vaild =  this.checkPlayable(listInit((result.data.songs)))
-              if(!vaild){
+              if(vaild){
                 this.$audio.setPlaylist(vaild,this.item.id)
-                const music = this.$store.getters['musicplay/getMusicList']
-                this.PLAY(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
+                this.PLAY(vaild[0].id,vaild[0].name,vaild[0].ar,vaild[0].al.picUrl,vaild[0])
               }
             }).catch(error=>{console.log("歌单详情获取失败"+error);});
           }

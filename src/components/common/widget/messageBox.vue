@@ -52,17 +52,18 @@ export default defineComponent({
   left: 50%;
   transform: translateX(-50%);
   bottom: 100px;
-  padding: 10px 20px;
+  padding: 5px 15px;
   color: #fff;
   word-break: break-all;
-  background-color: rgba(0, 0, 0, .7);
-  border-radius: 10px;
+  background-color: rgba(50, 50, 50, .8);
+  border-radius: 5px;
   width: auto;
   z-index: 999;
+  font-family: Barlow-Medium, "PingFang SC";
 }
 
 .scale-enter-active, .scale-leave-active {
-  transition:  .8s;
+  transition:  1s;
 }
 
 </style>

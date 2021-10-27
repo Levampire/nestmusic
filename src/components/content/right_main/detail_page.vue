@@ -20,10 +20,18 @@
             </div>
             <div class="title" ref="pageTitle">{{listData.title.trim()}}</div>
             <div class="btnGroup">
-              <div class="profile" :style="{backgroundImage:'url('+listData.profile+'?param=30y30)'}"></div>
-              <div class="profileName">{{' '+listData.author.nickname}}</div>
-              <div class="little_span" v-if="listData.subscribers">{{listData.subscribers}}人收藏</div>
-              <div class="little_span" v-if="listData.shareCount"> {{listData.shareCount}}次分享</div>
+              <div class="profile"
+                   :style="{backgroundImage:'url('+listData.profile+'?param=30y30)'}">
+              </div>
+              <div class="profileName" @click="toAutherPage()">
+                {{' '+listData.author.nickname}}
+              </div>
+              <div class="little_span" v-if="listData.subscribers">
+                {{listData.subscribers}}人收藏
+              </div>
+              <div class="little_span" v-if="listData.shareCount">
+                {{listData.shareCount}}次分享
+              </div>
             </div>
             <div class="dislike_btn btnDit"
                  v-if="subscribed&&subscribed!==0" >
@@ -69,7 +77,7 @@
               {{ typeName[type] +''}}  By
             </div>
             <!--          <div class="profile" :style="{backgroundImage:'url('+listData.profile+'?param=30y30)'}"></div>-->
-            <div class="profileName"  >
+            <div class="profileName" @click="toAutherPage()" >
               {{' '}}{{listData.author?.nickname || listData.author.name}}
             </div>
             <div class="little_span" v-if="listData.subscribers">
@@ -192,13 +200,19 @@
           <div class="recentAlbum">
             <div class="type_title"> 最近专辑 </div>
             <div class="can">
-              <squarebig_item :firstone="artistAlbum[0]"></squarebig_item>
+              <squarebig_item
+                  :firstone="artistAlbum[0]"
+                  type="album"
+              ></squarebig_item>
             </div>
           </div>
           <div class="recentMV">
             <div class="type_title"> 最近MV </div>
             <div class="can">
-              <squarebig_item :firstone="artistAlbum[0]"></squarebig_item>
+              <squarebig_item
+                  :firstone="MVData?.mvs?.[0]"
+                  type="MV"
+              ></squarebig_item>
             </div>
           </div>
         </li>
@@ -250,11 +264,12 @@
         <li class="item_li"  v-if="type==='singer'">
           <div class="type_title" > MV </div>
           <div class="content_album" >
-            <square_item v-for="albums in artistAlbum"
-                    :info="albums"
-                    :key="albums"
-                    com_type="album"
-            ></square_item>
+            <squarebig_item
+                v-for="item in MVData?.mvs"
+                :firstone="item"
+                :key="'MV'+item.id"
+                type="MV"
+            ></squarebig_item>
           </div>
         </li>
         <li class="item_li"  v-if="type==='singer'">
@@ -282,7 +297,7 @@
     </div>
 </template>
 <script>
-import {simi_mv,simi_artist,artist_album,artist_songs,artists,playlist_detail,artist_detail,playlist_subscribe,likelist,dj_program_detail,album,song_detail} from 'network/music'
+import {artist_mv,simi_mv,simi_artist,artist_album,artist_songs,artists,playlist_detail,artist_detail,playlist_subscribe,likelist,dj_program_detail,album,song_detail} from 'network/music'
 import musiclittle_item from "items/musiclittle_item";
 import store from "../../../store/store";
 import Cover_dialog from "../../common/Vam_Layout/cover_dialog";
@@ -330,6 +345,7 @@ name: "detail_page",
       'Radio':'电台节目',
       'myList':'播放清单'
     },
+    MVData:{},
     simiData:[],
   }},
   computed:{
@@ -457,8 +473,10 @@ name: "detail_page",
            this.artistAlbum=res.data.hotAlbums
          })
          simi_artist(newId).then(res=>{
-           console.log(res)
            this.simiData = res.data.artists
+         })
+         artist_mv(newId).then(res=>{
+           this.MVData = res.data
          })
          //获取歌单详情
          /*artist_detail(newId).then(result1 => {
@@ -557,8 +575,9 @@ name: "detail_page",
       })
     },
     playAll:async function(){
-      if(this.listData.list.filter(item =>item.id===this.currentPlayMusic).length===0){
-        this.isPlay = !this.isPlay
+      if(
+          this.listData.list.filter(item =>item.id===this.currentPlayMusic).length===0
+      ){this.isPlay = !this.isPlay
         await this.$audio.pause()
           this.$audio.setPlaylist(this.listData.list )
           const music = this.listData.list.filter(item=>item.playable!==false)
@@ -572,6 +591,16 @@ name: "detail_page",
         this.isPlay && this.$audio.pause()
         !this.isPlay && this.$audio.play()
       }
+    },
+    toAutherPage(){
+      if(this.type==='newAlbum')
+      this.$router.push({
+        name: 'artistDetail',
+        params: {
+          type:'singer',
+          id: this.listData.author.id
+        }
+      })
     },
     handleError(msg){
       this.$msgbox.msgbox(msg,200)
@@ -837,7 +866,6 @@ name: "detail_page",
   flex-direction: row;
   width: 100%;
   flex-wrap: wrap;
-
 }
 .content_album .item_self {
   margin-bottom: 20px;

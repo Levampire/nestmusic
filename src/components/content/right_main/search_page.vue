@@ -6,13 +6,13 @@
         <div class="type_title"> 热门搜索结果 </div>
         <div class="can">
           <squarebig_item :firstone="firstone"
-                          type="search"
+                          type="songs"
           ></squarebig_item>
         </div>
       </div>
       <div class="li_group2">
         <div class="type_title"> 歌曲 </div>
-        <div class="into_detail"> 查看全部 </div>
+        <div class="into_detail"> 全部{{search_result.single.songCount}}结果 </div>
         <div class="can" style="overflow-y: auto;height: 240px" >
           <musiclittle_item v-for="(song,index) in search_result.single.songs"
                             :info="song"
@@ -59,7 +59,7 @@
         ></square>
       </div>
     </li>
-    <div class="steppingStones"></div>
+
 <!--    <li class="item_li"  >-->
 <!--      <div class="type_title"> 电台 </div>-->
 <!--      <div class="into_detail"> 查看全部 </div>-->
@@ -72,14 +72,14 @@
 <!--        ></square>-->
 <!--      </div>-->
 <!--    </li>-->
-<!--    <li class="item_li"  >-->
-<!--      <div class="type_title"> MV </div>-->
-<!--      <div class="into_detail"> 查看全部 </div>-->
-<!--      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >-->
-<!--        &lt;!&ndash;最近播放&ndash;&gt;-->
-<!--        <square ></square>-->
-<!--      </div>-->
-<!--    </li>-->
+    <li class="item_li"  >
+      <div class="type_title"> MV </div>
+      <div class="into_detail"> 查看全部 </div>
+      <div class="content_item"  @mousedown=" getMouseX($event) " @mousemove="getMouseMoveX($event)" >
+        <!--最近播放-->
+        <square ></square>
+      </div>
+    </li>
 <!--    <li class="item_li"  >-->
 <!--      <div class="type_title"> 用户 </div>-->
 <!--      <div class="into_detail"> 查看全部 </div>-->
@@ -92,6 +92,7 @@
 <!--        ></square>-->
 <!--      </div>-->
 <!--    </li>-->
+    <div class="steppingStones"></div>
   </div>
 </template>
 <script>
@@ -99,6 +100,7 @@ import square_item from 'items/square_item'
 import Squarebig_item from "items/squarebig_item";
 import Musiclittle_item from "items/musiclittle_item";
 import {searchmusic} from "network/music";
+import {listInit} from "utils/isPlayable";
 export default {
   name: "search_page",
   components:{
@@ -117,7 +119,7 @@ export default {
         playlist:{},
         // user:{},
         // radio: {},
-        // mv:{}
+        mv:{}
       },
       firstone:{}
     }
@@ -155,17 +157,18 @@ export default {
       //   console.log(result);
       //     }).catch(error=>{})
       const types = {
-        'single':1,
         'albums': 10,
         'artists': 100,
         'playlist': 1000,
         // 'user': 1002,
         // 'radio': 1009,
-        // 'mv': 1004
+        'mv': 1004
       }
-      // 搜索请求keyword,type,limit,offset
+      // 搜索请求keyword,type,limit,offset 'single':1,
       searchmusic(newvalue,1,5,0).then(result=>{
-        this.search_result.single = result.data.result
+        this.search_result.single ={'songCount':result.data.result.songCount,
+          'songs': listInit(result.data.result.songs)
+        }
         this.firstone = this.search_result.single.songs.shift()
       }).catch(error=>{})
       Object.keys(types).forEach( (key)=>{
@@ -190,7 +193,6 @@ export default {
   watch:{
     inputvalue:function (newvalue){
       // throttle( this.getInputValue(newvalue),500)
-      console.log(newvalue);
       this.$nextTick(this.getSearchResult(newvalue))
 
     }

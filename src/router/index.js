@@ -79,6 +79,12 @@ const routes = [
         name:'artistDetail',
         component: () => import('main/detail_page'),
         meta:{index:0}
+      },{
+      //MV播放详情页---------------Overwrite
+        path: 'mvDetail/:id&:type',
+        name:'mvDetail',
+        component: () => import('main/mv_detail'),
+        meta:{index:0}
       }
     ]
   },

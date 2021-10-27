@@ -4,8 +4,7 @@ import main from 'widget/messageBox.vue'
 let instance
 
 const initInstance = () => {
-    // 这里就是与 vue2 最大的区别了
-    // 在 vue2 的时候，我们只需 instance.$mount() 便能得到节点，现在不行
+    // 在 vue2 的时候，只需 instance.$mount() 便能得到节点，现在不行
     const app = createApp(main)
     // 需要一个容器
     const container = document.createElement('div')

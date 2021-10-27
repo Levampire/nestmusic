@@ -33,6 +33,7 @@
 import {playlist_detail} from 'network/music'
 import {mapState} from "vuex";
 import {dj_program_detail} from "network/music";
+import {isThisSongPlayable, listInit} from "../../../../utils/isPlayable";
 
 export default {
   name: "square_item",
@@ -78,7 +79,6 @@ export default {
         this.isPlay = newstate
       }
       if(this.com_type==='user_playlist_dj'&&this.currentMusicID === this.dj_program_detail.id){
-        console.log('ok')
         this.isPlay = newstate;
       }
     },
@@ -134,15 +134,26 @@ export default {
     },
     MouseisOn() {this.isOn = true;},
     MouseLeave() { this.isOn = false;},
+    checkPlayable(list){
+      const result = list.filter(item=>item.playable!==false)
+      if(result.length===0) {
+        this.handleError('没有可用音乐')
+        return false
+      } else{
+        return result
+      }
+    },
     clickPlay(){
       if(!this.isPlay){
         switch (this.com_type){
           case 'user_playlist':  {
             playlist_detail(this.info.id).then(result => {
-              this.$audio.pause()
-              this.$audio.setPlaylist(result.data.playlist.tracks,this.info.id)
-              const music = this.$store.getters['musicplay/getMusicList']
-              this.$audio.setUrl(music[0].id,music[0].name,music[0].ar,music[0].al.picUrl,music[0])
+              const vaild =  this.checkPlayable(listInit(result.data.playlist.tracks))
+              if(vaild){
+                this.$audio.pause()
+                this.$audio.setPlaylist(vaild,this.info.id)
+                this.$audio.setUrl(vaild[0].id,vaild[0].name,vaild[0].ar,vaild[0].al.picUrl,vaild[0])
+              }
             }).then(()=>{
               this.$audio.play()
               this.isPlay=true
@@ -153,10 +164,12 @@ export default {
           }
           case 'user_playlist_dj':{
             dj_program_detail(this.info.id).then(result => {
-              const song = result.data.program.mainSong
-              this.dj_program_detail = result.data.program.mainSong
-              this.$audio.pause()
-              this.$audio.setUrl(song.id,song.name,song.artists,song.album.picUrl)
+              const song = isThisSongPlayable(result.data.program.mainSong)
+              this.dj_program_detail = result.data.program
+              if(song.playable){
+                this.$audio.pause()
+                this.$audio.setUrl(song.id,song.name,song.artists,song.album.picUrl)
+              }
             }).then(()=>{
               this.$audio.play()
             })

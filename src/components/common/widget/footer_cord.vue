@@ -7,7 +7,10 @@
     <img :src="coverImg+'?param=70y70'" alt="" class="coverImg" loading="lazy">
     <div class="textInfo" >
       <div class="songname">{{ songName }}</div>
-      <div class="singer">{{ artist.trim() }}</div>
+      <div class="singer"
+           @click="toSingerPage()"
+      >{{ artist.trim() }}
+      </div>
     </div>
   </div>
   <div class="progressbar">
@@ -76,8 +79,6 @@
          @click="showLyrics">  <i class="iconfont Player-icon-a-untiegps"></i>
     </div>
   </div>
-
-
   <AudioPlay ></AudioPlay>
 </template>
 
@@ -197,6 +198,16 @@ name: "footer_cord",
       )
         bottomOfWindow  === bottom.clientHeight && clearInterval(this.timer)
     },
+    toSingerPage(){
+     const id =   this.musicInfo.ARTISTS[0].id
+      this.$router.push({
+        name: 'artistDetail',
+        params: {
+          type:'singer',
+          id:id
+        }
+      })
+    },
     handleError(msg){
       this.$msgbox.msgbox(msg,200)
     }
@@ -285,6 +296,12 @@ name: "footer_cord",
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: .5s;
+}
+.singer:hover{
+  border-radius: 5px;
+  background-color: rgba(220,220,220,.7);
+  transition: .5s;
 }
 .btnGroup{
   display: flex;

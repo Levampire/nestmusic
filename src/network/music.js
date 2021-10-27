@@ -314,3 +314,49 @@ export function simi_mv(id){
 接口地址 : /simi/song
 
 调用例子 : /simi/song?id=347230 ( 对应 ' 光辉岁月 ' 相似歌曲 )*/
+
+/*
+获取歌手 mv
+说明 : 调用此接口 , 传入歌手 id, 可获得歌手 mv 信息 , 具体 mv 播放地址可调 用/mv传入此接口获得的 mvid 来拿到 , 如 : /artist/mv?id=6452,/mv?mvid=5461064
+
+必选参数 : id: 歌手 id, 可由搜索接口获得
+
+接口地址 : /artist/mv
+
+调用例子 : /artist/mv?id=6452*/
+export function artist_mv(id){
+    return request({
+        url :'/artist/mv?id='+id
+    })
+}
+/*mv 地址
+说明 : 调用此接口 , 传入 mv id,可获取 mv 播放地址
+
+必选参数 : id: mv id
+
+可选参数 : r: 分辨率,默认1080,可从 /mv/detail 接口获取分辨率列表
+
+接口地址 : /mv/url
+
+调用例子 :
+
+/mv/url?id=5436712 /mv/url?id=10896407&r=1080*/
+export function mv_url(id,r){
+    return request({
+        url :'/mv/url?id='+id+'&r='+r
+    })
+}
+/*
+获取 mv 数据
+说明 : 调用此接口 , 传入 mvid ( 在搜索音乐的时候传 type=1004 获得 ) , 可获取对应 MV 数据 , 数据包含 mv 名字 , 歌手 , 发布时间 , mv 视频地址等数据 , 其中 mv 视频 网易做了防盗链处理 , 可能不能直接播放 , 需要播放的话需要调用 ' mv 地址' 接口
+
+必选参数 : mvid: mv 的 id
+
+接口地址 : /mv/detail
+
+调用例子 : /mv/detail?mvid=5436712*/
+export function mv_detail(id){
+    return request({
+        url :'/mv/detail?mvid='+id
+    })
+}
